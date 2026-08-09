@@ -212,6 +212,9 @@ function CountBox({ value, label }: { value: number; label: string }) {
 
 const LAUNCH = new Date("2026-12-01T00:00:00Z");
 
+// Name of the Netlify Forms form — must match the hidden static form in index.html.
+const NETLIFY_FORM_NAME = "coming-soon";
+
 const FEATURES = [
   {
     Icon: Layers,
@@ -283,17 +286,38 @@ export default function App() {
   const { days, hours, minutes, seconds } = useCountdown(LAUNCH);
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [focused, setFocused] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+    const formData = new FormData(e.currentTarget);
+    const emailValue = String(formData.get("email") ?? "").trim();
+    if (!emailValue.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
       setError("Enter a valid email to get early access.");
       return;
     }
     setError("");
-    setSubmitted(true);
+    setSubmitting(true);
+    try {
+      // Honeypot filled in? It's a bot — silently pretend success.
+      if (!String(formData.get("bot-field") ?? "")) {
+        const body = new URLSearchParams();
+        formData.forEach((value, key) => body.append(key, String(value)));
+        const res = await fetch("/", {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: body.toString(),
+        });
+        if (!res.ok) throw new Error(`Netlify form submission failed (${res.status})`);
+      }
+      setSubmitted(true);
+    } catch {
+      setError("Something went wrong — please try again in a moment.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -418,9 +442,25 @@ export default function App() {
                   {"You're in! We'll reach out before launch."}
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-2 max-w-[440px]">
+                <form
+                  name={NETLIFY_FORM_NAME}
+                  data-netlify="true"
+                  netlify-honeypot="bot-field"
+                  onSubmit={handleSubmit}
+                  className="flex flex-col sm:flex-row gap-2 max-w-[440px]"
+                >
+                  <input type="hidden" name="form-name" value={NETLIFY_FORM_NAME} />
+                  <input
+                    type="text"
+                    name="bot-field"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    aria-hidden="true"
+                    className="hidden"
+                  />
                   <input
                     type="email"
+                    name="email"
                     value={email}
                     onChange={(e) => { setEmail(e.target.value); setError(""); }}
                     placeholder="your@email.com"
@@ -438,9 +478,10 @@ export default function App() {
                   />
                   <button
                     type="submit"
-                    className="flex items-center justify-center gap-1.5 px-5 py-3 bg-primary text-primary-foreground font-bold text-sm rounded-2xl hover:opacity-90 transition-opacity whitespace-nowrap"
+                    disabled={submitting}
+                    className="flex items-center justify-center gap-1.5 px-5 py-3 bg-primary text-primary-foreground font-bold text-sm rounded-2xl hover:opacity-90 transition-opacity whitespace-nowrap disabled:opacity-60 disabled:cursor-not-allowed"
                   >
-                    Get Early Access
+                    {submitting ? "Signing you up…" : "Get Early Access"}
                     <ArrowRight className="w-4 h-4" />
                   </button>
                 </form>
