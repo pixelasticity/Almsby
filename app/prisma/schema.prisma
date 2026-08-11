@@ -1,0 +1,79 @@
+// Almsby — Phase 0 schema
+// Business + Product are wired end-to-end in Phase 0.
+// GTIN / Barcode / StoryPage / ComplianceStatus are scaffolded (schema only)
+// and remain unused until Phase 1+. Do not add logic on top of them yet.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Business {
+  id               String    @id @default(cuid())
+  // References supabase.auth.users.id when set (no FK — auth lives outside Postgres).
+  ownerId          String?
+  name             String
+  gs1Prefix        String?
+  membershipStatus String    @default("none") // none | in_progress | active
+  subscriptionTier String    @default("starter") // starter | growth | scale
+  createdAt        DateTime  @default(now())
+  products         Product[]
+}
+
+model Product {
+  id         String   @id @default(cuid())
+  businessId String
+  business   Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  name       String
+  brand      String?
+  status     String   @default("draft") // draft | active | archived
+  createdAt  DateTime @default(now())
+}
+
+// ── Scaffolded for later phases — schema only, no logic in Phase 0 ──────────
+
+model GTIN {
+  id         String   @id @default(cuid())
+  productId  String   @unique
+  product    Product  @relation(fields: [productId], references: [id])
+  gtinValue  String // 14-digit, validated with check-digit logic (Phase 1)
+  source     String   @default("own_prefix") // own_prefix | almsby_assisted
+  createdAt  DateTime @default(now())
+}
+
+model Barcode {
+  id                 String   @id @default(cuid())
+  gtinId             String   @unique
+  gtin               GTIN     @relation(fields: [gtinId], references: [id])
+  digitalLinkUri     String
+  format             String   @default("qr") // qr | gs1_datamatrix
+  legacyBarcodeValue String?
+  validated          Boolean  @default(false)
+  assetUrl           String?
+  createdAt          DateTime @default(now())
+}
+
+model StoryPage {
+  id          String   @id @default(cuid())
+  productId   String   @unique
+  product     Product  @relation(fields: [productId], references: [id])
+  headline    String?
+  bodyContent String? // rich text / structured blocks (Phase 2)
+  photos      String[] @default([])
+  published   Boolean  @default(false)
+  updatedAt   DateTime @updatedAt
+}
+
+model ComplianceStatus {
+  id                String   @id @default(cuid())
+  productId         String   @unique
+  product           Product  @relation(fields: [productId], references: [id])
+  sunrise2027Ready  Boolean  @default(false)
+  dppFieldsComplete Boolean  @default(false)
+  lastCheckedAt     DateTime @default(now())
+}
