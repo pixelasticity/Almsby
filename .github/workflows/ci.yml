@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  almsby-app:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Tests
+        run: npm run test
+
+      - name: Build
+        run: npm run build
+
+      - name: Prisma schema validation
+        run: npx prisma validate
+
+      - name: Resolver discipline (NEXT_PUBLIC_RESOLVER_URL must only be referenced in lib/env.ts)
+        run: |
+          FILES=$(grep -rln "NEXT_PUBLIC_RESOLVER_URL" --include="*.ts" --include="*.tsx" . || true)
+          ALLOWED=$(printf '%s\n' "$FILES" | grep -v "lib/env.ts" || true)
+          if [ -n "$ALLOWED" ]; then
+            echo "Resolver URL referenced outside lib/env.ts:" >&2
+            echo "$ALLOWED" >&2
+            exit 1
+          fi
+          echo "Resolver discipline OK"
