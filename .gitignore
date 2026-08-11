@@ -137,4 +137,5 @@ dist
 node_modules
 
 .claude# macOS
+# macOS
 .DS_Store
