@@ -1,0 +1,40 @@
+.root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 16px 24px;
+  border-bottom: 1px solid #e5e7eb;
+  background: var(--card);
+}
+
+.brand {
+  font-family: var(--font-display);
+  font-weight: 700;
+}
+
+.nav {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.main {
+  flex: 1;
+  padding: 24px;
+}
+
+.signOut {
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  background: var(--card);
+  font-size: 13px;
+  font-family: var(--font-sans);
+  cursor: pointer;
+}

@@ -3,26 +3,7 @@
 import Link from "next/link";
 import { useActionState } from "react";
 import { signInAction, signUpAction } from "@/lib/auth/actions";
-const inputStyle: React.CSSProperties = {
-  width: "100%",
-  boxSizing: "border-box",
-  padding: "10px 12px",
-  borderRadius: 10,
-  border: "1px solid #d1d5db",
-  fontSize: 15,
-};
-
-const labelStyle: React.CSSProperties = {
-  fontSize: 13,
-  fontWeight: 600,
-  display: "block",
-  marginBottom: 6,
-};
-const fieldStyle: React.CSSProperties = {
-  display: "flex",
-  flexDirection: "column",
-  gap: 4,
-};
+import styles from "./AuthForm.module.css";
 
 export default function AuthForm({
   mode,
@@ -37,13 +18,10 @@ export default function AuthForm({
   const [state, formAction, isPending] = useActionState(action, undefined);
 
   return (
-    <form
-      action={formAction}
-      style={{ display: "flex", flexDirection: "column", gap: 16 }}
-    >
+    <form action={formAction} className={styles.form}>
       <input type="hidden" name="next" value={next} />
-      <div style={fieldStyle}>
-        <label style={labelStyle} htmlFor="email">
+      <div className={styles.field}>
+        <label htmlFor="email" className={styles.label}>
           Email
         </label>
         <input
@@ -52,11 +30,11 @@ export default function AuthForm({
           type="email"
           placeholder="you@example.com"
           required
-          style={inputStyle}
+          className={styles.input}
         />
       </div>
-      <div style={fieldStyle}>
-        <label style={labelStyle} htmlFor="password">
+      <div className={styles.field}>
+        <label htmlFor="password" className={styles.label}>
           Password
         </label>
         <input
@@ -66,33 +44,19 @@ export default function AuthForm({
           placeholder="••••••••"
           required
           minLength={6}
-          style={inputStyle}
+          className={styles.input}
         />
       </div>
-      {message && <p style={{ fontSize: 13, color: "#374151" }}>{message}</p>}
-      {state?.error && (
-        <p style={{ fontSize: 13, color: "#b91c1c" }}>{state.error}</p>
-      )}
-      <button
-        type="submit"
-        disabled={isPending}
-        style={{
-          padding: "10px 14px",
-          borderRadius: 10,
-          border: "1px solid #d1d5db",
-          background: "#111827",
-          color: "#ffffff",
-          fontSize: 15,
-          cursor: isPending ? "default" : "pointer",
-        }}
-      >
+      {message && <p className={styles.message}>{message}</p>}
+      {state?.error && <p className={styles.error}>{state.error}</p>}
+      <button type="submit" disabled={isPending} className={styles.submit}>
         {isPending ? "…" : mode === "sign-up" ? "Create account" : "Sign in"}
-            </button>
-      <p style={{ fontSize: 13, marginTop: 8 }}>
+      </button>
+      <p className={styles.toggleRow}>
         {mode === "sign-up" ? "Already have an account? " : "No account yet? "}
         <Link
           href={mode === "sign-up" ? "/sign-in" : "/sign-up"}
-          style={{ color: "#2563eb", textDecoration: "underline", marginLeft: 4 }}
+          className={styles.toggleLink}
         >
           {mode === "sign-up" ? "Sign in" : "Sign up"}
         </Link>

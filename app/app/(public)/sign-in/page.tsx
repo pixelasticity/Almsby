@@ -1,4 +1,5 @@
 import AuthForm from "@/components/auth/AuthForm";
+import styles from "./page.module.css";
 
 export default async function SignInPage({
   searchParams,
@@ -7,9 +8,12 @@ export default async function SignInPage({
 }) {
   const { message, next } = await searchParams;
   return (
-    <main style={{ padding: 48, maxWidth: 420, margin: "0 auto" }}>
-      <h1>Sign in</h1>
-      <AuthForm mode="sign-in" next={next} message={message} />
+    <main className={styles.page}>
+      <div className="soft-mesh" />
+      <div className={styles.card}>
+        <h1>Sign in</h1>
+        <AuthForm mode="sign-in" next={next} message={message} />
+      </div>
     </main>
   );
 }

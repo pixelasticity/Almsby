@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import styles from "@/styles/pageShell.module.css";
 
 export default async function StoryPage({
   params,
@@ -9,7 +10,7 @@ export default async function StoryPage({
   if (!/^\d{14}$/.test(gtin)) notFound();
 
   return (
-    <section style={{ padding: 48, maxWidth: 720, margin: "0 auto" }}>
+    <section className={styles.shell}>
       <h1>Product story</h1>
       <p>
         Phase 0 placeholder. Full story-page rendering lands in Phase 2.

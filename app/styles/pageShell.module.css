@@ -1,0 +1,7 @@
+.shell {
+  position: relative;
+  z-index: 1;
+  padding: 48px;
+  max-width: 720px;
+  margin: 0 auto;
+}
