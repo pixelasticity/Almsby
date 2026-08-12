@@ -33,6 +33,11 @@ model Product {
   brand      String?
   status     String   @default("draft") // draft | active | archived
   createdAt  DateTime @default(now())
+
+  // 1:1 children (Phase 1+): GTIN, story page, compliance status
+  gtin             GTIN?
+  storyPage        StoryPage?
+  complianceStatus ComplianceStatus?
 }
 
 // ── Scaffolded for later phases — schema only, no logic in Phase 0 ──────────
@@ -44,6 +49,7 @@ model GTIN {
   gtinValue  String // 14-digit, validated with check-digit logic (Phase 1)
   source     String   @default("own_prefix") // own_prefix | almsby_assisted
   createdAt  DateTime @default(now())
+  barcode    Barcode?
 }
 
 model Barcode {
