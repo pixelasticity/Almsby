@@ -42,7 +42,9 @@ export const env = {
     return required("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY");
   },
 
-  get serviceRoleKey(): string {
-    return required("SUPABASE_SERVICE_ROLE_KEY");
+  /** Server-only secret key (admin, bypasses RLS). Optional for Phase 0 core flows. */
+  get secretKey(): string | undefined {
+    // Preferred modern name, with the legacy SUPABASE_SERVICE_ROLE_KEY as fallback.
+    return process.env.SUPABASE_SECRET_KEY ?? process.env.SUPABASE_SERVICE_ROLE_KEY;
   },
 };
