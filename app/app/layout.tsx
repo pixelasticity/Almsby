@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Bricolage_Grotesque, Albert_Sans } from "next/font/google";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -7,11 +8,20 @@ export const metadata: Metadata = {
     "GS1 barcodes and EU Digital Product Passports, made simple for small makers.",
 };
 
+const bricolage = Bricolage_Grotesque({
+  axes: ['opsz', 'wdth'],
+  display: 'swap'
+})
+
+const albert = Albert_Sans({
+  display: 'swap'
+})
+
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${bricolage.className} ${albert.className}`}>
       <body>{children}</body>
     </html>
   );
