@@ -36,7 +36,11 @@ jobs:
         run: npm run build
 
       - name: Prisma schema validation
-        run: npx prisma validate
+        run: |
+          # Schema-only validation; no real DB creds in CI, dummy URLs are enough.
+          DATABASE_URL="postgresql://ci:ci@localhost:5432/ci" \
+          DIRECT_URL="postgresql://ci:ci@localhost:5432/ci" \
+          npx prisma validate
 
       - name: Resolver discipline (NEXT_PUBLIC_RESOLVER_URL must only be referenced in lib/env.ts)
         run: |
