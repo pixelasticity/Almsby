@@ -5,7 +5,12 @@ import { env } from "@/lib/env";
 const PUBLIC_ONLY = ["/sign-in", "/sign-up"];
 const PROTECTED_PREFIXES = ["/dashboard", "/products", "/settings"];
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
+  // DEV ONLY: bypass auth so unsigned-in users can preview protected pages.
+  // NODE_ENV is inlined by Next (development in dev, production in prod).
+  if (process.env.NODE_ENV === "development") {
+    return NextResponse.next();
+  }
   let response = NextResponse.next({ request });
   const supabase = createServerClient(
     env.supabaseUrl,
