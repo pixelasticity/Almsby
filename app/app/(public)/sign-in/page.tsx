@@ -9,7 +9,6 @@ export default async function SignInPage({
   const { message, next } = await searchParams;
   return (
     <main className={styles.page}>
-      <div className="soft-mesh" />
       <div className={styles.card}>
         <h1>Sign in</h1>
         <AuthForm mode="sign-in" next={next} message={message} />

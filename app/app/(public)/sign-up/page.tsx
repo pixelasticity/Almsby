@@ -9,7 +9,6 @@ export default async function SignUpPage({
   const { message, next } = await searchParams;
   return (
     <main className={styles.page}>
-      <div className="soft-mesh" />
       <div className={styles.card}>
         <h1>Sign up</h1>
         <AuthForm mode="sign-up" next={next} message={message} />
