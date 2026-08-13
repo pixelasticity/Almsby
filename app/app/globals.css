@@ -6,6 +6,46 @@
   --border: rgba(0, 0, 0, 0.07);
   --font-body: "Albert Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-display: "Bricolage Grotesque", system-ui, sans-serif;
+
+  --primary-100: #f8f2f3;
+  --primary-200: #e3d5d6;
+  --primary-300: #c7aeb0;
+  --primary-400: #ad8183;
+  --primary-500: #8e5f6b;
+  --primary-600: #734253;
+  --primary-700: #613146;
+  --primary-800: #592941;
+  --primary-900: #331323;
+
+  --blue-100: #eff5f7;
+  --blue-200: #cfe0e5;
+  --blue-300: #a6c5ce;
+  --blue-400: #7faebb;
+  --blue-500: #538ea1;
+  --blue-600: #366e83;
+  --blue-700: #235064;
+  --blue-800: #153b50;
+  --blue-900: #0b2433;
+
+  --gold-100: #fff8eb;
+  --gold-200: #ffe2b3;
+  --gold-300: #ffcb77;
+  --gold-400: #f5ad4b;
+  --gold-500: #db8d24;
+  --gold-600: #ad690b;
+  --gold-700: #804b00;
+  --gold-800: #543000;
+  --gold-900: #301b00;
+
+  --neutral-100: #f8f6f5;
+  --neutral-200: #ebe6e4;
+  --neutral-300: #d3cbc8;
+  --neutral-400: #b5aba7;
+  --neutral-500: #8c8078;
+  --neutral-600: #675c55;
+  --neutral-700: #4a3f3a;
+  --neutral-800: #302825;
+  --neutral-900: #1a1512;
 }
 
 * {
