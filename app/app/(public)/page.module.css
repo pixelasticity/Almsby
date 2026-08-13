@@ -1,0 +1,80 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 48px 24px;
+  background: var(--background);
+  color: var(--foreground);
+}
+.eyebrow {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #16a34a;
+  margin: 0 0 18px;
+}
+.title {
+  font-size: clamp(2.5rem, 6vw, 4.25rem);
+  line-height: 1.05;
+  max-width: 16ch;
+  margin: 0 0 20px;
+}
+.tagline {
+  font-size: 1.05rem;
+  line-height: 1.65;
+  color: var(--foreground);
+  opacity: 0.78;
+  max-width: 44ch;
+  margin: 0 0 30px;
+}
+.badge {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  padding: 7px 16px;
+  border-radius: 999px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--foreground);
+  margin: 0 0 34px;
+}
+.actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 0 0 42px;
+}
+.primary,
+.secondary {
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 15px;
+  text-decoration: none;
+}
+.primary {
+  background: #16a34a;
+  color: #ffffff;
+}
+.secondary {
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--foreground);
+}
+.primary:hover {
+  background: #15803d;
+}
+.secondary:hover {
+  border-color: rgba(0, 0, 0, 0.15);
+}
+.footnote {
+  font-size: 12px;
+  color: var(--foreground);
+  opacity: 0.55;
+}
