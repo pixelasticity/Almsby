@@ -20,9 +20,10 @@ function calc(target: number): Time {
 export default function Countdown() {
   const [t, setT] = useState<Time>({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
-  useEffect(() => {
-    setT(calc(LAUNCH_AT));
-    const id = setInterval(() => setT(calc(LAUNCH_AT)), 1000);
+    useEffect(() => {
+    const tick = () => setT(calc(LAUNCH_AT));
+    tick();
+    const id = setInterval(tick, 1000);
     return () => clearInterval(id);
   }, []);
 
