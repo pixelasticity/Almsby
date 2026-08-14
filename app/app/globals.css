@@ -1,7 +1,7 @@
 :root {
   color-scheme: light;
-  --background: #f4f7f0;
-  --foreground: #1c1c1e;
+  --background: var(--primary-100);
+  --foreground: var(--neutral-900);
   --card: #ffffff;
   --border: rgba(0, 0, 0, 0.07);
   --font-body: "Albert Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -46,6 +46,32 @@
   --neutral-700: #4a3f3a;
   --neutral-800: #302825;
   --neutral-900: #1a1512;
+
+  /* ==========================================
+     SUCCESS SCALE (Earthy Sage Green)
+     ========================================== */
+  --green-100: #f1f5f1;
+  --green-200: #d4e1d5;
+  --green-300: #afc6b2;
+  --green-400: #90ae95;
+  --green-500: #6b8f71;
+  --green-600: #4b7052; /* Primary action green (AA white text) */
+  --green-700: #315338;
+  --green-800: #203f27;
+  --green-900: #102715;
+
+  /* ==========================================
+     DANGER SCALE (Warm Crimson Red)
+     ========================================== */
+  --danger-100: #fbf1f1;
+  --danger-200: #f1d5d4;
+  --danger-300: #e1b1af;
+  --danger-400: #d09391;
+  --danger-500: #b46e6c;
+  --danger-600: #954d4d; /* Primary action red (AA white text) */
+  --danger-700: #743333;
+  --danger-800: #5b2223;
+  --danger-900: #3c1112;
 }
 
 * {
@@ -72,5 +98,5 @@ h4 {
 }
 
 a {
-  color: #16a34a;
+  color: var(--gold-500);
 }
