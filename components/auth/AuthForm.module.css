@@ -34,15 +34,15 @@
 
 .error {
   font-size: 13px;
-  color: #b91c1c;
+  color: var(--danger-500);
 }
 
 .submit {
   padding: 10px 14px;
   border-radius: 10px;
   border: 1px solid #d1d5db;
-  background: #111827;
-  color: #ffffff;
+  background: var(--primary-500);
+  color: var(--neutral-050);
   font-size: 15px;
   font-family: var(--font-sans);
   cursor: pointer;
