@@ -4,7 +4,7 @@ Maker dashboard + public story pages + GS1 Digital Link resolver.
 Next.js 16 (App Router) · TypeScript strict · Supabase (Postgres + Auth) ·
 Prisma · Cloudflare R2 · Vercel.
 
-> Phase 0 scaffold. See `../.claude/almsby-phase0-dev-brief.md` for the source
+> Phase 0 scaffold. See `guidelines/almsby-phase0-dev-brief.md` for the source
 > of truth on scope, schema, and Definition of Done.
 
 ## Local development
@@ -18,22 +18,30 @@ npm run dev        # http://localhost:3000
 Other scripts: `npm run build`, `npm run start`, `npm run lint`,
 `npm run typecheck`, `npm run test`.
 
+**Dev auth is faked.** `next dev` accepts any valid email/password and drops a
+local `almsby_dev_session` cookie — no Supabase credentials needed. The auth
+proxy (`proxy.ts`, Next.js 16's middleware convention) runs the same redirects
+as production:
+`/dashboard`, `/products`, `/settings` 307 to `/sign-in?next=…` until a
+session exists, and signed-in users are bounced away from `/sign-in` and
+`/sign-up`.
+
 ## Repository structure
 
 ```
-app/                      # Next.js project root (this directory)
-  app/
-    (dashboard)/          # authenticated, maker-facing routes
-    (public)/             # public routes — story pages + marketing
-    01/[gtin]/route.ts    # GS1 Digital Link resolver (DO NOT move into /api)
-    api/                  # internal API routes
-  lib/
-    env.ts                # the ONLY module that reads process.env
-    db.ts                 # lazy Prisma client
-    auth/                 # Supabase auth helpers (server + client)
-    gs1/                  # Digital Link URI construction, GTIN validation
-  prisma/schema.prisma
-  tests/                  # Vitest suite
+app/                      # App Router — all routes live here
+  (dashboard)/            # authenticated, maker-facing routes (gated by middleware)
+  (public)/               # public routes — story pages + marketing + sign-in/up
+  01/[gtin]/route.ts      # GS1 Digital Link resolver (DO NOT move into /api)
+  api/                    # internal API routes
+proxy.ts                  # Next.js 16 auth proxy — real Supabase in prod, fake sessions in dev
+lib/
+  env.ts                  # the ONLY module that reads process.env
+  db.ts                   # lazy Prisma client
+  auth/                   # Supabase auth helpers (server + client)
+  gs1/                    # Digital Link URI construction, GTIN validation
+prisma/schema.prisma
+tests/                    # Vitest suite
 ```
 
 ## Resolver discipline (non-negotiable)
@@ -64,11 +72,10 @@ provisioning.
 ## Founder checklist (do these to finish Phase 0)
 
 1. **GitHub** — create a private repo for this project; add the developer.
-2. **Vercel** — create a project connected to the repo (build `npm run build`,
-   output `dist` is **not** used here — publish dir is **`app` root**, or use a
-   Root Directory of `app` with default publish `/.next/standalone` or `out` —
-   confirm against Vercel's Next.js preset). Staging = auto-generated preview
-   deploys per PR.
+2. **Vercel** — create a project connected to the repo. **Root Directory: `/`**
+   (the Next app now lives at the repo root), build command `npm run build`,
+   default Next.js publish output. Staging = auto-generated preview deploys per
+   PR.
 3. **Supabase** — create a project; note Project URL + anon key + service role
    key; enable Auth (Email/Password). These populate
    `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`,
