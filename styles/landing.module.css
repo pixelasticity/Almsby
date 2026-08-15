@@ -6,7 +6,7 @@
 
 .root {
   min-height: 100vh;
-  background: var(--background);
+  background: var(--background) linear-gradient(120deg, var(--background), var(--neutral-400));
   color: var(--foreground);
   overflow-x: hidden;
   font-family: var(--font-body);
@@ -34,7 +34,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #16a34a;
+  background: var(--primary-500);
 }
 .logoGrid {
   display: grid;
@@ -48,7 +48,7 @@
 @media (min-width: 768px) {
   .launchNote { display: flex; }
 }
-.pulseDot { width: 8px; height: 8px; border-radius: 999px; background: #4ade80; animation: pulse 2s ease-in-out infinite; }
+.pulseDot { width: 8px; height: 8px; border-radius: 999px; background: var(--blue-500); animation: pulse 2s ease-in-out infinite; }
 
 /* Hero */
 .hero { position: relative; z-index: 10; max-width: 80rem; margin: 0 auto; padding: 40px 24px 64px; }
@@ -69,8 +69,8 @@
   border-radius: 999px;
   font-size: 12px;
   font-weight: 700;
-  background: #dcfce7;
-  color: #15803d;
+  background: var(--blue-200);
+  color: var(--blue-700);
 }
 .heroTitle {
   font-size: 2.25rem;
@@ -82,7 +82,7 @@
 }
 @media (min-width: 768px) { .heroTitle { font-size: 3rem; } }
 @media (min-width: 1280px) { .heroTitle { font-size: 3.25rem; } }
-.heroAccent { color: #16a34a; }
+.heroAccent { color: var(--primary-500); }
 .heroSub {
   font-size: 16px;
   line-height: 1.6;
@@ -106,7 +106,7 @@
 }
 .countValue { font-size: 24px; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; font-family: var(--font-display); }
 @media (min-width: 768px) { .countValue { font-size: 30px; } }
-.countLabel { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.16em; opacity: 0.6; }
+.countLabel { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.16em; color: var(--neutral-600); }
 .countdownSep { font-size: 20px; font-weight: 700; margin-top: 10px; opacity: 0.5; }
 
 /* Waitlist form (client island) */
@@ -133,8 +133,8 @@
   padding: 12px 20px;
   border: 0;
   border-radius: 16px;
-  background: #16a34a;
-  color: #ffffff;
+  background: var(--gold-400);
+  color: var(--neutral-700);
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
@@ -142,8 +142,8 @@
   transition: opacity 0.2s;
 }
 .formButton:hover { opacity: 0.9; }
-.formHelper { font-size: 12px; opacity: 0.6; flex-basis: 100%; }
-.formError { font-size: 12px; color: #ef4444; font-weight: 600; margin: 0; flex-basis: 100%; }
+.formHelper { font-size: 12px; color: var(--neutral-600); flex-basis: 100%; }
+.formError { font-size: 12px; color: var(--danger-600); font-weight: 600; margin: 0; flex-basis: 100%; }
 .formSuccess {
   display: inline-flex;
   align-items: center;
@@ -178,12 +178,12 @@
 .passportFloat { position: relative; margin-top: 32px; margin-right: 32px; }
 .passportCard { width: 320px; background: var(--card); border-radius: 24px; padding: 20px; box-shadow: 0 8px 40px rgba(22, 163, 74, 0.14), 0 2px 8px rgba(0, 0, 0, 0.06); }
 .passportHeader { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
-.passportEmoji { width: 44px; height: 44px; background: #f0fdf4; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+.passportEmoji { width: 44px; height: 44px; background: var(--green-100); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
 .passportNameWrap { flex: 1; min-width: 0; }
-.passportName { font-size: 14px; font-weight: 700; line-height: 1.25; }
-.passportSub { font-size: 12px; opacity: 0.45; margin-top: 2px; }
-.passportBadgeTag { font-size: 9px; font-weight: 700; color: #15803d; background: #f0fdf4; padding: 4px 8px; border-radius: 999px; white-space: nowrap; flex-shrink: 0; }
-.barcodeWell { background: #f9fafb; border-radius: 16px; padding: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
+.passportName { font-size: 14px; font-weight: 700; line-height: 1.25; margin-block-end: 0; }
+.passportSub { font-size: 12px; color: var(--neutral-600); margin-top: 2px; }
+.passportBadgeTag { font-size: 9px; font-weight: 700; color: var(--primary-600); background: var(--primary-200); padding: 4px 8px; border-radius: 999px; white-space: nowrap; flex-shrink: 0; }
+.barcodeWell { background: var(--blue-050); border-radius: 16px; padding: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
 .barcodeBox { position: relative; overflow: hidden; border-radius: 4px; }
 .scanLine {
   position: absolute;
@@ -196,11 +196,11 @@
 }
 .passportRows { display: flex; flex-direction: column; gap: 10px; }
 .passportRow { display: flex; align-items: center; justify-content: space-between; }
-.passportRowLabel { font-size: 11px; opacity: 0.45; }
+.passportRowLabel { font-size: 11px; color: var(--neutral-600) }
 .passportRowValue { font-size: 11px; font-weight: 600; }
 .passportFooter { margin-top: 16px; padding-top: 12px; border-top: 1px solid rgba(0, 0, 0, 0.06); display: flex; align-items: center; justify-content: space-between; }
-.passportGtin { font-size: 9px; opacity: 0.4; font-family: ui-monospace, monospace; letter-spacing: -0.02em; }
-.verifiedTag { display: flex; align-items: center; gap: 4px; font-size: 9px; color: #16a34a; font-weight: 600; }
+.passportGtin { font-size: 9px; color: var(--neutral-600); font-family: ui-monospace, monospace; letter-spacing: -0.02em; }
+.verifiedTag { display: flex; align-items: center; gap: 4px; font-size: 9px; color: var(--green-600); font-weight: 600; }
 .verifiedDot { width: 6px; height: 6px; border-radius: 999px; background: #22c55e; animation: pulse 2s ease-in-out infinite; }
 
 /* Floating badges */
@@ -217,11 +217,11 @@
 }
 .floatTop { top: -20px; right: -20px; animation: bobA 3.5s ease-in-out infinite; }
 .floatBottom { bottom: -20px; left: -24px; gap: 8px; animation: bobB 4.2s ease-in-out infinite; }
-.badgeGreenCheck { width: 20px; height: 20px; border-radius: 999px; background: #22c55e; color: #ffffff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.badgeGreenCheck { width: 20px; height: 20px; border-radius: 999px; background: var(--green-500); color: #ffffff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .badgeLabel { font-size: 12px; font-weight: 700; color: #1f2937; white-space: nowrap; }
 .badgeEmoji { font-size: 18px; line-height: 1; }
-.badgeMetaLabel { font-size: 9px; color: #9ca3af; line-height: 1; margin-bottom: 2px; white-space: nowrap; }
-.badgeMetaValue { font-size: 12px; font-weight: 700; color: #16a34a; line-height: 1; }
+.badgeMetaLabel { font-size: 9px; color: var(--neutral-600); line-height: 1; margin-bottom: 2px; white-space: nowrap; }
+.badgeMetaValue { font-size: 12px; font-weight: 700; color: var(--green-600); line-height: 1; }
 
 /* Sections */
 .section { position: relative; z-index: 10; padding: 40px 24px; }
@@ -258,11 +258,11 @@
 .deadlineBadge { font-size: 9px; font-weight: 700; padding: 2px 8px; border-radius: 999px; }
 .deadlineYear { font-size: 24px; font-weight: 700; line-height: 1; font-family: var(--font-display); }
 .deadlineCategory { font-size: 12px; font-weight: 600; margin-top: 6px; }
-.deadlineNote { font-size: 10px; opacity: 0.6; margin-top: 2px; line-height: 1.5; }
+.deadlineNote { font-size: 10px; color: var(--neutral-600); margin-top: 2px; line-height: 1.5; }
 
 /* Features */
 .featureHeader { margin-bottom: 40px; }
-.featureEyebrow { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.16em; opacity: 0.6; margin-bottom: 8px; }
+.featureEyebrow { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.16em; color: var(--neutral-700); margin-bottom: 8px; }
 .featureTitle { font-size: 24px; line-height: 1.2; font-weight: 700; font-family: var(--font-display); }
 @media (min-width: 768px) { .featureTitle { font-size: 30px; } }
 .featureGrid { display: grid; grid-template-columns: 1fr; gap: 16px; }
@@ -296,7 +296,7 @@
   gap: 8px;
 }
 @media (min-width: 640px) { .footer { flex-direction: row; padding: 20px 48px; } }
-.footerText { font-size: 12px; font-weight: 500; opacity: 0.6; }
+.footerText { font-size: 12px; font-weight: 500; color: var(--neutral-600); }
 .footerBadge { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; opacity: 0.6; }
 
 /* Animations */

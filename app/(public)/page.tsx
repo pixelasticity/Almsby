@@ -347,21 +347,21 @@ const EU_DEADLINES = [
     year: "Feb 2027",
     note: "Mandatory — the first passport category",
     badge: "In effect",
-    cardBg: "#f0fdf4",
-    cardBorder: "1px solid rgba(22,163,74,0.30)",
-    badgeBg: "#16a34a",
-    badgeFg: "#ffffff",
+    cardBg: "var(--blue-100)",
+    cardBorder: "1px solid var(--blue-200)",
+    badgeBg: "var(--blue-600)",
+    badgeFg: "var(--neutral-100)",
   },
   {
     emoji: "👕",
     category: "Textiles",
     year: "2028+",
     note: "Rules being finalized — makers like you are next",
-    badge: "Your category",
-    cardBg: "#fef9ee",
-    cardBorder: "1px solid rgba(245,158,11,0.35)",
-    badgeBg: "#f59e0b",
-    badgeFg: "#ffffff",
+    badge: "Coming soon",
+    cardBg: "var(--gold-100)",
+    cardBorder: "1px solid var(--gold-200)",
+    badgeBg: "var(--gold-300)",
+    badgeFg: "var(--neutral-700)",
   },
   {
     emoji: "🧵",
@@ -369,10 +369,10 @@ const EU_DEADLINES = [
     year: "Soon",
     note: "Furniture, electronics, metals follow in waves",
     badge: "Phased",
-    cardBg: "rgba(255,255,255,0.7)",
-    cardBorder: "1px solid rgba(0,0,0,0.08)",
-    badgeBg: "#e5e7eb",
-    badgeFg: "#4b5563",
+    cardBg: "var(--card)",
+    cardBorder: "1px solid var(--neutral-200)",
+    badgeBg: "var(--neutral-200)",
+    badgeFg: "var(--neutral-700)",
   },
 ];
 
@@ -399,19 +399,21 @@ export default function PublicHomePage() {
       <section className={styles.hero}>
         <div className={styles.heroGrid}>
           <div className={styles.heroCopy}>
-            <span className={styles.heroBadge}>
-              <span className={styles.pulseDot} />
-              GS1 Sunrise 2027 · EU Digital Product Passports
-            </span>
-            <h1 className={styles.heroTitle}>
-              One barcode for the scanner.{" "}
-              <span className={styles.heroAccent}>A story for the customer.</span>
-            </h1>
-            <p className={styles.heroSub}>
-              Almsby brings Sunrise 2027 barcodes and EU Digital Product Passports together in
-              one gentle workflow — no GS1 jargon, no compliance consultants. Just a barcode
-              your retailer accepts, and a story your customers love to scan.
-            </p>
+            <div>
+              <span className={styles.heroBadge}>
+                <span className={styles.pulseDot} />
+                GS1 Sunrise 2027 · EU Digital Product Passports
+              </span>
+              <h1 className={styles.heroTitle}>
+                One barcode for the scanner.{" "}
+                <span className={styles.heroAccent}>A story for the customer.</span>
+              </h1>
+              <p className={styles.heroSub}>
+                Almsby brings Sunrise 2027 barcodes and EU Digital Product Passports together in
+                one gentle workflow — no GS1 jargon, no compliance consultants. Just a barcode
+                your retailer accepts, and a story your customers love to scan.
+              </p>
+            </div>
             <Countdown />
             <WaitlistForm />
           </div>

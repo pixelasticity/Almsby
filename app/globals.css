@@ -2,7 +2,7 @@
   color-scheme: light;
   --background: var(--primary-100);
   --foreground: var(--neutral-900);
-  --card: #ffffff;
+  --card: var(--neutral-050);
   --border: rgba(0, 0, 0, 0.07);
   --font-body: "Albert Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-display: "Bricolage Grotesque", system-ui, sans-serif;
@@ -17,6 +17,7 @@
   --primary-800: #592941;
   --primary-900: #331323;
 
+  --blue-050: #f8fbfc;
   --blue-100: #eff5f7;
   --blue-200: #cfe0e5;
   --blue-300: #a6c5ce;
@@ -37,6 +38,7 @@
   --gold-800: #543000;
   --gold-900: #301b00;
 
+  --neutral-050: #fcfaf9;
   --neutral-100: #f8f6f5;
   --neutral-200: #ebe6e4;
   --neutral-300: #d3cbc8;
@@ -98,5 +100,5 @@ h4 {
 }
 
 a {
-  color: var(--gold-500);
+  color: var(--blue-500);
 }
