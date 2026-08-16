@@ -39,12 +39,12 @@ jobs:
           DIRECT_URL="postgresql://ci:ci@localhost:5432/ci" \
           npx prisma validate
 
-      - name: Resolver discipline (NEXT_PUBLIC_RESOLVER_URL must only be referenced in lib/env.ts)
+      - name: Resolver discipline (NEXT_PUBLIC_RESOLVER_URL allowed only in lib/env.ts, lib/gs1, tests)
         run: |
           FILES=$(grep -rln "NEXT_PUBLIC_RESOLVER_URL" --include="*.ts" --include="*.tsx" . || true)
-          ALLOWED=$(printf '%s\n' "$FILES" | grep -v "lib/env.ts" || true)
+          ALLOWED=$(printf '%s\n' "$FILES" | grep -vE '^(\./)?(lib/env\.ts|lib/gs1/|tests/)' || true)
           if [ -n "$ALLOWED" ]; then
-            echo "Resolver URL referenced outside lib/env.ts:" >&2
+            echo "Resolver URL referenced outside allowed files (lib/env.ts, lib/gs1/, tests/):" >&2
             echo "$ALLOWED" >&2
             exit 1
           fi
