@@ -1,15 +1,10 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { cookies } from "next/headers";
 import { createServerSupabaseClient } from "@/lib/auth/server";
 import { getDb } from "@/lib/db";
 
 export type AuthState = { error?: string };
-
-/** Dev-only fake session cookie (see proxy.ts). Guarded by NODE_ENV so this
- *  path can never run in production. */
-const DEV_SESSION_COOKIE = "almsby_dev_session";
 
 export async function signUpAction(
   _prev: AuthState | undefined,
@@ -23,18 +18,6 @@ export async function signUpAction(
   }
   if (password.length < 6) {
     return { error: "Password must be at least 6 characters." };
-  }
-
-  if (process.env.NODE_ENV === "development") {
-    // Dev-only fake credentials: grant a session without touching Supabase or
-    // the database. Production keeps the real sign-up + workspace creation.
-    const cookieStore = await cookies();
-    cookieStore.set(DEV_SESSION_COOKIE, "1", {
-      httpOnly: true,
-      sameSite: "lax",
-      path: "/",
-    });
-    redirect("/dashboard");
   }
 
   const supabase = await createServerSupabaseClient();
@@ -89,17 +72,6 @@ export async function signInAction(
   const safeNext =
     next.startsWith("/") && !next.startsWith("//") ? next : "/dashboard";
 
-  if (process.env.NODE_ENV === "development") {
-    // Dev-only fake credentials: grant a session without touching Supabase.
-    const cookieStore = await cookies();
-    cookieStore.set(DEV_SESSION_COOKIE, "1", {
-      httpOnly: true,
-      sameSite: "lax",
-      path: "/",
-    });
-    redirect(safeNext);
-  }
-
   const supabase = await createServerSupabaseClient();
   const { error } = await supabase.auth.signInWithPassword(
     { email, password }
@@ -111,11 +83,6 @@ export async function signInAction(
 }
 
 export async function signOutAction(): Promise<void> {
-  if (process.env.NODE_ENV === "development") {
-    const cookieStore = await cookies();
-    cookieStore.delete(DEV_SESSION_COOKIE);
-    redirect("/sign-in");
-  }
   const supabase = await createServerSupabaseClient();
   await supabase.auth.signOut();
   redirect("/sign-in");
