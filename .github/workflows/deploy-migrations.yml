@@ -1,0 +1,85 @@
+name: Deploy Prisma migrations
+
+on:
+  push:
+    branches:
+      - development
+      - master
+
+jobs:
+  staging:
+    name: Migrate staging database
+    if: github.ref_name == 'development'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - run: npm ci
+
+      - name: Guard - migration history must be consistent
+        env:
+          DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
+          DIRECT_URL: ${{ secrets.STAGING_DIRECT_URL }}
+        run: |
+          set -o pipefail
+          npx prisma migrate status 2>&1 | tee /tmp/migrate-status.txt
+          if grep -qiE 'inconsistent|drift|not in sync|failed to apply' /tmp/migrate-status.txt; then
+            echo "::error::Aborting: Prisma migration history is inconsistent or drifted (${{ github.ref_name }})."
+            exit 1
+          fi
+          echo "Guard OK: history consistent (pending migrations are expected and will be applied next)."
+
+      - name: Apply migrations to staging
+        env:
+          DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
+          DIRECT_URL: ${{ secrets.STAGING_DIRECT_URL }}
+        run: npx prisma migrate deploy
+
+      - name: Verify - database up to date
+        env:
+          DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
+          DIRECT_URL: ${{ secrets.STAGING_DIRECT_URL }}
+        run: npx prisma migrate status
+
+  production:
+    name: Migrate production database
+    if: github.ref_name == 'master'
+    environment: production
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - run: npm ci
+
+      - name: Guard - migration history must be consistent
+        env:
+          DATABASE_URL: ${{ secrets.PROD_DATABASE_URL }}
+          DIRECT_URL: ${{ secrets.PROD_DIRECT_URL }}
+        run: |
+          set -o pipefail
+          npx prisma migrate status 2>&1 | tee /tmp/migrate-status.txt
+          if grep -qiE 'inconsistent|drift|not in sync|failed to apply' /tmp/migrate-status.txt; then
+            echo "::error::Aborting: Prisma migration history is inconsistent or drifted (${{ github.ref_name }})."
+            exit 1
+          fi
+          echo "Guard OK: history consistent (pending migrations are expected and will be applied next)."
+
+      - name: Apply migrations to production
+        env:
+          DATABASE_URL: ${{ secrets.PROD_DATABASE_URL }}
+          DIRECT_URL: ${{ secrets.PROD_DIRECT_URL }}
+        run: npx prisma migrate deploy
+
+      - name: Verify - database up to date
+        env:
+          DATABASE_URL: ${{ secrets.PROD_DATABASE_URL }}
+          DIRECT_URL: ${{ secrets.PROD_DIRECT_URL }}
+        run: npx prisma migrate status
