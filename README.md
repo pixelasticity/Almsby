@@ -9,22 +9,24 @@ Prisma · Cloudflare R2 · Vercel.
 
 ## Local development
 
+Local dev uses the **Supabase CLI** (Docker required) for a real local Postgres
+and Auth (GoTrue) — no hosted credentials needed and no auth bypass. The auth
+proxy (`proxy.ts`) runs the same redirect logic in every environment:
+`/dashboard`, `/products`, `/settings` 307 to `/sign-in?next=…` until a session
+exists, and signed-in users are bounced away from `/sign-in` and `/sign-up`.
+
 ```bash
-npm install        # installs deps and runs `prisma generate` (postinstall)
-cp .env.example .env.local   # fill in real values (see checklist below)
-npm run dev        # http://localhost:3000
+npm install                 # installs deps + runs `prisma generate`
+supabase start              # boots local Postgres (:54322) + Auth (:54321) — needs Docker
+supabase status             # copy anon + service_role keys into .env.local (see .env.example)
+npx prisma migrate dev      # apply migrations to the local Postgres (first run)
+npm run dev                 # = `supabase start && next dev` → http://localhost:3000
 ```
 
-Other scripts: `npm run build`, `npm run start`, `npm run lint`,
-`npm run typecheck`, `npm run test`.
-
-**Dev auth is faked.** `next dev` accepts any valid email/password and drops a
-local `almsby_dev_session` cookie — no Supabase credentials needed. The auth
-proxy (`proxy.ts`, Next.js 16's middleware convention) runs the same redirects
-as production:
-`/dashboard`, `/products`, `/settings` 307 to `/sign-in?next=…` until a
-session exists, and signed-in users are bounced away from `/sign-in` and
-`/sign-up`.
+- `npm run dev` is `supabase start && next dev`. To run Next alone (no DB), use `npx next dev`.
+- `npm run db:start` / `npm run db:stop` manage the local stack.
+- Other scripts: `npm run build`, `npm run start`, `npm run lint`,
+  `npm run typecheck`, `npm run test`.
 
 ## Repository structure
 
@@ -34,15 +36,42 @@ app/                      # App Router — all routes live here
   (public)/               # public routes — story pages + marketing + sign-in/up
   01/[gtin]/route.ts      # GS1 Digital Link resolver (DO NOT move into /api)
   api/                    # internal API routes
-proxy.ts                  # Next.js 16 auth proxy — real Supabase in prod, fake sessions in dev
+proxy.ts                  # Next.js 16 auth proxy — real Supabase (CLI local / hosted prod)
 lib/
   env.ts                  # the ONLY module that reads process.env
   db.ts                   # lazy Prisma client
   auth/                   # Supabase auth helpers (server + client)
   gs1/                    # Digital Link URI construction, GTIN validation
-prisma/schema.prisma
+prisma/
+  schema.prisma           # schema is the source of truth for migrations
+supabase/
+  config.toml             # local Supabase CLI stack config
 tests/                    # Vitest suite
+.github/workflows/
+  ci.yml                  # lint + typecheck + test + build (every PR)
+  deploy-migrations.yml   # migrations: push dev→staging, merge master→production
 ```
+
+## Migrations & deploys
+
+Schema is owned by **Prisma** (`prisma/migrations`); the Supabase CLI only runs
+the local Postgres/Auth and does not manage schema.
+
+| Env | Database | Who migrates it |
+|---|---|---|
+| dev (local) | Supabase CLI Postgres | `npx prisma migrate dev` on your machine |
+| staging | hosted Supabase (staging project) | GitHub Actions on push to `development` |
+| production | hosted Supabase (production project) | GitHub Actions on merge to `master` |
+
+- Staging and production are **separate Supabase projects** (correct + distinct
+  env values, per the Phase 0 DoD).
+- GitHub Actions applies migrations with `npx prisma migrate deploy` using
+  `STAGING_DATABASE_URL`/`STAGING_DIRECT_URL` and `PROD_DATABASE_URL`/
+  `PROD_DIRECT_URL` secrets (see `.github/workflows/deploy-migrations.yml`).
+- **Vercel:** the Production Branch is **`master`** — only merges to `master`
+  deploy to production; `development` deploys to the Preview env. The migration
+  job and the Vercel deploy run concurrently (accepted for Phase 0's stable
+  schema; can be made strictly ordered later).
 
 ## Resolver discipline (non-negotiable)
 
@@ -74,14 +103,17 @@ provisioning.
 1. **GitHub** — create a private repo for this project; add the developer.
 2. **Vercel** — create a project connected to the repo. **Root Directory: `/`**
    (the Next app now lives at the repo root), build command `npm run build`,
-   default Next.js publish output. Staging = auto-generated preview deploys per
-   PR.
-3. **Supabase** — create a project; note Project URL + anon key + service role
-   key; enable Auth (Email/Password). These populate
-   `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`,
-   `SUPABASE_SERVICE_ROLE_KEY`.
-4. **Supabase DB URLs** — copy the Postgres connection strings into
-   `DATABASE_URL` (pooled) and `DIRECT_URL` (direct, for migrations).
+   default Next.js publish output, and **Production Branch strictly `master`**
+   (deploys to prod only on merges to `master`). Staging = Preview deploys of
+   the `development` branch.
+3. **Supabase** — create **two** projects (staging + production). For each, note
+   Project URL + anon key + service-role key; enable Auth (Email/Password).
+   These populate `NEXT_PUBLIC_SUPABASE_URL`,
+   `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SERVICE_ROLE_KEY`
+   (distinct per environment).
+4. **Supabase DB URLs** — for staging and production, copy the Postgres strings
+   into `DATABASE_URL` (pooled) and `DIRECT_URL` (direct, for migrations);
+   these become the `STAGING_*` / `PROD_*` GitHub Actions secrets.
 5. **Cloudflare R2** — create a bucket + API token (Phase 2 uses it for
    product photos; create now, wire later).
 6. **Domains** — register `Almsby.io`; decide the resolver short-domain
@@ -89,8 +121,12 @@ provisioning.
    `NEXT_PUBLIC_RESOLVER_URL` to the Vercel preview domain.
 7. **Secrets** — load env vars into Vercel per-environment (dev/staging/prod)
    and into each developer's local `1Password` — never chat/Slack/email.
-8. **DB migration** — with creds in place, run `npx prisma migrate dev` locally
-   then `npx prisma migrate deploy` in staging/prod, and verify from a fresh DB.
+8. **DB migration** — run `npx prisma migrate dev` locally (against
+   `supabase start`); staging/production migrations run automatically from CI
+   (`deploy-migrations.yml`) on push to `development` / merge to `master`.
+   Verify migrations apply from a fresh DB.
+9. **Local tooling** — install **Docker** (Desktop) and
+   `brew install supabase/tap/supabase` (required for `supabase start`).
 
 ## Guardrails (Phase 0 brief §8)
 
