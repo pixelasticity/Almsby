@@ -4,25 +4,14 @@ import { env } from "@/lib/env";
 
 const PUBLIC_ONLY = ["/sign-in", "/sign-up"];
 const PROTECTED_PREFIXES = ["/dashboard", "/products", "/settings"];
-const DEV_SESSION_COOKIE = "almsby_dev_session";
-
 /**
- * Session source. Dev uses fake credentials (a local cookie — no Supabase
- * network calls, no env access); production uses the real Supabase session.
- * The redirect logic in `proxy` below is identical for both: there is
- * intentionally NO dev bypass.
- *
- * Next.js 16 convention: this file (proxy.ts) replaces middleware.ts.
+ * Auth guard (Next.js 16 `proxy` convention). Resolves the session from the
+ * Supabase client (request cookies). In dev the local Supabase CLI (GoTrue)
+ * provides it; in production the hosted project does. There is no dev bypass.
  */
 async function resolveSession(request: NextRequest): Promise<
   { id: string; email?: string | null } | null
 > {
-  if (process.env.NODE_ENV === "development") {
-    return request.cookies.get(DEV_SESSION_COOKIE)
-      ? { id: "dev-user", email: "dev@almsby.local" }
-      : null;
-  }
-
   let response = NextResponse.next({ request });
   const supabase = createServerClient(
     env.supabaseUrl,
