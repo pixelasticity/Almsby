@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "next dev",
+    "dev": "supabase start && next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
@@ -13,6 +13,8 @@
     "db:migrate": "dotenv -e .env.local -- prisma migrate dev",
     "db:deploy": "dotenv -e .env.local -- prisma migrate deploy",
     "db:validate": "dotenv -e .env.local -- prisma validate",
+    "db:start": "supabase start",
+    "db:stop": "supabase stop",
     "test": "vitest run",
     "test:watch": "vitest",
     "postinstall": "prisma generate"
