@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
     next.startsWith("/") && !next.startsWith("//") ? next : "/dashboard";
 
   if (tokenHash && type === "email") {
-    let response = NextResponse.redirect(`${origin}${safeNext}`);
+    const response = NextResponse.redirect(`${origin}${safeNext}`);
     const supabase = createServerClient(
       env.supabaseUrl,
       env.supabasePublishableKey,
