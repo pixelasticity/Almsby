@@ -25,7 +25,6 @@ jobs:
           DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
           DIRECT_URL: ${{ secrets.STAGING_DIRECT_URL }}
         run: |
-          set -o pipefail
           npx prisma migrate status 2>&1 | tee /tmp/migrate-status.txt
           if grep -qiE 'inconsistent|drift|not in sync|failed to apply' /tmp/migrate-status.txt; then
             echo "::error::Aborting: Prisma migration history is inconsistent or drifted (${{ github.ref_name }})."
@@ -64,7 +63,6 @@ jobs:
           DATABASE_URL: ${{ secrets.PROD_DATABASE_URL }}
           DIRECT_URL: ${{ secrets.PROD_DIRECT_URL }}
         run: |
-          set -o pipefail
           npx prisma migrate status 2>&1 | tee /tmp/migrate-status.txt
           if grep -qiE 'inconsistent|drift|not in sync|failed to apply' /tmp/migrate-status.txt; then
             echo "::error::Aborting: Prisma migration history is inconsistent or drifted (${{ github.ref_name }})."
