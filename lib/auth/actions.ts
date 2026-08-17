@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { createServerSupabaseClient } from "@/lib/auth/server";
 import { getDb } from "@/lib/db";
+import { env } from "@/lib/env";
 
 export type AuthState = { error?: string };
 
@@ -21,7 +22,11 @@ export async function signUpAction(
   }
 
   const supabase = await createServerSupabaseClient();
-  const { data, error } = await supabase.auth.signUp({ email, password });
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: { emailRedirectTo: env.appUrl },
+  });
 
   if (error) return { error: error.message };
   if (!data.user) return { error: "Account could not be created." };
