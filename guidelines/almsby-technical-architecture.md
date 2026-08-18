@@ -309,18 +309,18 @@ Four ramps, each with a defined role. Use the role, not the ramp name, when maki
 
 ## 8. Internationalization (i18n)
 
-### Library: Paraglide (inlang)
+### Library: next-intl
 
-Chosen over next-intl and react-i18next for this stack specifically. The deciding factor is Fluent's pluralization and formatting model, which matters more for Almsby than it would for a typical SaaS product: compliance-critical fields (material composition percentages, unit quantities, dates) need to render correctly across languages with genuinely different and often more complex plural rules than English — several languages on the Tier 3/4 list (Arabic in particular, and others as the roadmap extends) have plural systems plain-JSON-based libraries handle awkwardly at best. Paraglide's compiler-first approach also gives stronger drift protection at the type level, which matters for a product where an untranslated or silently-broken compliance field isn't just a UX blemish — it's a data-accuracy problem. Developer familiarity with Paraglide on this team is a genuine secondary plus, but the primary case is that the tool fits what the product actually needs to render correctly.
+Chosen over Paraglide (inlang) and react-i18next for this stack specifically. All three are viable; next-intl wins on ecosystem maturity and App Router fit, which matters most for a small team that needs to debug unfamiliar edge cases quickly rather than adopt the most powerful tool available. Paraglide was evaluated and tested first — the deciding factor against it in practice was Next.js routing integration: next-intl has an officially-maintained routing adapter, while Paraglide would have required custom cookie-locale and prebuild-compile wiring that the team would own and maintain long-term. That real-world testing outweighed Paraglide's theoretical advantages on paper.
 
-| Criterion | Paraglide (inlang) | next-intl | react-i18next |
+| Criterion | next-intl | Paraglide (inlang) | react-i18next |
 |---|---|---|---|
-| Human-readable | Fluent `.ftl` syntax — powerful pluralization, less instantly readable to someone unfamiliar with it | Plain JSON per locale, namespaced keys | JSON possible, but App Router setup is bolted-on |
-| AI-maintainable | Strongest — designed for AI edit loops | Strong | Weak — runtime providers, config sprawl |
-| App Router native | Yes (compiled, framework-agnostic; SSR and SSG both supported) | Yes (RSC + client islands, `useTranslations`) | Legacy patterns, awkward with RSC |
-| Drift protection | inlang lint (commercial product around it) | Lint + typed keys — missing/extra keys fail typecheck/CI | Manual |
+| Human-readable | Plain JSON per locale, namespaced keys | Fluent `.ftl` syntax — powerful pluralization, less instantly readable | JSON possible, but App Router setup is bolted-on |
+| AI-maintainable | Strong | Strongest — designed for AI edit loops | Weak — runtime providers, config sprawl |
+| App Router native | Yes (RSC + client islands, `useTranslations`) | Yes (compiled, framework-agnostic), but no officially-maintained Next.js routing adapter | Legacy patterns, awkward with RSC |
+| Drift protection | Lint + typed keys — missing/extra keys fail typecheck/CI | inlang lint (commercial product around it) | Manual |
 
-**The deciding factor is developer familiarity, not a technical gap in either tool.** Fluent's plural/gender handling is genuinely more powerful than next-intl's plain-JSON approach — relevant for structured data like units, dates, and material composition percentages across languages with complex pluralization rules. That advantage only matters if it doesn't cost time to use correctly, which comfort with the syntax resolves.
+**Trade-off worth knowing:** Fluent's (Paraglide's) plural and gender handling is more powerful than next-intl's — relevant for structured data like units, dates, and material percentages across languages with complex pluralization rules. If that gap becomes a real limitation as more languages roll out, Paraglide remains a documented option to revisit — the comparison above still applies.
 
 ### Language rollout priority
 
