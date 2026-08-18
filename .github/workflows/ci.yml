@@ -23,6 +23,9 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: i18n lint (key parity)
+        run: npm run lint:i18n
+
       - name: Typecheck
         run: npm run typecheck
 

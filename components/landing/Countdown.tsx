@@ -17,8 +17,11 @@ function calc(target: number): Time {
   };
 }
 
+import { useTranslations } from "next-intl";
+
 export default function Countdown() {
   const [t, setT] = useState<Time>({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+  const tr = useTranslations("countdown");
 
     useEffect(() => {
     const tick = () => setT(calc(LAUNCH_AT));
@@ -29,13 +32,13 @@ export default function Countdown() {
 
   return (
     <div className={styles.countdown}>
-      <CountBox value={t.days} label="Days" />
+      <CountBox value={t.days} label={tr("days")} />
       <span className={styles.countdownSep}>:</span>
-      <CountBox value={t.hours} label="Hours" />
+      <CountBox value={t.hours} label={tr("hours")} />
       <span className={styles.countdownSep}>:</span>
-      <CountBox value={t.minutes} label="Min" />
+      <CountBox value={t.minutes} label={tr("minutes")} />
       <span className={styles.countdownSep}>:</span>
-      <CountBox value={t.seconds} label="Sec" />
+      <CountBox value={t.seconds} label={tr("seconds")} />
     </div>
   );
 }

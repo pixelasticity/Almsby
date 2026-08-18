@@ -1,11 +1,11 @@
-export default function ProductsPage() {
+import { getTranslations } from "next-intl/server";
+
+export default async function ProductsPage() {
+  const t = await getTranslations("products");
   return (
     <section>
-      <h1>Products</h1>
-      <p>
-        Phase 0 placeholder — empty Product creation under your Business
-        arrives with the database connection.
-      </p>
+      <h1>{t("title")}</h1>
+      <p>{t("placeholder")}</p>
     </section>
   );
 }

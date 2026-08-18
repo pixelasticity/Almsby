@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Bricolage_Grotesque, Albert_Sans } from "next/font/google";
 import "./globals.css";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getMessages } from "next-intl/server";
 
 export const metadata: Metadata = {
   title: "Almsby — Every product has a story",
@@ -17,12 +19,18 @@ const albert = Albert_Sans({
   display: 'swap'
 })
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const locale = await getLocale();
+  const messages = await getMessages();
   return (
-    <html lang="en" className={`${bricolage.className} ${albert.className}`}>
-      <body>{children}</body>
+    <html lang={locale} className={`${bricolage.className} ${albert.className}`}>
+      <body>
+        <NextIntlClientProvider messages={messages}>
+          {children}
+        </NextIntlClientProvider>
+      </body>
     </html>
   );
 }

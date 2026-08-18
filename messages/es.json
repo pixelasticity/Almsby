@@ -1,0 +1,102 @@
+{
+  "common": {
+    "brand": "Almsby"
+  },
+  "nav": {
+    "launchNote": "Lanzamiento en diciembre de 2026",
+    "dashboard": "Panel",
+    "products": "Productos",
+    "settings": "Ajustes",
+    "signOut": "Cerrar sesión"
+  },
+  "landing": {
+    "heroBadge": "GS1 Sunrise 2027 · Pasaportes Digitales de Producto de la UE",
+    "heroTitleLine1": "Un código de barras para el escáner.",
+    "heroTitleAccent": "Una historia para tu cliente.",
+    "heroSub": "Almsby reúne los códigos de barras Sunrise 2027 y los Pasaportes Digitales de Producto de la UE en un flujo sencillo — sin jerga GS1, sin consultores de cumplimiento. Solo un código que acepta tu minorista y una historia que a tus clientes les encanta escanear.",
+    "cardBadge": "Listo para el ESPR",
+    "cardFootprintLabel": "Huella de carbono",
+    "cardFootprintValue": "2,3 kg CO₂e",
+    "cardProduct": "Jersey de cuello redondo",
+    "cardCollection": "Colección Otoño 2026",
+    "cardDppReady": "Listo para el DPP",
+    "cardGtin": "GS1 · 01234567890128",
+    "cardRowMadeOf": "Compuesto de",
+    "cardRowMadeOfValue": "82 % lana reciclada",
+    "cardRowMadeIn": "Hecho en",
+    "cardRowEndOfLife": "Fin de vida útil",
+    "cardRowEndOfLifeValue": "Reparable · devolución",
+    "cardVerified": "Verificado",
+    "timelineTitle": "El reloj del pasaporte ya está en marcha.",
+    "timelineBody": "El registro central de pasaportes de la UE entró en funcionamiento en julio de 2026 — no es un rumor, es infraestructura en uso. Almsby gestiona el código y el pasaporte juntos, para que estés preparado para lo que llegue primero.",
+    "featureEyebrow": "Todo lo que necesitas",
+    "featureTitle": "Una sola plataforma. Cero ansiedad por el cumplimiento.",
+    "feature1Title": "Tu código 2D, listo para imprimir",
+    "feature1Body": "Un código QR GS1 Digital Link, con marcado dual junto a tu código de barras actual — listo para imprimir en segundos.",
+    "feature2Title": "Páginas de historia listas para el pasaporte",
+    "feature2Body": "Cada producto tiene una página de historia gratuita y personalizable — con los campos de material, origen y cuidado que necesitará el pasaporte textil de la UE.",
+    "feature3Title": "Sin jerga GS1, jamás",
+    "feature3Body": "Configuración guiada en lenguaje sencillo — te ayudamos a conseguir un prefijo GS1 o a importar los GTIN que ya tienes.",
+    "feature4Title": "Panel de cumplimiento",
+    "feature4Body": "Una visión clara de «¿estoy listo?» — el estado de Sunrise 2027 y del DPP, por producto, de un vistazo.",
+    "footerText": "© 2026 Almsby · Cada producto tiene una historia.",
+    "footerBadge": "Construido sobre GS1 Digital Link"
+  },
+  "deadlines": {
+    "batteriesCategory": "Baterías",
+    "batteriesYear": "Feb 2027",
+    "batteriesNote": "Obligatorio — la primera categoría con pasaporte",
+    "batteriesBadge": "En vigor",
+    "textilesCategory": "Textiles",
+    "textilesYear": "2028+",
+    "textilesNote": "Normas en fase final — los fabricantes como tú sois los próximos",
+    "textilesBadge": "Próximamente",
+    "beyondCategory": "Y más allá",
+    "beyondYear": "Pronto",
+    "beyondNote": "Muebles, electrónica y metales llegarán en oleadas",
+    "beyondBadge": "Por fases"
+  },
+  "countdown": {
+    "days": "Días",
+    "hours": "Horas",
+    "minutes": "Min",
+    "seconds": "Seg"
+  },
+  "waitlist": {
+    "emailPlaceholder": "tucorreo@ejemplo.com",
+    "emailLabel": "Correo electrónico",
+    "submit": "Reserva tu acceso anticipado",
+    "helper": "Lanzamiento en diciembre de 2026 — el acceso anticipado incluye un descuento. Cero spam, siempre.",
+    "error": "Introduce un correo válido para obtener acceso anticipado.",
+    "success": "¡Estás dentro! Te contactaremos antes del lanzamiento."
+  },
+  "auth": {
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "emailPlaceholder": "tu@ejemplo.com",
+    "createAccount": "Crear cuenta",
+    "signIn": "Iniciar sesión",
+    "signUp": "Registrarse",
+    "signInTitle": "Iniciar sesión",
+    "signUpTitle": "Registrarse",
+    "haveAccount": "¿Ya tienes una cuenta? ",
+    "noAccount": "¿Aún no tienes cuenta? "
+  },
+  "dashboard": {
+    "title": "Panel del fabricante",
+    "placeholder": "Placeholder de la Fase 0. El flujo de autenticación y de Empresa/Producto llega al conectar las credenciales de Supabase — consulta el README.",
+    "goToProducts": "Ir a productos"
+  },
+  "products": {
+    "title": "Productos",
+    "placeholder": "Placeholder de la Fase 0 — la creación de productos vacíos bajo tu Empresa llega con la conexión a la base de datos."
+  },
+  "settings": {
+    "title": "Ajustes",
+    "placeholder": "Placeholder de la Fase 0."
+  },
+  "story": {
+    "title": "Historia del producto",
+    "placeholder": "Placeholder de la Fase 0. El renderizado completo de la página de historia llega en la Fase 2. GTIN solicitado: {gtin}."
+  }
+}

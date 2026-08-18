@@ -1,0 +1,102 @@
+{
+  "common": {
+    "brand": "Almsby"
+  },
+  "nav": {
+    "launchNote": "Launching December 2026",
+    "dashboard": "Dashboard",
+    "products": "Products",
+    "settings": "Settings",
+    "signOut": "Sign out"
+  },
+  "landing": {
+    "heroBadge": "GS1 Sunrise 2027 · EU Digital Product Passports",
+    "heroTitleLine1": "One barcode for the scanner.",
+    "heroTitleAccent": "A story for the customer.",
+    "heroSub": "Almsby brings Sunrise 2027 barcodes and EU Digital Product Passports together in one gentle workflow — no GS1 jargon, no compliance consultants. Just a barcode your retailer accepts, and a story your customers love to scan.",
+    "cardBadge": "ESPR-ready",
+    "cardFootprintLabel": "Carbon footprint",
+    "cardFootprintValue": "2.3 kg CO₂e",
+    "cardProduct": "Merino Crew Neck",
+    "cardCollection": "Autumn Collection 2026",
+    "cardDppReady": "DPP Ready",
+    "cardGtin": "GS1 · 01234567890128",
+    "cardRowMadeOf": "Made of",
+    "cardRowMadeOfValue": "82% recycled wool",
+    "cardRowMadeIn": "Made in",
+    "cardRowEndOfLife": "End of life",
+    "cardRowEndOfLifeValue": "Repairable · take-back",
+    "cardVerified": "Verified",
+    "timelineTitle": "The passport clock is already ticking.",
+    "timelineBody": "The EU central passport registry went live in July 2026 — this is not a rumor, it is running infrastructure. Almsby handles the barcode and the passport together, so you are ready for whichever wave comes first.",
+    "featureEyebrow": "Everything you need",
+    "featureTitle": "One platform. Zero compliance anxiety.",
+    "feature1Title": "Your 2D Barcode, Ready to Print",
+    "feature1Body": "A GS1 Digital Link QR code, dual-marked alongside your legacy barcode — print-ready in seconds.",
+    "feature2Title": "Passport-Ready Story Pages",
+    "feature2Body": "Every product gets a free, brandable story page — with the material, sourcing, and care fields the EU textile passport will need.",
+    "feature3Title": "No GS1 Jargon, Ever",
+    "feature3Body": "Guided setup in plain language — we help you get a GS1 prefix, or import the GTINs you already have.",
+    "feature4Title": "Compliance Dashboard",
+    "feature4Body": "A plain-language am-I-ready-yet view — Sunrise 2027 and DPP status, per product, in one glance.",
+    "footerText": "© 2026 Almsby · Every product has a story.",
+    "footerBadge": "Built on GS1 Digital Link"
+  },
+  "deadlines": {
+    "batteriesCategory": "Batteries",
+    "batteriesYear": "Feb 2027",
+    "batteriesNote": "Mandatory — the first passport category",
+    "batteriesBadge": "In effect",
+    "textilesCategory": "Textiles",
+    "textilesYear": "2028+",
+    "textilesNote": "Rules being finalized — makers like you are next",
+    "textilesBadge": "Coming soon",
+    "beyondCategory": "And beyond",
+    "beyondYear": "Soon",
+    "beyondNote": "Furniture, electronics, metals follow in waves",
+    "beyondBadge": "Phased"
+  },
+  "countdown": {
+    "days": "Days",
+    "hours": "Hours",
+    "minutes": "Min",
+    "seconds": "Sec"
+  },
+  "waitlist": {
+    "emailPlaceholder": "your@email.com",
+    "emailLabel": "Email",
+    "submit": "Get Early Access",
+    "helper": "Launching December 2026 — early access includes a launch discount. No spam, ever.",
+    "error": "Enter a valid email to get early access.",
+    "success": "You're in! We'll reach out before launch."
+  },
+  "auth": {
+    "email": "Email",
+    "password": "Password",
+    "emailPlaceholder": "you@example.com",
+    "createAccount": "Create account",
+    "signIn": "Sign in",
+    "signUp": "Sign up",
+    "signInTitle": "Sign in",
+    "signUpTitle": "Sign up",
+    "haveAccount": "Already have an account? ",
+    "noAccount": "No account yet? "
+  },
+  "dashboard": {
+    "title": "Maker dashboard",
+    "placeholder": "Phase 0 placeholder. Auth and the Business/Product flows land once Supabase credentials are wired — see README.",
+    "goToProducts": "Go to products"
+  },
+  "products": {
+    "title": "Products",
+    "placeholder": "Phase 0 placeholder — empty Product creation under your Business arrives with the database connection."
+  },
+  "settings": {
+    "title": "Settings",
+    "placeholder": "Phase 0 placeholder."
+  },
+  "story": {
+    "title": "Product story",
+    "placeholder": "Phase 0 placeholder. Full story-page rendering lands in Phase 2. Requested GTIN: {gtin}."
+  }
+}

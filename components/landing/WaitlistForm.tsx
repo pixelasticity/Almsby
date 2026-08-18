@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import styles from "@/styles/landing.module.css";
 
 // Phase 0: visual-only waitlist form - no backend yet. Validates the email
 // locally and shows a local confirmation; wire to a Supabase early_access
 // table (server action) before launch.
 export default function WaitlistForm() {
+  const tr = useTranslations("waitlist");
   const [email, setEmail] = useState("");
   const [focused, setFocused] = useState(false);
   const [error, setError] = useState("");
@@ -16,7 +18,7 @@ export default function WaitlistForm() {
     e.preventDefault();
     const value = email.trim();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-      setError("Enter a valid email to get early access.");
+      setError(tr("error"));
       return;
     }
     setError("");
@@ -31,11 +33,10 @@ export default function WaitlistForm() {
             <path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </span>
-        You&apos;re in! We&apos;ll reach out before launch.
+        {tr("success")}
       </div>
     );
   }
-
   return (
     <form className={styles.form} onSubmit={submit} noValidate>
       <div
@@ -54,19 +55,19 @@ export default function WaitlistForm() {
           onChange={(e) => { setEmail(e.target.value); setError(""); }}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
-          placeholder="your@email.com"
-          aria-label="Email"
+          placeholder={tr("emailPlaceholder")}
+          aria-label={tr("emailLabel")}
         />
       </div>
       <button type="submit" className={styles.formButton}>
-        <span>Get Early Access</span>
+        <span>{tr("submit")}</span>
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M5 12h14" strokeLinecap="round" />
           <path d="M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </button>
       <p className={styles.formHelper}>
-        Launching December 2026 — early access includes a launch discount. No spam, ever.
+        {tr("helper")}
       </p>
       {error && <p className={styles.formError}>{error}</p>}
     </form>

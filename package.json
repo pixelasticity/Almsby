@@ -8,6 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
+    "lint:i18n": "node scripts/lint-i18n.mjs",
     "typecheck": "tsc --noEmit",
     "db:generate": "dotenv -e .env.local -- prisma generate",
     "db:migrate": "dotenv -e .env.local -- prisma migrate dev",

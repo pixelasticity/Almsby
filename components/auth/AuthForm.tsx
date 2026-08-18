@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useActionState } from "react";
+import { useTranslations } from "next-intl";
 import { signInAction, signUpAction } from "@/lib/auth/actions";
 import styles from "./AuthForm.module.css";
 
@@ -16,26 +17,27 @@ export default function AuthForm({
 }) {
   const action = mode === "sign-up" ? signUpAction : signInAction;
   const [state, formAction, isPending] = useActionState(action, undefined);
+  const tr = useTranslations("auth");
 
   return (
     <form action={formAction} className={styles.form}>
       <input type="hidden" name="next" value={next} />
       <div className={styles.field}>
         <label htmlFor="email" className={styles.label}>
-          Email
+          {tr("email")}
         </label>
         <input
           id="email"
           name="email"
           type="email"
-          placeholder="you@example.com"
+          placeholder={tr("emailPlaceholder")}
           required
           className={styles.input}
         />
       </div>
       <div className={styles.field}>
         <label htmlFor="password" className={styles.label}>
-          Password
+          {tr("password")}
         </label>
         <input
           id="password"
@@ -50,15 +52,15 @@ export default function AuthForm({
       {message && <p className={styles.message}>{message}</p>}
       {state?.error && <p className={styles.error}>{state.error}</p>}
       <button type="submit" disabled={isPending} className={styles.submit}>
-        {isPending ? "…" : mode === "sign-up" ? "Create account" : "Sign in"}
+        {isPending ? "…" : mode === "sign-up" ? tr("createAccount") : tr("signIn")}
       </button>
       <p className={styles.toggleRow}>
-        {mode === "sign-up" ? "Already have an account? " : "No account yet? "}
+        {mode === "sign-up" ? tr("haveAccount") : tr("noAccount")}
         <Link
           href={mode === "sign-up" ? "/sign-in" : "/sign-up"}
           className={styles.toggleLink}
         >
-          {mode === "sign-up" ? "Sign in" : "Sign up"}
+          {mode === "sign-up" ? tr("signIn") : tr("signUp")}
         </Link>
       </p>
     </form>

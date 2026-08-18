@@ -1,14 +1,15 @@
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const t = await getTranslations("dashboard");
   return (
     <section>
-      <h1>Maker dashboard</h1>
+      <h1>{t("title")}</h1>
       <p>
-        Phase 0 placeholder. Auth and the Business/Product flows land once
-        Supabase credentials are wired — see app/README.md.
+        {t("placeholder")}
       </p>
-      <Link href="/products">Go to products</Link>
+      <Link href="/products">{t("goToProducts")}</Link>
     </section>
   );
 }

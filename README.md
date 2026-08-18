@@ -52,6 +52,19 @@ tests/                    # Vitest suite
   deploy-migrations.yml   # migrations: push dev→staging, merge master→production
 ```
 
+## Internationalization (next-intl)
+
+- Messages live in `messages/{locale}.json` — `en` is the source of truth, `es`
+  is the first translated locale. Human-readable, plain JSON.
+- Locale is cookie-based (`NEXT_LOCALE` cookie, `i18n/request.ts`) — no URL
+  prefix, so the auth proxy (`proxy.ts`) is untouched. Default is `en`.
+- To add a language: create `messages/{code}.json` mirroring `en.json`, add it
+  to `locales` in `i18n/routing.ts`, and (optionally) surface it in
+  `components/LocaleSwitcher.tsx`.
+- Key parity across locales is enforced by `npx next-intl lint` and by the
+  typed `useTranslations`/`getTranslations` keys (`tsc`) — both run in CI, so
+  an AI adding a key in one language but not the other fails the pipeline.
+
 ## Migrations & deploys
 
 Schema is owned by **Prisma** (`prisma/migrations`); the Supabase CLI only runs

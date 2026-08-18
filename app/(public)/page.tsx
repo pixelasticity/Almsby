@@ -1,6 +1,8 @@
 import Countdown from "@/components/landing/Countdown";
 import WaitlistForm from "@/components/landing/WaitlistForm";
+import LocaleSwitcher from "@/components/LocaleSwitcher";
 import styles from "@/styles/landing.module.css";
+import { getTranslations } from "next-intl/server";
 
 // Deterministic QR-style matrix for the decorative barcode (same every render).
 function generateBarcodeMatrix(): number[][] {
@@ -208,11 +210,12 @@ function SmallBarcode() {
   );
 }
 
-function ProductPassportCard() {
+async function ProductPassportCard() {
+  const t = await getTranslations("landing");
   const rows = [
-    { label: "Made of", value: "82% recycled wool" },
-    { label: "Made in", value: "Porto, Portugal" },
-    { label: "End of life", value: "Repairable · take-back" },
+    { label: t("cardRowMadeOf"), value: t("cardRowMadeOfValue") },
+    { label: t("cardRowMadeIn"), value: "Porto, Portugal" },
+    { label: t("cardRowEndOfLife"), value: t("cardRowEndOfLifeValue") },
   ];
   return (
     <div className={styles.passportFloat}>
@@ -220,23 +223,23 @@ function ProductPassportCard() {
         <div className={styles.badgeGreenCheck}>
           <CheckIcon />
         </div>
-        <span className={styles.badgeLabel}>ESPR-ready</span>
+        <span className={styles.badgeLabel}>{t("cardBadge")}</span>
       </div>
       <div className={`${styles.floatBadge} ${styles.floatBottom}`}>
         <span className={styles.badgeEmoji}>🌿</span>
         <div>
-          <p className={styles.badgeMetaLabel}>Carbon footprint</p>
-          <p className={styles.badgeMetaValue}>2.3 kg CO₂e</p>
+          <p className={styles.badgeMetaLabel}>{t("cardFootprintLabel")}</p>
+          <p className={styles.badgeMetaValue}>{t("cardFootprintValue")}</p>
         </div>
       </div>
       <div className={styles.passportCard}>
         <div className={styles.passportHeader}>
           <div className={styles.passportEmoji}>🧥</div>
           <div className={styles.passportNameWrap}>
-            <p className={styles.passportName}>Merino Crew Neck</p>
-            <p className={styles.passportSub}>Autumn Collection 2026</p>
+            <p className={styles.passportName}>{t("cardProduct")}</p>
+            <p className={styles.passportSub}>{t("cardCollection")}</p>
           </div>
-          <span className={styles.passportBadgeTag}>DPP Ready</span>
+          <span className={styles.passportBadgeTag}>{t("cardDppReady")}</span>
         </div>
         <div className={styles.barcodeWell}>
           <SmallBarcode />
@@ -250,10 +253,10 @@ function ProductPassportCard() {
           ))}
         </div>
         <div className={styles.passportFooter}>
-          <span className={styles.passportGtin}>GS1 · 01234567890128</span>
+          <span className={styles.passportGtin}>{t("cardGtin")}</span>
           <span className={styles.verifiedTag}>
             <span className={styles.verifiedDot} />
-            Verified
+            {t("cardVerified")}
           </span>
         </div>
       </div>
@@ -314,61 +317,44 @@ const FEATURES = [
     icon: <LayersIcon />,
     bg: "#dcfce7",
     fg: "#16a34a",
-    title: "Your 2D Barcode, Ready to Print",
-    body: "A GS1 Digital Link QR code, dual-marked alongside your legacy barcode — print-ready in seconds.",
   },
   {
     icon: <ZapIcon />,
     bg: "#fef9c3",
     fg: "#ca8a04",
-    title: "Passport-Ready Story Pages",
-    body: "Every product gets a free, brandable story page — with the material, sourcing, and care fields the EU textile passport will need.",
   },
   {
     icon: <PlugIcon />,
     bg: "#ede9fe",
     fg: "#7c3aed",
-    title: "No GS1 Jargon, Ever",
-    body: "Guided setup in plain language — we help you get a GS1 prefix, or import the GTINs you already have.",
   },
   {
     icon: <BarsIcon />,
     bg: "#ffedd5",
     fg: "#ea580c",
-    title: "Compliance Dashboard",
-    body: "A plain-language am-I-ready-yet view — Sunrise 2027 and DPP status, per product, in one glance.",
   },
 ];
 
 const EU_DEADLINES = [
   {
+    key: "batteries",
     emoji: "🔋",
-    category: "Batteries",
-    year: "Feb 2027",
-    note: "Mandatory — the first passport category",
-    badge: "In effect",
     cardBg: "var(--blue-100)",
     cardBorder: "1px solid var(--blue-200)",
     badgeBg: "var(--blue-600)",
     badgeFg: "var(--neutral-100)",
   },
   {
+    key: "textiles",
     emoji: "👕",
-    category: "Textiles",
-    year: "2028+",
-    note: "Rules being finalized — makers like you are next",
-    badge: "Coming soon",
     cardBg: "var(--gold-100)",
     cardBorder: "1px solid var(--gold-200)",
     badgeBg: "var(--gold-300)",
     badgeFg: "var(--neutral-700)",
   },
   {
+    key: "beyond",
     emoji: "🧵",
-    category: "And beyond",
-    year: "Soon",
-    note: "Furniture, electronics, metals follow in waves",
-    badge: "Phased",
     cardBg: "var(--card)",
     cardBorder: "1px solid var(--neutral-200)",
     badgeBg: "var(--neutral-200)",
@@ -376,7 +362,10 @@ const EU_DEADLINES = [
   },
 ];
 
-export default function PublicHomePage() {
+export default async function PublicHomePage() {
+  const t = await getTranslations("landing");
+  const dl = await getTranslations("deadlines");
+  const n = await getTranslations("nav");
   return (
     <div className={styles.root}>
       <header className={styles.nav}>
@@ -392,8 +381,9 @@ export default function PublicHomePage() {
         </div>
         <div className={styles.launchNote}>
           <span className={styles.pulseDot} />
-          Launching December 2026
+          {n("launchNote")}
         </div>
+        <LocaleSwitcher />
       </header>
 
       <section className={styles.hero}>
@@ -402,16 +392,14 @@ export default function PublicHomePage() {
             <div>
               <span className={styles.heroBadge}>
                 <span className={styles.pulseDot} />
-                GS1 Sunrise 2027 · EU Digital Product Passports
+                {t("heroBadge")}
               </span>
               <h1 className={styles.heroTitle}>
-                One barcode for the scanner.{" "}
-                <span className={styles.heroAccent}>A story for the customer.</span>
+                {t("heroTitleLine1")}{" "}
+                <span className={styles.heroAccent}>{t("heroTitleAccent")}</span>
               </h1>
               <p className={styles.heroSub}>
-                Almsby brings Sunrise 2027 barcodes and EU Digital Product Passports together in
-                one gentle workflow — no GS1 jargon, no compliance consultants. Just a barcode
-                your retailer accepts, and a story your customers love to scan.
+                {t("heroSub")}
               </p>
             </div>
             <Countdown />
@@ -428,25 +416,21 @@ export default function PublicHomePage() {
           <div className={styles.panel}>
             <div className={styles.timelineGrid}>
               <div>
-                <h2 className={styles.timelineTitle}>The passport clock is already ticking.</h2>
-                <p className={styles.timelineBody}>
-                  The EU central passport registry went live in July 2026 — this is not a rumor,
-                  it is running infrastructure. Almsby handles the barcode and the passport
-                  together, so you are ready for whichever wave comes first.
-                </p>
+                <h2 className={styles.timelineTitle}>{t("timelineTitle")}</h2>
+                <p className={styles.timelineBody}>{t("timelineBody")}</p>
               </div>
               <div className={styles.deadlineGrid}>
-                {EU_DEADLINES.map((d, i) => (
-                  <div key={d.category} className={styles.deadlineCard} style={{ background: d.cardBg, border: d.cardBorder, animationDelay: `${0.08 * i}s` }}>
+                {EU_DEADLINES.map((item, i) => (
+                  <div key={item.key} className={styles.deadlineCard} style={{ background: item.cardBg, border: item.cardBorder, animationDelay: `${0.08 * i}s` }}>
                     <div className={styles.deadlineTop}>
-                      <span className={styles.deadlineEmoji}>{d.emoji}</span>
-                      <span className={styles.deadlineBadge} style={{ background: d.badgeBg, color: d.badgeFg }}>
-                        {d.badge}
+                      <span className={styles.deadlineEmoji}>{item.emoji}</span>
+                      <span className={styles.deadlineBadge} style={{ background: item.badgeBg, color: item.badgeFg }}>
+                        {dl(`${item.key}Badge`)}
                       </span>
                     </div>
-                    <p className={styles.deadlineYear}>{d.year}</p>
-                    <p className={styles.deadlineCategory}>{d.category}</p>
-                    <p className={styles.deadlineNote}>{d.note}</p>
+                    <p className={styles.deadlineYear}>{dl(`${item.key}Year`)}</p>
+                    <p className={styles.deadlineCategory}>{dl(`${item.key}Category`)}</p>
+                    <p className={styles.deadlineNote}>{dl(`${item.key}Note`)}</p>
                   </div>
                 ))}
               </div>
@@ -458,17 +442,17 @@ export default function PublicHomePage() {
       <section className={styles.section}>
         <div className={styles.wrap}>
           <div className={styles.featureHeader}>
-            <p className={styles.featureEyebrow}>Everything you need</p>
-            <h2 className={styles.featureTitle}>One platform. Zero compliance anxiety.</h2>
+            <p className={styles.featureEyebrow}>{t("featureEyebrow")}</p>
+            <h2 className={styles.featureTitle}>{t("featureTitle")}</h2>
           </div>
           <div className={styles.featureGrid}>
-            {FEATURES.map(({ icon, bg, fg, title, body }) => (
-              <div key={title} className={styles.featureCard}>
+            {FEATURES.map(({ icon, bg, fg }, i) => (
+              <div key={i} className={styles.featureCard}>
                 <div className={styles.featureIcon} style={{ background: bg, color: fg }}>
                   {icon}
                 </div>
-                <h3 className={styles.featureCardTitle}>{title}</h3>
-                <p className={styles.featureCardBody}>{body}</p>
+                <h3 className={styles.featureCardTitle}>{t(`feature${i + 1}Title`)}</h3>
+                <p className={styles.featureCardBody}>{t(`feature${i + 1}Body`)}</p>
               </div>
             ))}
           </div>
@@ -476,10 +460,10 @@ export default function PublicHomePage() {
       </section>
 
       <footer className={styles.footer}>
-        <span className={styles.footerText}>© 2026 Almsby · Every product has a story.</span>
+        <span className={styles.footerText}>{t("footerText")}</span>
         <div className={styles.footerBadge}>
           <span className={styles.pulseDot} />
-          Built on GS1 Digital Link
+          {t("footerBadge")}
         </div>
       </footer>
     </div>
