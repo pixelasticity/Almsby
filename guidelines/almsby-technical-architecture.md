@@ -77,6 +77,7 @@ Product
 ├── brand
 ├── net_content
 ├── country_of_origin
+├── category                  (nullable — e.g. "outerwear", "denim", "knitwear" — segmentation for future benchmarking, no feature uses this yet)
 ├── material_composition     (structured — DPP-relevant, textiles especially)
 ├── sourcing_notes
 ├── recyclable                (boolean)
@@ -117,7 +118,17 @@ ComplianceStatus
 ├── sunrise_2027_ready          (boolean, derived from GTIN + Barcode completeness)
 ├── dpp_fields_complete          (boolean, derived from material_composition etc. being filled)
 ├── last_checked_at
+
+ScanEvent
+├── id
+├── gtin_id                     (FK → GTIN)
+├── scanned_at
+├── country                     (derived from request, nullable)
+├── locale                      (nullable)
+└── referrer                    (nullable — how the scan/visit arrived, if detectable)
 ```
+
+**On ScanEvent:** log every resolver hit from day one, even though nothing reads this data yet. Cheap to write, expensive to reconstruct retroactively if skipped. No feature (dashboard, analytics) built against it in Phase 1-4 — this is purely "capture now, decide later" per founder direction. Anonymized/aggregate-only if this data is ever used beyond internal debugging — never expose per-scan data tied to an individual consumer.
 
 **Why `ComplianceStatus` is its own table rather than computed on the fly:** the dashboard's whole retention hook is a fast "what's not done yet" view across potentially hundreds of products. Precomputing (and updating on relevant writes) keeps that view cheap, and gives you a natural place to hang future rules as GS1/DPP requirements get more specific.
 
