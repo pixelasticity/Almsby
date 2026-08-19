@@ -38,6 +38,9 @@ brand             (optional, defaults to Business name)
 netContent        (optional)
 countryOfOrigin   (optional for MVP, required before Sunrise-2027-ready status)
 materialComposition (structured — see schema below, textile-relevant for DPP readiness)
+recyclable        (optional, boolean)
+recyclingInstructions (optional, text)
+takebackProgram   (optional, text/URL)
 status            (draft | active | archived)
 ```
 
