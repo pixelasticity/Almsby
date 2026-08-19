@@ -74,3 +74,31 @@ Keep this simple at this stage — you're validating message-market fit, not run
 - **Faire/wholesale marketplace relationship:** is there a formal partnership path, or is this purely organic outreach to their seller base at first? Worth a direct conversation with Faire's partnerships team once you have a couple of reference customers.
 - **Trade show ROI at this stage:** booths are expensive for a pre-revenue or early-revenue company — worth testing "working the floor" informally at one show before committing budget to a booth.
 - **USFIA symposium fit:** it's compliance-focused, which matches your message, but the attendee base skews toward larger/mid-size brands rather than your 1-20 person beachhead. Worth attending to build relationships and credibility even if it's not a direct lead-gen channel yet.
+
+---
+
+## 7. GS1 partnership tiers
+
+| Tier | Cost | Action |
+|---|---|---|
+| Standard Solution Partner | Free | Apply now |
+| Executive Solution Partner | $7,000/yr | Revisit post-revenue |
+| Premier Solution Partner | $25,000/yr | Too early — pre-revenue |
+| Channel Partner Program | Not yet priced | Long-term goal — direct GTIN access for customers via URL/API. Requires Solution Partner standing first. |
+
+## 8. Competitive landscape — GS1 Channel Partner directory
+
+Sourced from GS1 US's own published Channel Partner list (https://www.gs1us.org/industries-and-insights/channel-partner-program).
+
+**Direct competitors (GTIN acquisition for small/e-commerce sellers):**
+- eComEngine, Gearchain, My Amazon Guy — Amazon-specific GTIN services
+- Order Barcodes, Perinovus, AO2 Management — generalist barcode/GTIN services
+- National Inventor Club, Product & Prosper, Seller Umbrella — small-business/seller-focused
+
+**Adjacent, not direct:**
+- 1WorldSync, Syndigo — enterprise PIM/data syndication, not small-biz
+- Comply Pro+, Teklynx — compliance/label software, broader scope
+- Barcoding.com, Arron Graphics, AccuGraphix — physical label printing/hardware
+- **Polytag** — closest conceptual overlap (traceability + DPP angle) — flagged for deeper competitive research
+
+**Gap observed:** no competitor in this directory combines barcode generation + consumer-facing story page + DPP readiness in one product. This is Almsby's current open positioning — worth re-checking as the directory updates.
