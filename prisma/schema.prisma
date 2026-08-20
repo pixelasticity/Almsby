@@ -26,13 +26,16 @@ model Business {
 }
 
 model Product {
-  id         String   @id @default(cuid())
-  businessId String
-  business   Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
-  name       String
-  brand      String?
-  status     String   @default("draft") // draft | active | archived
-  createdAt  DateTime @default(now())
+  id                  String   @id @default(cuid())
+  businessId          String
+  business            Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  name                String
+  brand               String?
+  netContent          String?
+  countryOfOrigin     String?
+  materialComposition String?
+  status              String   @default("draft") // draft | active | archived
+  createdAt           DateTime @default(now())
 
   // 1:1 children (Phase 1+): GTIN, story page, compliance status
   gtin             GTIN?
@@ -43,13 +46,13 @@ model Product {
 // ── Scaffolded for later phases — schema only, no logic in Phase 0 ──────────
 
 model GTIN {
-  id         String   @id @default(cuid())
-  productId  String   @unique
-  product    Product  @relation(fields: [productId], references: [id])
-  gtinValue  String // 14-digit, validated with check-digit logic (Phase 1)
-  source     String   @default("own_prefix") // own_prefix | almsby_assisted
-  createdAt  DateTime @default(now())
-  barcode    Barcode?
+  id        String   @id @default(cuid())
+  productId String   @unique
+  product   Product  @relation(fields: [productId], references: [id])
+  gtinValue String // 14-digit, validated with check-digit logic (Phase 1)
+  source    String   @default("own_prefix") // own_prefix | almsby_assisted
+  createdAt DateTime @default(now())
+  barcode   Barcode?
 }
 
 model Barcode {
