@@ -21,6 +21,9 @@ model Business {
   gs1Prefix        String?
   membershipStatus String    @default("none") // none | in_progress | active
   subscriptionTier String    @default("starter") // starter | growth | scale
+  industryCategory String? // onboarding step 2: primary focus (optional for now)
+  operatingCountry String? // onboarding step 3: operating country (optional)
+  currency         String? // onboarding step 3: default currency (optional)
   createdAt        DateTime  @default(now())
   products         Product[]
 }
@@ -43,13 +46,13 @@ model Product {
 // ── Scaffolded for later phases — schema only, no logic in Phase 0 ──────────
 
 model GTIN {
-  id         String   @id @default(cuid())
-  productId  String   @unique
-  product    Product  @relation(fields: [productId], references: [id])
-  gtinValue  String // 14-digit, validated with check-digit logic (Phase 1)
-  source     String   @default("own_prefix") // own_prefix | almsby_assisted
-  createdAt  DateTime @default(now())
-  barcode    Barcode?
+  id        String   @id @default(cuid())
+  productId String   @unique
+  product   Product  @relation(fields: [productId], references: [id])
+  gtinValue String // 14-digit, validated with check-digit logic (Phase 1)
+  source    String   @default("own_prefix") // own_prefix | almsby_assisted
+  createdAt DateTime @default(now())
+  barcode   Barcode?
 }
 
 model Barcode {

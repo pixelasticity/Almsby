@@ -98,5 +98,46 @@
   "story": {
     "title": "Product story",
     "placeholder": "Phase 0 placeholder. Full story-page rendering lands in Phase 2. Requested GTIN: {gtin}."
+  },
+  "business": {
+    "creation": {
+      "step1": {
+        "title": "Let's set up your business",
+        "subtitle": "Tell us a bit about your brand so we can customize your workspace.",
+        "name": {
+          "label": "Business Name",
+          "placeholder": "e.g., Acme Goods Co.",
+          "helper": "You can update this anytime in your account settings."
+        },
+        "cta": "Next: Industry Details"
+      },
+      "step2": {
+        "title": "What is your primary focus?",
+        "subtitle": "Pick the category that best describes what you sell or build.",
+        "category": {
+          "label": "Industry Category",
+          "helper": "Helps us pre-configure the right tools for your dashboard."
+        },
+        "cta": "Next: Localization"
+      },
+      "step3": {
+        "title": "Where are you operating?",
+        "country": {
+          "label": "Country"
+        },
+        "currency": {
+          "label": "Default Currency"
+        },
+        "helper": "Sets your baseline tax calculations and store payouts.",
+        "cta": "Launch Workspace"
+      }
+    },
+    "errors": {
+      "nameRequired": "Enter a business name to continue.",
+      "nameTooShort": "Business names must be at least 2 characters long.",
+      "categoryRequired": "Select an industry category to customize your workspace tools.",
+      "countryRequired": "Select your primary operating country.",
+      "currencyRequired": "Select a default currency for pricing and payouts."
+    }
   }
 }
