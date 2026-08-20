@@ -21,6 +21,9 @@ model Business {
   gs1Prefix        String?
   membershipStatus String    @default("none") // none | in_progress | active
   subscriptionTier String    @default("starter") // starter | growth | scale
+  industryCategory String? // onboarding step 2: primary focus (optional for now)
+  operatingCountry String? // onboarding step 3: operating country (optional)
+  currency         String? // onboarding step 3: default currency (optional)
   createdAt        DateTime  @default(now())
   products         Product[]
 }

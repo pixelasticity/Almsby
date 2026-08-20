@@ -120,5 +120,46 @@
   "story": {
     "title": "Historia del producto",
     "placeholder": "Placeholder de la Fase 0. El renderizado completo de la página de historia llega en la Fase 2. GTIN solicitado: {gtin}."
+  },
+  "business": {
+    "creation": {
+      "step1": {
+        "title": "Configura tu negocio",
+        "subtitle": "Cuéntanos un poco sobre tu marca para personalizar tu espacio de trabajo.",
+        "name": {
+          "label": "Nombre del negocio",
+          "placeholder": "p. ej., Acme Goods Co.",
+          "helper": "Puedes actualizarlo en cualquier momento desde los ajustes de tu cuenta."
+        },
+        "cta": "Siguiente: Detalles de la industria"
+      },
+      "step2": {
+        "title": "¿Cuál es tu enfoque principal?",
+        "subtitle": "Elige la categoría que mejor describa lo que vendes o fabricas.",
+        "category": {
+          "label": "Categoría de la industria",
+          "helper": "Nos ayuda a preconfigurar las herramientas adecuadas para tu panel."
+        },
+        "cta": "Siguiente: Localización"
+      },
+      "step3": {
+        "title": "¿Desde dónde operas?",
+        "country": {
+          "label": "País"
+        },
+        "currency": {
+          "label": "Moneda por defecto"
+        },
+        "helper": "Establece los cálculos de impuestos base y los pagos de tu tienda.",
+        "cta": "Lanzar el espacio de trabajo"
+      }
+    },
+    "errors": {
+      "nameRequired": "Introduce un nombre de negocio para continuar.",
+      "nameTooShort": "El nombre del negocio debe tener al menos 2 caracteres.",
+      "categoryRequired": "Selecciona una categoría de industria para personalizar las herramientas de tu espacio de trabajo.",
+      "countryRequired": "Selecciona tu país de operación principal.",
+      "currencyRequired": "Selecciona una moneda por defecto para precios y pagos."
+    }
   }
 }
