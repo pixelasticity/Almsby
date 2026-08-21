@@ -11,6 +11,10 @@ const STEPS = 3;
 /**
  * Explicit business-creation wizard (post-registration).
  * Three steps: 1 name → 2 industry → 3 country/currency.
+ *
+ * All three steps stay MOUNTED (hidden via CSS), so every field is present in
+ * the DOM when the final step submits — otherwise names/categories typed earlier
+ * never reach the server action.
  */
 export default function BusinessOnboardingForm() {
   const [step, setStep] = useState(1);
@@ -37,100 +41,97 @@ export default function BusinessOnboardingForm() {
         <span className={styles.stepLabel}>{step}/{STEPS}</span>
       </div>
 
-      {step === 1 && (
-        <div className={styles.field}>
-          <h2 className={styles.title}>{t("creation.step1.title")}</h2>
-          <p className={styles.subtitle}>{t("creation.step1.subtitle")}</p>
-          <label className={styles.label} htmlFor="name">
-            {t("creation.step1.name.label")}
-          </label>
-          <input
-            id="name"
-            name="name"
-            className={styles.input}
-            placeholder={t("creation.step1.name.placeholder")}
-            required
-          />
-          <p className={styles.helper}>{t("creation.step1.name.helper")}</p>
-        </div>
-      )}
+      {/* Step 1 — always mounted, hidden when not active */}
+      <div className={`${styles.field} ${step === 1 ? "" : styles.hidden}`}>
+        <h2 className={styles.title}>{t("creation.step1.title")}</h2>
+        <p className={styles.subtitle}>{t("creation.step1.subtitle")}</p>
+        <label className={styles.label} htmlFor="name">
+          {t("creation.step1.name.label")}
+        </label>
+        <input
+          id="name"
+          name="name"
+          className={styles.input}
+          placeholder={t("creation.step1.name.placeholder")}
+          required
+        />
+        <p className={styles.helper}>{t("creation.step1.name.helper")}</p>
+      </div>
 
-      {step === 2 && (
-        <div className={styles.field}>
-          <h2 className={styles.title}>{t("creation.step2.title")}</h2>
-          <p className={styles.subtitle}>{t("creation.step2.subtitle")}</p>
-          <label className={styles.label} htmlFor="industryCategory">
-            {t("creation.step2.category.label")}
-          </label>
-          <select
-            id="industryCategory"
-            name="industryCategory"
-            className={styles.input}
-            defaultValue=""
-          >
-            <option value="" disabled>
-              —
-            </option>
-            <option value="apparel">Apparel / textiles</option>
-            <option value="food">Food & beverage</option>
-            <option value="home">Home & goods</option>
-            <option value="beauty">Beauty & care</option>
-            <option value="electronics">Electronics</option>
-            <option value="other">Other</option>
-          </select>
-          <p className={styles.helper}>{t("creation.step2.category.helper")}</p>
-        </div>
-      )}
+      {/* Step 2 — always mounted */}
+      <div className={`${styles.field} ${step === 2 ? "" : styles.hidden}`}>
+        <h2 className={styles.title}>{t("creation.step2.title")}</h2>
+        <p className={styles.subtitle}>{t("creation.step2.subtitle")}</p>
+        <label className={styles.label} htmlFor="industryCategory">
+          {t("creation.step2.category.label")}
+        </label>
+        <select
+          id="industryCategory"
+          name="industryCategory"
+          className={styles.input}
+          defaultValue=""
+        >
+          <option value="" disabled>
+            —
+          </option>
+          <option value="apparel">Apparel / textiles</option>
+          <option value="food">Food & beverage</option>
+          <option value="home">Home & goods</option>
+          <option value="beauty">Beauty & care</option>
+          <option value="electronics">Electronics</option>
+          <option value="other">Other</option>
+        </select>
+        <p className={styles.helper}>{t("creation.step2.category.helper")}</p>
+      </div>
 
-      {step === 3 && (
-        <div className={styles.field}>
-          <h2 className={styles.title}>{t("creation.step3.title")}</h2>
-          <div className={styles.row}>
-            <div className={styles.col}>
-              <label className={styles.label} htmlFor="operatingCountry">
-                {t("creation.step3.country.label")}
-              </label>
-              <select
-                id="operatingCountry"
-                name="operatingCountry"
-                className={styles.input}
-                defaultValue=""
-              >
-                <option value="" disabled>
-                  —
-                </option>
-                <option value="US">United States</option>
-                <option value="GB">United Kingdom</option>
-                <option value="EU">European Union</option>
-                <option value="CA">Canada</option>
-                <option value="AU">Australia</option>
-                <option value="OTHER">Other</option>
-              </select>
-            </div>
-            <div className={styles.col}>
-              <label className={styles.label} htmlFor="currency">
-                {t("creation.step3.currency.label")}
-              </label>
-              <select
-                id="currency"
-                name="currency"
-                className={styles.input}
-                defaultValue=""
-              >
-                <option value="" disabled>
-                  —
-                </option>
-                <option value="USD">USD — US dollar</option>
-                <option value="GBP">GBP — Pound</option>
-                <option value="EUR">EUR — Euro</option>
-                <option value="CAD">CAD — Canadian dollar</option>
-                <option value="AUD">AUD — Australian dollar</option>
-              </select>
-            </div>
+      {/* Step 3 — always mounted */}
+      <div className={`${styles.field} ${step === 3 ? "" : styles.hidden}`}>
+        <h2 className={styles.title}>{t("creation.step3.title")}</h2>
+        <div className={styles.row}>
+          <div className={styles.col}>
+            <label className={styles.label} htmlFor="operatingCountry">
+              {t("creation.step3.country.label")}
+            </label>
+            <select
+              id="operatingCountry"
+              name="operatingCountry"
+              className={styles.input}
+              defaultValue=""
+            >
+              <option value="" disabled>
+                —
+              </option>
+              <option value="US">United States</option>
+              <option value="GB">United Kingdom</option>
+              <option value="EU">European Union</option>
+              <option value="CA">Canada</option>
+              <option value="AU">Australia</option>
+              <option value="OTHER">Other</option>
+            </select>
           </div>
-          <p className={styles.helper}>{t("creation.step3.helper")}</p>
+          <div className={styles.col}>
+            <label className={styles.label} htmlFor="currency">
+              {t("creation.step3.currency.label")}
+            </label>
+            <select
+              id="currency"
+              name="currency"
+              className={styles.input}
+              defaultValue=""
+            >
+              <option value="" disabled>
+                —
+              </option>
+              <option value="USD">USD — US dollar</option>
+              <option value="GBP">GBP — Pound</option>
+              <option value="EUR">EUR — Euro</option>
+              <option value="CAD">CAD — Canadian dollar</option>
+              <option value="AUD">AUD — Australian dollar</option>
+            </select>
+          </div>
         </div>
-      )}
+        <p className={styles.helper}>{t("creation.step3.helper")}</p>
+      </div>
 
       {state?.error && (
         <p role="alert" className={styles.error}>

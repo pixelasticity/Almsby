@@ -129,3 +129,7 @@
 .secondary:hover {
   background: var(--neutral-200);
 }
+/* Inactive wizard steps are hidden but stay in the DOM so values are submitted. */
+.hidden {
+  display: none;
+}
