@@ -12,17 +12,27 @@ const STEPS = 3;
  * Explicit business-creation wizard (post-registration).
  * Three steps: 1 name → 2 industry → 3 country/currency.
  *
- * All three steps stay MOUNTED (hidden via CSS), so every field is present in
- * the DOM when the final step submits — otherwise names/categories typed earlier
- * never reach the server action.
+ * Every field is a CONTROLLED input backed by React state, so the browser /
+ * React form-state resets can never wipe a value the user already entered.
+ * All four fields stay mounted (hidden via CSS), so the final submit carries
+ * everything to the server action regardless of which step is visible.
  */
 export default function BusinessOnboardingForm() {
   const [step, setStep] = useState(1);
+  const [values, setValues] = useState({
+    name: "",
+    industryCategory: "",
+    operatingCountry: "",
+    currency: "",
+  });
   const [state, formAction, isPending] = useActionState(
     createBusinessAction,
     undefined
   );
   const t = useTranslations("business");
+
+  const set = (key: keyof typeof values, value: string) =>
+    setValues((prev) => ({ ...prev, [key]: value }));
 
   const next = () => setStep((s) => Math.min(s + 1, STEPS));
   const back = () => setStep((s) => Math.max(s - 1, 1));
@@ -53,6 +63,8 @@ export default function BusinessOnboardingForm() {
           name="name"
           className={styles.input}
           placeholder={t("creation.step1.name.placeholder")}
+          value={values.name}
+          onChange={(e) => set("name", e.target.value)}
           required
         />
         <p className={styles.helper}>{t("creation.step1.name.helper")}</p>
@@ -69,7 +81,8 @@ export default function BusinessOnboardingForm() {
           id="industryCategory"
           name="industryCategory"
           className={styles.input}
-          defaultValue=""
+          value={values.industryCategory}
+          onChange={(e) => set("industryCategory", e.target.value)}
         >
           <option value="" disabled>
             —
@@ -96,7 +109,8 @@ export default function BusinessOnboardingForm() {
               id="operatingCountry"
               name="operatingCountry"
               className={styles.input}
-              defaultValue=""
+              value={values.operatingCountry}
+              onChange={(e) => set("operatingCountry", e.target.value)}
             >
               <option value="" disabled>
                 —
@@ -117,7 +131,8 @@ export default function BusinessOnboardingForm() {
               id="currency"
               name="currency"
               className={styles.input}
-              defaultValue=""
+              value={values.currency}
+              onChange={(e) => set("currency", e.target.value)}
             >
               <option value="" disabled>
                 —
