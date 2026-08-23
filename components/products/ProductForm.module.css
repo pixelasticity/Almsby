@@ -1,0 +1,75 @@
+/* Product creation form (#2) — reuses the global Phase 0 token scale. */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+.title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 700;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.label {
+  font-size: 13px;
+  font-weight: 700;
+}
+.badge {
+  margin-left: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--neutral-500);
+}
+.input {
+  padding: 10px 12px;
+  border: 1px solid var(--neutral-300);
+  border-radius: 10px;
+  background: #fff;
+  font: inherit;
+  font-size: 14px;
+}
+.input:focus {
+  outline: 2px solid var(--blue-300);
+  border-color: var(--blue-400);
+}
+.helper {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--neutral-600);
+}
+.error {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--danger-600);
+}
+.submit {
+  align-self: flex-start;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 999px;
+  background: var(--green-600);
+  color: #fff;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.submit:hover {
+  background: var(--green-700);
+}
+.submit:disabled {
+  opacity: 0.6;
+  cursor: default;
+}

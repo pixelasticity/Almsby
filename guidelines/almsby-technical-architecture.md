@@ -77,8 +77,12 @@ Product
 ├── brand
 ├── net_content
 ├── country_of_origin
+├── category                  (nullable — e.g. "outerwear", "denim", "knitwear" — segmentation for future benchmarking, no feature uses this yet)
 ├── material_composition     (structured — DPP-relevant, textiles especially)
 ├── sourcing_notes
+├── recyclable                (boolean)
+├── recycling_instructions    (text — disposal/prep instructions, e.g. "remove trims before recycling")
+├── takeback_program           (nullable — text/URL if maker offers one)
 ├── status                   (draft | active | archived)
 └── created_at
 
@@ -114,7 +118,17 @@ ComplianceStatus
 ├── sunrise_2027_ready          (boolean, derived from GTIN + Barcode completeness)
 ├── dpp_fields_complete          (boolean, derived from material_composition etc. being filled)
 ├── last_checked_at
+
+ScanEvent
+├── id
+├── gtin_id                     (FK → GTIN)
+├── scanned_at
+├── country                     (derived from request, nullable)
+├── locale                      (nullable)
+└── referrer                    (nullable — how the scan/visit arrived, if detectable)
 ```
+
+**On ScanEvent:** log every resolver hit from day one, even though nothing reads this data yet. Cheap to write, expensive to reconstruct retroactively if skipped. No feature (dashboard, analytics) built against it in Phase 1-4 — this is purely "capture now, decide later" per founder direction. Anonymized/aggregate-only if this data is ever used beyond internal debugging — never expose per-scan data tied to an individual consumer.
 
 **Why `ComplianceStatus` is its own table rather than computed on the fly:** the dashboard's whole retention hook is a fast "what's not done yet" view across potentially hundreds of products. Precomputing (and updating on relevant writes) keeps that view cheap, and gives you a natural place to hang future rules as GS1/DPP requirements get more specific.
 
@@ -370,5 +384,5 @@ These are two different translation surfaces with different urgency and differen
 ### Open questions to resolve before Phase 2 story pages ship
 
 - **Locale detection strategy for the resolver:** when a barcode gets scanned in France, does the story page auto-detect locale from browser/Accept-Language headers, or does the maker set a fixed language per product? This is a product decision hiding inside a technical library choice — decide explicitly rather than defaulting to whatever next-intl does out of the box.
-- **RSC rendering path for the resolver-linked story page specifically:** confirm Paraglide's React Server Component support handles the public, ISR-cached story-page case as cleanly as it handles the authenticated dashboard case — most i18n library examples assume the dashboard pattern, not a public high-traffic resolver target. Paraglide's own docs confirm SSR and SSG support for Next.js; worth testing against the specific ISR-cached pattern the story pages use, since that's a less common configuration.
-- **Translation workflow:** who translates what, and how does content flow from a maker's English input into other languages — AI-assisted draft with human review, professional translation service, or maker-provided translations? Different answers likely apply to dashboard UI strings (can be AI-assisted) vs. compliance-critical product fields (should not be). Note: Fluent's `.ftl` format is less immediately readable to non-developers than plain JSON would have been — worth confirming whoever handles translation content (developer, founder, or a translation service) is comfortable with the format before it becomes a bottleneck.
+- **RSC rendering path for the resolver-linked story page specifically:** confirm next-intl's React Server Component support handles the public, ISR-cached story-page case as cleanly as it handles the authenticated dashboard case — most next-intl examples assume the dashboard pattern, not a public high-traffic resolver target.
+- **Translation workflow:** who translates what, and how does content flow from a maker's English input into other languages — AI-assisted draft with human review, professional translation service, or maker-provided translations? Different answers likely apply to dashboard UI strings (can be AI-assisted) vs. compliance-critical product fields (should not be).

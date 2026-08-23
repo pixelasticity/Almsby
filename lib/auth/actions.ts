@@ -2,7 +2,6 @@
 
 import { redirect } from "next/navigation";
 import { createServerSupabaseClient } from "@/lib/auth/server";
-import { getDb } from "@/lib/db";
 import { env } from "@/lib/env";
 
 export type AuthState = { error?: string };
@@ -30,36 +29,17 @@ export async function signUpAction(
 
   if (error) return { error: error.message };
   if (!data.user) return { error: "Account could not be created." };
-  const user = data.user;
 
-  // Phase 0 DoD: sign up -> create a Business (and one empty Product under it)
-  // on the Almsby DB, keyed to the new auth user. This works whether or not
-  // email confirmation is required, since supabase.auth.signUp returns the
-  // user once the account exists, even before a session is established.
-  try {
-    const db = getDb();
-    await db.$transaction(async (tx) => {
-      const business = await tx.business.create({
-        data: { ownerId: user.id, name: email },
-      });
-      await tx.product.create({
-        data: { businessId: business.id, name: "Untitled product" },
-      });
-    });
-  } catch (e) {
-    console.error("Failed to create Business for user:", user.id, e);
-    return {
-      error:
-        "Your account was created, but we couldn't set up your workspace. " +
-        "Sign in again, or contact support if the problem persists.",
-    };
-  }
+  // Phase 1 (business onboarding): the account is created, but the Business is
+  // set up explicitly by the maker on /business/onboarding (name, industry,
+  // country, currency). We no longer auto-create a Business + empty Product here
+  // — that was the Phase 0 silent scaffold and caused the stranded-workspace bug.
 
   if (!data.session) {
     redirect(`/sign-in?message=${encodeURIComponent(
       "Check your email to confirm your account, then sign in.")}`);
   }
-  redirect("/dashboard");
+  redirect("/business/onboarding");
 }
 
 export async function signInAction(

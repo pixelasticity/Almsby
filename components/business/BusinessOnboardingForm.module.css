@@ -1,0 +1,135 @@
+/* Business onboarding wizard — Phase 1, reuses global token scale. */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 30rem;
+  margin: 0 auto;
+  padding: 28px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+.steps {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.step {
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--neutral-500);
+  background: var(--neutral-200);
+}
+.stepActive {
+  background: var(--green-600);
+  color: #fff;
+}
+.stepLabel {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--neutral-500);
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+}
+.subtitle {
+  margin: 0 0 8px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--neutral-600);
+}
+.label {
+  font-size: 13px;
+  font-weight: 700;
+}
+.input {
+  padding: 10px 12px;
+  border: 1px solid var(--neutral-300);
+  border-radius: 10px;
+  background: #fff;
+  font: inherit;
+  font-size: 14px;
+}
+.input:focus {
+  outline: 2px solid var(--blue-300);
+  border-color: var(--blue-400);
+}
+.helper {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--neutral-600);
+}
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.col {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.error {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--danger-600);
+}
+.actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+.primary {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 999px;
+  background: var(--green-600);
+  color: #fff;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.primary:hover {
+  background: var(--green-700);
+}
+.primary:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+.secondary {
+  padding: 10px 20px;
+  border: 1px solid var(--neutral-300);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--neutral-700);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.secondary:hover {
+  background: var(--neutral-200);
+}
+/* Inactive wizard steps are hidden but stay in the DOM so values are submitted. */
+.hidden {
+  display: none;
+}
