@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { getCurrentUser } from "@/lib/auth/server";
 import { getDb } from "@/lib/db";
@@ -56,7 +57,9 @@ export default async function ProductsPage() {
           <ul className={styles.items}>
             {products.map((p) => (
               <li key={p.id} className={styles.item}>
-                <span className={styles.itemName}>{p.name}</span>
+                <Link href={`/products/${p.id}`} className={styles.itemName}>
+                  {p.name}
+                </Link>
                 <span className={styles.itemStatus}>
                   {t(STATUS_KEYS[p.status] ?? "statusDraft")}
                 </span>
