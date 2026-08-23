@@ -1,0 +1,55 @@
+.page {
+  max-width: 48rem;
+  padding: 24px;
+}
+.back {
+  display: inline-block;
+  margin-bottom: 16px;
+  font-size: 13px;
+  color: var(--blue-500);
+  text-decoration: none;
+}
+.back:hover {
+  text-decoration: underline;
+}
+.head {
+  margin-bottom: 24px;
+}
+.head h1 {
+  margin: 0 0 6px;
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 700;
+}
+.meta {
+  margin: 0;
+  font-size: 14px;
+  color: var(--neutral-600);
+}
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+.cardTitle {
+  margin: 0 0 12px;
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+}
+.savedGtin {
+  margin: 0 0 16px;
+  font-size: 14px;
+  color: var(--green-700);
+}
+.muted {
+  margin: 0 0 16px;
+  font-size: 13px;
+  color: var(--neutral-500);
+}
+.gtinWrap {
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+}

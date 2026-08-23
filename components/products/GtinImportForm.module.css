@@ -1,0 +1,66 @@
+/* GTIN import card — mirrors the product-form token scale (#3). */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.label {
+  font-size: 13px;
+  font-weight: 700;
+}
+.input {
+  padding: 10px 12px;
+  border: 1px solid var(--neutral-300);
+  border-radius: 10px;
+  background: #fff;
+  font: inherit;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.input:focus {
+  outline: 2px solid var(--blue-300);
+  border-color: var(--blue-400);
+}
+.helper {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--neutral-600);
+}
+.error {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--danger-600);
+}
+.saved {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--green-700);
+}
+.submit {
+  align-self: flex-start;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 999px;
+  background: var(--green-600);
+  color: #fff;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.submit:hover {
+  background: var(--green-700);
+}
+.submit:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
