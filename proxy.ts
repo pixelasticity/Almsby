@@ -1,6 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { createServerClient, type CookieOptions } from "@supabase/ssr";
-import { env } from "@/lib/env";
+import { createCookieBoundSupabaseClient } from "@/lib/auth/supabase-cookie-client";
 
 const PUBLIC_ONLY = ["/sign-in", "/sign-up"];
 const PROTECTED_PREFIXES = ["/dashboard", "/products", "/settings"];
@@ -13,30 +12,16 @@ async function resolveSession(request: NextRequest): Promise<
   { id: string; email?: string | null } | null
 > {
   let response = NextResponse.next({ request });
-  const supabase = createServerClient(
-    env.supabaseUrl,
-    env.supabasePublishableKey,
-    {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll();
-        },
-        setAll(
-          cookiesToSet: {
-            name: string;
-            value: string;
-            options: CookieOptions;
-          }[]
-        ) {
-          cookiesToSet.forEach(({ name, value }) =>
-            request.cookies.set(name, value)
-          );
-          response = NextResponse.next({ request });
-          cookiesToSet.forEach(({ name, value, options }) =>
-            response.cookies.set(name, value, options)
-          );
-        },
-      },
+  const supabase = createCookieBoundSupabaseClient(
+    () => request.cookies.getAll(),
+    (cookiesToSet) => {
+      cookiesToSet.forEach(({ name, value }) =>
+        request.cookies.set(name, value)
+      );
+      response = NextResponse.next({ request });
+      cookiesToSet.forEach(({ name, value, options }) =>
+        response.cookies.set(name, value, options)
+      );
     }
   );
   const {

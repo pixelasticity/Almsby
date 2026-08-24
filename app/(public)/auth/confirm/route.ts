@@ -1,6 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { createServerClient, type CookieOptions } from "@supabase/ssr";
-import { env } from "@/lib/env";
+import { createCookieBoundSupabaseClient } from "@/lib/auth/supabase-cookie-client";
 
 /**
  * Email-confirmation callback for the Supabase PKCE flow.
@@ -19,26 +18,12 @@ export async function GET(request: NextRequest) {
 
   if (tokenHash && type === "email") {
     const response = NextResponse.redirect(`${origin}${safeNext}`);
-    const supabase = createServerClient(
-      env.supabaseUrl,
-      env.supabasePublishableKey,
-      {
-        cookies: {
-          getAll() {
-            return request.cookies.getAll();
-          },
-          setAll(
-            cookiesToSet: {
-              name: string;
-              value: string;
-              options: CookieOptions;
-            }[]
-          ) {
-            cookiesToSet.forEach(({ name, value, options }) =>
-              response.cookies.set(name, value, options)
-            );
-          },
-        },
+    const supabase = createCookieBoundSupabaseClient(
+      () => request.cookies.getAll(),
+      (cookiesToSet) => {
+        cookiesToSet.forEach(({ name, value, options }) =>
+          response.cookies.set(name, value, options)
+        );
       }
     );
     const { error } = await supabase.auth.verifyOtp({
