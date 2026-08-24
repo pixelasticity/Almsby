@@ -3,24 +3,26 @@
 import { useActionState } from "react";
 import { useTranslations } from "next-intl";
 import { createProductAction } from "@/app/(dashboard)/products/actions";
+import FormError from "@/components/ui/FormError";
+import FormField from "@/components/ui/FormField";
+import SubmitButton from "@/components/ui/SubmitButton";
 import styles from "./ProductForm.module.css";
 
 export default function ProductForm() {
-  const [state, formAction, isPending] = useActionState(
-    createProductAction,
-    undefined
-  );
+  const [state, formAction] = useActionState(createProductAction, undefined);
   const t = useTranslations("products");
 
   return (
     <form action={formAction} className={styles.form} noValidate>
       <h2 className={styles.title}>{t("createTitle")}</h2>
 
-      <div className={styles.field}>
-        <label htmlFor="name" className={styles.label}>
-          {t("nameLabel")}
-          <span className={styles.badge}>{t("nameRequired")}</span>
-        </label>
+      <FormField
+        styles={styles}
+        htmlFor="name"
+        label={t("nameLabel")}
+        badge={t("nameRequired")}
+        helper={t("nameHelper")}
+      >
         <input
           id="name"
           name="name"
@@ -29,14 +31,15 @@ export default function ProductForm() {
           placeholder={t("nameHelper")}
           className={styles.input}
         />
-        <p className={styles.helper}>{t("nameHelper")}</p>
-      </div>
+      </FormField>
 
-      <div className={styles.field}>
-        <label htmlFor="brand" className={styles.label}>
-          {t("brandLabel")}
-          <span className={styles.badge}>{t("optional")}</span>
-        </label>
+      <FormField
+        styles={styles}
+        htmlFor="brand"
+        label={t("brandLabel")}
+        badge={t("optional")}
+        helper={t("brandHelper")}
+      >
         <input
           id="brand"
           name="brand"
@@ -44,14 +47,15 @@ export default function ProductForm() {
           placeholder={t("brandHelper")}
           className={styles.input}
         />
-        <p className={styles.helper}>{t("brandHelper")}</p>
-      </div>
+      </FormField>
 
-      <div className={styles.field}>
-        <label htmlFor="netContent" className={styles.label}>
-          {t("netContentLabel")}
-          <span className={styles.badge}>{t("optional")}</span>
-        </label>
+      <FormField
+        styles={styles}
+        htmlFor="netContent"
+        label={t("netContentLabel")}
+        badge={t("optional")}
+        helper={t("netContentHelper")}
+      >
         <input
           id="netContent"
           name="netContent"
@@ -59,14 +63,15 @@ export default function ProductForm() {
           placeholder={t("netContentHelper")}
           className={styles.input}
         />
-        <p className={styles.helper}>{t("netContentHelper")}</p>
-      </div>
+      </FormField>
 
-      <div className={styles.field}>
-        <label htmlFor="countryOfOrigin" className={styles.label}>
-          {t("countryLabel")}
-          <span className={styles.badge}>{t("optional")}</span>
-        </label>
+      <FormField
+        styles={styles}
+        htmlFor="countryOfOrigin"
+        label={t("countryLabel")}
+        badge={t("optional")}
+        helper={t("countryHelper")}
+      >
         <input
           id="countryOfOrigin"
           name="countryOfOrigin"
@@ -74,14 +79,15 @@ export default function ProductForm() {
           placeholder={t("countryHelper")}
           className={styles.input}
         />
-        <p className={styles.helper}>{t("countryHelper")}</p>
-      </div>
+      </FormField>
 
-      <div className={styles.field}>
-        <label htmlFor="materialComposition" className={styles.label}>
-          {t("materialLabel")}
-          <span className={styles.badge}>{t("optional")}</span>
-        </label>
+      <FormField
+        styles={styles}
+        htmlFor="materialComposition"
+        label={t("materialLabel")}
+        badge={t("optional")}
+        helper={t("materialHelper")}
+      >
         <input
           id="materialComposition"
           name="materialComposition"
@@ -89,13 +95,14 @@ export default function ProductForm() {
           placeholder={t("materialHelper")}
           className={styles.input}
         />
-        <p className={styles.helper}>{t("materialHelper")}</p>
-      </div>
+      </FormField>
 
-      <div className={styles.field}>
-        <label htmlFor="status" className={styles.label}>
-          {t("statusLabel")}
-        </label>
+      <FormField
+        styles={styles}
+        htmlFor="status"
+        label={t("statusLabel")}
+        helper={t("statusHelper")}
+      >
         <select
           id="status"
           name="status"
@@ -106,18 +113,11 @@ export default function ProductForm() {
           <option value="active">{t("statusActive")}</option>
           <option value="archived">{t("statusArchived")}</option>
         </select>
-        <p className={styles.helper}>{t("statusHelper")}</p>
-      </div>
+      </FormField>
 
-      {state?.error && (
-        <p role="alert" className={styles.error}>
-          {state.error}
-        </p>
-      )}
+      <FormError message={state?.error} className={styles.error} />
 
-      <button type="submit" disabled={isPending} className={styles.submit}>
-        {isPending ? "…" : t("submit")}
-      </button>
+      <SubmitButton className={styles.submit}>{t("submit")}</SubmitButton>
     </form>
   );
 }

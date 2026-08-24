@@ -4,6 +4,9 @@ import Link from "next/link";
 import { useActionState } from "react";
 import { useTranslations } from "next-intl";
 import { signInAction, signUpAction } from "@/lib/auth/actions";
+import FormError from "@/components/ui/FormError";
+import FormField from "@/components/ui/FormField";
+import SubmitButton from "@/components/ui/SubmitButton";
 import styles from "./AuthForm.module.css";
 
 export default function AuthForm({
@@ -16,16 +19,13 @@ export default function AuthForm({
   message?: string;
 }) {
   const action = mode === "sign-up" ? signUpAction : signInAction;
-  const [state, formAction, isPending] = useActionState(action, undefined);
+  const [state, formAction] = useActionState(action, undefined);
   const tr = useTranslations("auth");
 
   return (
     <form action={formAction} className={styles.form}>
       <input type="hidden" name="next" value={next} />
-      <div className={styles.field}>
-        <label htmlFor="email" className={styles.label}>
-          {tr("email")}
-        </label>
+      <FormField styles={styles} htmlFor="email" label={tr("email")}>
         <input
           id="email"
           name="email"
@@ -34,11 +34,8 @@ export default function AuthForm({
           required
           className={styles.input}
         />
-      </div>
-      <div className={styles.field}>
-        <label htmlFor="password" className={styles.label}>
-          {tr("password")}
-        </label>
+      </FormField>
+      <FormField styles={styles} htmlFor="password" label={tr("password")}>
         <input
           id="password"
           name="password"
@@ -48,12 +45,12 @@ export default function AuthForm({
           minLength={6}
           className={styles.input}
         />
-      </div>
+      </FormField>
       {message && <p className={styles.message}>{message}</p>}
-      {state?.error && <p className={styles.error}>{state.error}</p>}
-      <button type="submit" disabled={isPending} className={styles.submit}>
-        {isPending ? "…" : mode === "sign-up" ? tr("createAccount") : tr("signIn")}
-      </button>
+      <FormError message={state?.error} className={styles.error} />
+      <SubmitButton className={styles.submit}>
+        {mode === "sign-up" ? tr("createAccount") : tr("signIn")}
+      </SubmitButton>
       <p className={styles.toggleRow}>
         {mode === "sign-up" ? tr("haveAccount") : tr("noAccount")}
         <Link
@@ -66,3 +63,4 @@ export default function AuthForm({
     </form>
   );
 }
+

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useActionState } from "react";
 import { useTranslations } from "next-intl";
 import { createBusinessAction } from "@/app/(dashboard)/business/onboarding/actions";
+import SubmitButton from "@/components/ui/SubmitButton";
 import styles from "./BusinessOnboardingForm.module.css";
 
 const STEPS = 3;
@@ -170,13 +171,9 @@ export default function BusinessOnboardingForm() {
             {t(`creation.step${step}.cta`)}
           </button>
         ) : (
-          <button
-            type="submit"
-            className={styles.primary}
-            disabled={isPending}
-          >
-            {isPending ? "…" : t("creation.step3.cta")}
-          </button>
+          <SubmitButton className={styles.primary}>
+            {t("creation.step3.cta")}
+          </SubmitButton>
         )}
       </div>
     </form>
