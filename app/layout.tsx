@@ -5,7 +5,12 @@ import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 
 export const metadata: Metadata = {
-  title: "Almsby — Every product has a story",
+  // Per-page titles flow through the template; pages without their own
+  // metadata fall back to `default`.
+  title: {
+    default: "Almsby — Every product has a story",
+    template: "%s — Almsby",
+  },
   description:
     "GS1 barcodes and EU Digital Product Passports, made simple for small makers.",
 };

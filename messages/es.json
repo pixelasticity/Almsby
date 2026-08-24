@@ -7,7 +7,9 @@
     "dashboard": "Panel",
     "products": "Productos",
     "settings": "Ajustes",
-    "signOut": "Cerrar sesión"
+    "signOut": "Cerrar sesión",
+    "primary": "Principal",
+    "skipToContent": "Saltar al contenido"
   },
   "landing": {
     "heroBadge": "GS1 Sunrise 2027 · Pasaportes Digitales de Producto de la UE",
@@ -169,7 +171,9 @@
         },
         "helper": "Establece los cálculos de impuestos base y los pagos de tu tienda.",
         "cta": "Lanzar el espacio de trabajo"
-      }
+      },
+      "back": "Atrás",
+      "metaTitle": "Configura tu negocio"
     },
     "errors": {
       "nameRequired": "Introduce un nombre de negocio para continuar.",

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { getCurrentUser } from "@/lib/auth/server";
 import { getDb } from "@/lib/db";
@@ -7,6 +8,11 @@ import ProductForm from "@/components/products/ProductForm";
 import styles from "./products.module.css";
 
 type ListProduct = { id: string; name: string; status: string };
+
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("products");
+  return { title: t("title") };
+}
 
 export default async function ProductsPage() {
   const t = await getTranslations("products");
