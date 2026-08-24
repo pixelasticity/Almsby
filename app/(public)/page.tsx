@@ -68,7 +68,7 @@ export default async function PublicHomePage() {
     <div className={styles.root}>
       <header className={styles.nav}>
         <div className={styles.navBrand}>
-          <div className={styles.logoBox}>
+          <div className={styles.logoBox} aria-hidden="true">
             <div className={styles.logoGrid}>
               {[1, 1, 1, 1, 0, 1, 1, 1, 1].map((v, i) => (
                 <div key={i} className={styles.logoCell} style={{ background: v ? "#fff" : "transparent" }} />
@@ -121,7 +121,7 @@ export default async function PublicHomePage() {
                 {EU_DEADLINES.map((item, i) => (
                   <div key={item.key} className={styles.deadlineCard} style={{ background: item.cardBg, border: item.cardBorder, animationDelay: `${0.08 * i}s` }}>
                     <div className={styles.deadlineTop}>
-                      <span className={styles.deadlineEmoji}>{item.emoji}</span>
+                      <span className={styles.deadlineEmoji} aria-hidden="true">{item.emoji}</span>
                       <span className={styles.deadlineBadge} style={{ background: item.badgeBg, color: item.badgeFg }}>
                         {dl(`${item.key}Badge`)}
                       </span>

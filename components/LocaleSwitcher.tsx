@@ -11,12 +11,16 @@ const LABELS: Record<string, string> = { en: "EN", es: "ES" };
  * Cookie-based locale switcher. Sets `NEXT_LOCALE` via a server action and
  * re-renders the server tree (i18n/request.ts reads the cookie). No URL
  * prefix, so the auth proxy is untouched.
+ *
+ * The active locale is exposed via aria-current (not disabled) so screen
+ * readers and keyboard users can always identify it.
  */
 export default function LocaleSwitcher() {
   const locale = useLocale();
   const router = useRouter();
 
   function onSelect(next: string) {
+    if (next === locale) return;
     void setLocaleAction(next).then(() => router.refresh());
   }
 
@@ -35,15 +39,14 @@ export default function LocaleSwitcher() {
         <button
           key={l}
           type="button"
-          aria-label={l}
           onClick={() => onSelect(l)}
-          disabled={l === locale}
+          aria-current={l === locale ? "true" : undefined}
           style={{
             font: "inherit",
             fontSize: 12,
             border: 0,
             borderRadius: 999,
-            padding: "4px 10px",
+            padding: "6px 12px",
             cursor: "pointer",
             background: l === locale ? "var(--green-600)" : "transparent",
             color: l === locale ? "#fff" : "var(--neutral-600)",

@@ -28,7 +28,7 @@ export default function WaitlistForm() {
 
   if (submitted) {
     return (
-      <div className={styles.formSuccess}>
+      <div role="status" className={styles.formSuccess}>
         <span className={styles.checkBadge}>
           <CheckIcon />
         </span>
@@ -60,12 +60,16 @@ export default function WaitlistForm() {
       </div>
       <button type="submit" className={styles.formButton}>
         <span>{tr("submit")}</span>
-        <ArrowRightIcon />
+        <ArrowRightIcon aria-hidden="true" />
       </button>
       <p className={styles.formHelper}>
         {tr("helper")}
       </p>
-      {error && <p className={styles.formError}>{error}</p>}
+      {error && (
+        <p role="alert" className={styles.formError}>
+          {error}
+        </p>
+      )}
     </form>
   );
 }

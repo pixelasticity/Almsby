@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { signOutAction } from "@/lib/auth/actions";
 import { getTranslations } from "next-intl/server";
+import { signOutAction } from "@/lib/auth/actions";
 import styles from "@/app/(dashboard)/layout.module.css";
 
 /** Maker dashboard top bar: brand, primary nav links, sign-out. */
@@ -9,7 +9,7 @@ export default async function DashboardNav() {
   return (
     <header className={styles.header}>
       <strong className={styles.brand}>Almsby</strong>
-      <nav className={styles.nav}>
+      <nav className={styles.nav} aria-label={t("primary")}>
         <Link href="/dashboard">{t("dashboard")}</Link>
         <Link href="/products">{t("products")}</Link>
         <Link href="/settings">{t("settings")}</Link>

@@ -45,6 +45,7 @@ export default function BusinessOnboardingForm() {
           <span
             key={n}
             className={`${styles.step} ${step >= n ? styles.stepActive : ""}`}
+            aria-current={step === n ? "step" : undefined}
           >
             {n}
           </span>
@@ -158,7 +159,7 @@ export default function BusinessOnboardingForm() {
       <div className={styles.actions}>
         {step > 1 && (
           <button type="button" className={styles.secondary} onClick={back}>
-            Back
+            {t("creation.back")}
           </button>
         )}
         {step < STEPS ? (

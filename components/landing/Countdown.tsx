@@ -30,7 +30,7 @@ export default function Countdown() {
   }, []);
 
   return (
-    <div className={styles.countdown}>
+    <div className={styles.countdown} role="timer" aria-live="off">
       <CountBox value={t.days} label={tr("days")} />
       <span className={styles.countdownSep}>:</span>
       <CountBox value={t.hours} label={tr("hours")} />

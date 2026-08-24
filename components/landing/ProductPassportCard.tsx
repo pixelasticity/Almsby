@@ -52,7 +52,7 @@ const BARCODE_SIZE = 21 * CELL;
 
 function SmallBarcode() {
   return (
-    <div className={styles.barcodeBox} style={{ width: BARCODE_SIZE, height: BARCODE_SIZE }}>
+    <div className={styles.barcodeBox} aria-hidden="true" style={{ width: BARCODE_SIZE, height: BARCODE_SIZE }}>
       <svg width={BARCODE_SIZE} height={BARCODE_SIZE} viewBox={`0 0 ${BARCODE_SIZE} ${BARCODE_SIZE}`} style={{ display: "block" }}>
         {BARCODE_MATRIX.map((row, r) =>
           row.map((v, c) =>
@@ -224,7 +224,7 @@ async function ProductPassportCard() {
         <span className={styles.badgeLabel}>{t("cardBadge")}</span>
       </div>
       <div className={`${styles.floatBadge} ${styles.floatBottom}`}>
-        <span className={styles.badgeEmoji}>🌿</span>
+        <span className={styles.badgeEmoji} aria-hidden="true">🌿</span>
         <div>
           <p className={styles.badgeMetaLabel}>{t("cardFootprintLabel")}</p>
           <p className={styles.badgeMetaValue}>{t("cardFootprintValue")}</p>

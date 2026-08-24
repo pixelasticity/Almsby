@@ -38,3 +38,28 @@
   font-family: var(--font-sans);
   cursor: pointer;
 }
+
+/* Skip link: visually hidden until keyboard-focused. */
+.skipLink {
+  position: absolute;
+  left: -9999px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.skipLink:focus-visible {
+  position: fixed;
+  left: 16px;
+  top: 12px;
+  width: auto;
+  height: auto;
+  z-index: 1000;
+  padding: 10px 16px;
+  border-radius: 8px;
+  background: var(--green-600);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+}
