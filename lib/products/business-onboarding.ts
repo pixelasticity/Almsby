@@ -1,3 +1,5 @@
+import { cleanInput, optionalInput } from "@/lib/input";
+
 /**
  * Pure, testable validation for the Phase 1 business-onboarding wizard.
  * Kept free of DB/auth (like lib/products/validate, lib/gs1/*).
@@ -33,7 +35,7 @@ const optional = (value: string | null | undefined): string | null => {
 export function validateBusinessOnboarding(
   input: BusinessOnboardingInput
 ): OnboardingValidation {
-  const name = clean(input.name);
+  const name = cleanInput(input.name);
   if (!name) {
     return { ok: false, error: "Enter a business name to continue." };
   }
@@ -41,7 +43,7 @@ export function validateBusinessOnboarding(
     return { ok: false, error: "Business names must be at least 2 characters long." };
   }
 
-  const category = optional(input.industryCategory);
+  const category = optionalInput(input.industryCategory);
   if (!category) {
     return {
       ok: false,
