@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import styles from "@/styles/landing.module.css";
 
 const LAUNCH_AT = Date.parse("2026-12-01T00:00:00Z");
@@ -17,13 +18,11 @@ function calc(target: number): Time {
   };
 }
 
-import { useTranslations } from "next-intl";
-
 export default function Countdown() {
   const [t, setT] = useState<Time>({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const tr = useTranslations("countdown");
 
-    useEffect(() => {
+  useEffect(() => {
     const tick = () => setT(calc(LAUNCH_AT));
     tick();
     const id = setInterval(tick, 1000);
