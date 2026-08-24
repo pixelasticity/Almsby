@@ -56,6 +56,8 @@ model GTIN {
   source    String   @default("own_prefix") // own_prefix | almsby_assisted
   createdAt DateTime @default(now())
   barcode   Barcode?
+
+  @@unique([gtinValue])
 }
 
 model Barcode {
