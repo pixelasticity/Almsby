@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { ArrowRightIcon, CheckIcon } from "@/components/icons";
 import styles from "@/styles/landing.module.css";
 
 // Phase 0: visual-only waitlist form - no backend yet. Validates the email
@@ -29,9 +30,7 @@ export default function WaitlistForm() {
     return (
       <div className={styles.formSuccess}>
         <span className={styles.checkBadge}>
-          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="3">
-            <path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
+          <CheckIcon />
         </span>
         {tr("success")}
       </div>
@@ -61,10 +60,7 @@ export default function WaitlistForm() {
       </div>
       <button type="submit" className={styles.formButton}>
         <span>{tr("submit")}</span>
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M5 12h14" strokeLinecap="round" />
-          <path d="M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
+        <ArrowRightIcon />
       </button>
       <p className={styles.formHelper}>
         {tr("helper")}

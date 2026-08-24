@@ -1,4 +1,5 @@
 import styles from "@/styles/landing.module.css";
+import { CheckIcon } from "@/components/icons";
 import { getTranslations } from "next-intl/server";
 
 // Deterministic QR-style matrix for the decorative barcode (same every render).
@@ -261,12 +262,5 @@ async function ProductPassportCard() {
   );
 }
 
-function CheckIcon() {
-  return (
-    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="3">
-      <path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
 export default ProductPassportCard;
+

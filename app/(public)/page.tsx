@@ -1,50 +1,10 @@
 import Countdown from "@/components/landing/Countdown";
 import WaitlistForm from "@/components/landing/WaitlistForm";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
+import { BarsIcon, LayersIcon, PlugIcon, ZapIcon } from "@/components/icons";
+import ProductPassportCard from "@/components/landing/ProductPassportCard";
 import styles from "@/styles/landing.module.css";
 import { getTranslations } from "next-intl/server";
-
-import ProductPassportCard from "@/components/landing/ProductPassportCard";
-
-function LayersIcon() {
-  return (
-    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 2 2 7l10 5 10-5-10-5z" />
-      <path d="M2 17l10 5 10-5" />
-      <path d="M2 12l10 5 10-5" />
-    </svg>
-  );
-}
-
-function ZapIcon() {
-  return (
-    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z" />
-    </svg>
-  );
-}
-
-function PlugIcon() {
-  return (
-    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 22v-5" />
-      <path d="M9 8V2" />
-      <path d="M15 8V2" />
-      <path d="M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8z" />
-    </svg>
-  );
-}
-
-function BarsIcon() {
-  return (
-    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M3 3v18h18" />
-      <path d="M7 15v4" />
-      <path d="M12 10v9" />
-      <path d="M17 6v13" />
-    </svg>
-  );
-}
 
 const FEATURES = [
   {
