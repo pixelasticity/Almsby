@@ -2,16 +2,11 @@ import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { getCurrentUser } from "@/lib/auth/server";
 import { getDb } from "@/lib/db";
+import { STATUS_I18N_KEYS, type ProductStatus } from "@/lib/products/validate";
 import ProductForm from "@/components/products/ProductForm";
 import styles from "./products.module.css";
 
 type ListProduct = { id: string; name: string; status: string };
-
-const STATUS_KEYS: Record<string, string> = {
-  draft: "statusDraft",
-  active: "statusActive",
-  archived: "statusArchived",
-};
 
 export default async function ProductsPage() {
   const t = await getTranslations("products");
@@ -22,16 +17,12 @@ export default async function ProductsPage() {
   if (user) {
     try {
       const db = getDb();
-      const business = await db.business.findFirst({
-        where: { ownerId: user.id },
+      // Single ownership-scoped query via the Business relation.
+      products = await db.product.findMany({
+        where: { business: { ownerId: user.id } },
+        orderBy: { createdAt: "desc" },
+        select: { id: true, name: true, status: true },
       });
-      if (business) {
-        products = await db.product.findMany({
-          where: { businessId: business.id },
-          orderBy: { createdAt: "desc" },
-          select: { id: true, name: true, status: true },
-        });
-      }
     } catch (error) {
       console.error("ProductsPage: failed to list products", error);
       loadError = true;
@@ -61,7 +52,7 @@ export default async function ProductsPage() {
                   {p.name}
                 </Link>
                 <span className={styles.itemStatus}>
-                  {t(STATUS_KEYS[p.status] ?? "statusDraft")}
+                  {t(STATUS_I18N_KEYS[p.status as ProductStatus] ?? "statusDraft")}
                 </span>
               </li>
             ))}

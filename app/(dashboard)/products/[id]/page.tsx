@@ -4,13 +4,8 @@ import { getTranslations } from "next-intl/server";
 import { getCurrentUser } from "@/lib/auth/server";
 import { getDb } from "@/lib/db";
 import GtinImportForm from "@/components/products/GtinImportForm";
+import { STATUS_I18N_KEYS, type ProductStatus } from "@/lib/products/validate";
 import styles from "./page.module.css";
-
-const STATUS_KEYS: Record<string, string> = {
-  draft: "statusDraft",
-  active: "statusActive",
-  archived: "statusArchived",
-};
 
 export default async function ProductDetailPage({
   params,
@@ -55,7 +50,7 @@ export default async function ProductDetailPage({
         <h1>{title}</h1>
         <p className={styles.meta}>
           {brand ? `${brand} · ` : ""}
-          {t(STATUS_KEYS[status] ?? "statusDraft")}
+          {t(STATUS_I18N_KEYS[status as ProductStatus] ?? "statusDraft")}
         </p>
       </header>
 
