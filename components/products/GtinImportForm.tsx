@@ -68,6 +68,8 @@ export default function GtinImportForm({
           autoComplete="off"
           className={styles.input}
           placeholder={`${t("gtinPlaceholder")}`}
+          aria-describedby={warning ? "gtin-helper gtin-error" : "gtin-helper"}
+          aria-invalid={warning ? true : undefined}
         />
       </FormField>
 
@@ -76,7 +78,7 @@ export default function GtinImportForm({
           {t("gtinSaved")}: <strong>{saved}</strong>
         </p>
       ) : (
-        <FormError message={warning} className={styles.error} />
+        <FormError id="gtin-error" message={warning} className={styles.error} />
       )}
 
       <SubmitButton

@@ -7,7 +7,8 @@ import type { ReactNode } from "react";
  * gap/weight slightly (e.g. AuthForm vs ProductForm), so callers pass their
  * own CSS module and rendered markup/classes stay identical to the
  * pre-refactor forms. Expected class names: `field`, `label`, plus optional
- * `badge` and `helper`.
+ * `badge` and `helper`. The helper paragraph gets the stable id
+ * `${htmlFor}-helper` so inputs can `aria-describedby` it (WCAG 3.3.2).
  */
 type CssModule = { readonly [key: string]: string };
 
@@ -34,7 +35,11 @@ export default function FormField({
         {badge ? <span className={styles.badge}>{badge}</span> : null}
       </label>
       {children}
-      {helper ? <p className={styles.helper}>{helper}</p> : null}
+      {helper ? (
+        <p id={`${htmlFor}-helper`} className={styles.helper}>
+          {helper}
+        </p>
+      ) : null}
     </div>
   );
 }

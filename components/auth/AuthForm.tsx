@@ -33,6 +33,7 @@ export default function AuthForm({
           placeholder={tr("emailPlaceholder")}
           required
           className={styles.input}
+          aria-invalid={state?.error ? true : undefined}
         />
       </FormField>
       <FormField styles={styles} htmlFor="password" label={tr("password")}>
@@ -44,6 +45,7 @@ export default function AuthForm({
           required
           minLength={6}
           className={styles.input}
+          aria-invalid={state?.error ? true : undefined}
         />
       </FormField>
       {message && <p className={styles.message}>{message}</p>}

@@ -30,6 +30,7 @@ export default function ProductForm() {
           required
           placeholder={t("nameHelper")}
           className={styles.input}
+          aria-describedby="name-helper"
         />
       </FormField>
 
@@ -46,6 +47,7 @@ export default function ProductForm() {
           type="text"
           placeholder={t("brandHelper")}
           className={styles.input}
+          aria-describedby="brand-helper"
         />
       </FormField>
 
@@ -62,6 +64,7 @@ export default function ProductForm() {
           type="text"
           placeholder={t("netContentHelper")}
           className={styles.input}
+          aria-describedby="netContent-helper"
         />
       </FormField>
 
@@ -78,6 +81,7 @@ export default function ProductForm() {
           type="text"
           placeholder={t("countryHelper")}
           className={styles.input}
+          aria-describedby="countryOfOrigin-helper"
         />
       </FormField>
 
@@ -94,6 +98,7 @@ export default function ProductForm() {
           type="text"
           placeholder={t("materialHelper")}
           className={styles.input}
+          aria-describedby="materialComposition-helper"
         />
       </FormField>
 
@@ -108,6 +113,7 @@ export default function ProductForm() {
           name="status"
           className={styles.input}
           defaultValue="draft"
+          aria-describedby="status-helper"
         >
           <option value="draft">{t("statusDraft")}</option>
           <option value="active">{t("statusActive")}</option>
