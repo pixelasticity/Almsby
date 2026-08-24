@@ -1,5 +1,6 @@
 "use server";
 
+import { Prisma } from "@prisma/client";
 import { getCurrentUser } from "@/lib/auth/server";
 import { getDb } from "@/lib/db";
 import { classifyGtinError, toGtin14 } from "@/lib/gs1/gtin";
@@ -71,6 +72,13 @@ export async function importGtinAction(
 
     return { gtin: gtin14, cls: "valid" };
   } catch (error) {
+    // Unique-constraint violation → another product already claims this GTIN.
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2002"
+    ) {
+      return { error: "gtinInUse" };
+    }
     console.error("importGtinAction failed:", user.id, productId, error);
     return { error: "saveFailed" };
   }

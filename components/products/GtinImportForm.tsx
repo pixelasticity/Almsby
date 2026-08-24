@@ -20,6 +20,7 @@ const ERROR_KEYS: Record<string, string> = {
   missingProduct: "gtinErrorMissingProduct",
   authRequired: "gtinErrorAuth",
   productNotFound: "gtinErrorNotFound",
+  gtinInUse: "gtinErrorInUse",
   saveFailed: "gtinErrorSave",
 };
 

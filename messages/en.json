@@ -126,6 +126,7 @@
     "gtinErrorMissingProduct": "Missing product reference. Refresh and try again.",
     "gtinErrorAuth": "You must be signed in to import a GTIN.",
     "gtinErrorNotFound": "Product not found for your account.",
+    "gtinErrorInUse": "That GTIN is already attached to another product in your business.",
     "gtinErrorSave": "Could not save the GTIN. Please try again.",
     "backToProducts": "Back to products"
   },

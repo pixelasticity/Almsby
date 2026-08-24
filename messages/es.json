@@ -126,6 +126,7 @@
     "gtinErrorMissingProduct": "Falta la referencia del producto. Actualiza la página e inténtalo de nuevo.",
     "gtinErrorAuth": "Debes iniciar sesión para importar un GTIN.",
     "gtinErrorNotFound": "No se encontró el producto para tu cuenta.",
+    "gtinErrorInUse": "Ese GTIN ya está asociado a otro producto de tu negocio.",
     "gtinErrorSave": "No se pudo guardar el GTIN. Inténtalo de nuevo.",
     "backToProducts": "Volver a productos"
   },
