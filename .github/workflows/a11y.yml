@@ -1,0 +1,60 @@
+name: A11y
+
+on:
+  push:
+    branches: [master, development]
+  pull_request:
+
+jobs:
+  axe-scan:
+    runs-on: ubuntu-latest
+    # Dummy env for every step: public pages don't touch the DB/auth, but
+    # env.ts requires the vars to exist at build and request time. NEXT_PUBLIC_*
+    # are inlined during `build`, hence set here rather than only at runtime.
+    env:
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
+      NEXT_PUBLIC_RESOLVER_URL: http://localhost:3000
+      NEXT_PUBLIC_SUPABASE_URL: http://localhost:54321
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ci-dummy-key
+      DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
+      DIRECT_URL: postgresql://ci:ci@localhost:5432/ci
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browser (Chromium)
+        run: npx playwright install --with-deps chromium
+
+      - name: Build
+        run: npm run build
+
+      - name: Start production server
+        run: |
+          npm run start &
+          for i in $(seq 1 60); do
+            curl -sf http://localhost:3000/sign-in > /dev/null && break
+            sleep 1
+          done
+          curl -sf http://localhost:3000/sign-in > /dev/null || {
+            echo "Server did not become ready on :3000" >&2
+            exit 1
+          }
+
+      - name: Run axe scan (WCAG 2.x A/AA, fails on serious/critical)
+        run: npm run scan:a11y
+
+      - name: Upload axe reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: axe-reports
+          path: a11y-report/
