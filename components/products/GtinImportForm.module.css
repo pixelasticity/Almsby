@@ -28,16 +28,10 @@
   border-color: var(--blue-400);
 }
 .helper {
-  margin: 0;
-  font-size: 12px;
-  line-height: 1.5;
-  color: var(--neutral-600);
+  composes: helper from "../ui/form-controls.module.css";
 }
 .error {
-  margin: 0;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--danger-600);
+  composes: error from "../ui/form-controls.module.css";
 }
 .saved {
   margin: 0;
@@ -46,21 +40,6 @@
   color: var(--green-700);
 }
 .submit {
+  composes: pill from "../ui/form-controls.module.css";
   align-self: flex-start;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 999px;
-  background: var(--green-600);
-  color: #fff;
-  font: inherit;
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-}
-.submit:hover {
-  background: var(--green-700);
-}
-.submit:disabled {
-  opacity: 0.6;
-  cursor: default;
 }
