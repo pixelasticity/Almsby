@@ -2,6 +2,8 @@
 
 import { redirect } from "next/navigation";
 import { createServerSupabaseClient } from "@/lib/auth/server";
+import { sanitizeRedirectPath } from "@/lib/auth/redirect";
+import { isValidEmail } from "@/lib/input";
 import { env } from "@/lib/env";
 
 export type AuthState = { error?: string };
@@ -13,7 +15,7 @@ export async function signUpAction(
   const email = String(formData.get("email") ?? "").trim();
   const password = String(formData.get("password") ?? "");
 
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+  if (!isValidEmail(email)) {
     return { error: "Please enter a valid email address." };
   }
   if (password.length < 6) {
@@ -54,8 +56,7 @@ export async function signInAction(
     return { error: "Email and password are required." };
   }
 
-  const safeNext =
-    next.startsWith("/") && !next.startsWith("//") ? next : "/dashboard";
+  const safeNext = sanitizeRedirectPath(next);
 
   const supabase = await createServerSupabaseClient();
   const { error } = await supabase.auth.signInWithPassword(
