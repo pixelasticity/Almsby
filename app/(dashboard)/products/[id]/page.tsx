@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { cache } from "react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
@@ -7,6 +8,24 @@ import { getDb } from "@/lib/db";
 import GtinImportForm from "@/components/products/GtinImportForm";
 import { STATUS_I18N_KEYS, type ProductStatus } from "@/lib/products/validate";
 import styles from "./page.module.css";
+
+/**
+ * Ownership-scoped product lookup, cached per request: generateMetadata and
+ * the page render share one query instead of issuing two. Narrow projection —
+ * only the fields the tab title / header / GTIN section display.
+ */
+const getOwnedProduct = cache(async (productId: string, userId: string) => {
+  const db = getDb();
+  return db.product.findFirst({
+    where: { id: productId, business: { ownerId: userId } },
+    select: {
+      name: true,
+      brand: true,
+      status: true,
+      gtin: { select: { gtinValue: true } },
+    },
+  });
+});
 
 export async function generateMetadata({
   params,
@@ -17,15 +36,10 @@ export async function generateMetadata({
   const t = await getTranslations("products");
   let title = t("title");
   try {
-    // Name-only lookup for the tab title; the page render does the full
-    // ownership-scoped fetch. Fall back to the generic title on any failure.
+    // Falls back to the generic title on any failure.
     const user = await getCurrentUser();
     if (user) {
-      const db = getDb();
-      const product = await db.product.findFirst({
-        where: { id, business: { ownerId: user.id } },
-        select: { name: true },
-      });
+      const product = await getOwnedProduct(id, user.id);
       if (product) title = product.name;
     }
   } catch (error) {
@@ -51,12 +65,8 @@ export default async function ProductDetailPage({
   let gtin: string | null = null;
 
   try {
-    const db = getDb();
     // Ownership-scoped: only products under the signed-in user's Business.
-    const product = await db.product.findFirst({
-      where: { id, business: { ownerId: user.id } },
-      include: { gtin: true },
-    });
+    const product = await getOwnedProduct(id, user.id);
     if (!product) notFound();
     title = product.name;
     brand = product.brand;

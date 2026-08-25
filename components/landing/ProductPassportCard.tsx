@@ -50,146 +50,35 @@ const BARCODE_MATRIX = generateBarcodeMatrix();
 const CELL = 5;
 const BARCODE_SIZE = 21 * CELL;
 
+// Hand-authored accent cells collapsed into one <path> node (same reason
+// as BARCODE_MATRIX_PATH): one node instead of ~150.
+const BARCODE_ART_PATH =
+  "M50.4 .5h4.4v4.4h-4.4ZM40.4 5.5h4.4v4.4h-4.4ZM50.4 5.5h4.4v4.4h-4.4ZM55.4 5.5h4.4v4.4h-4.4ZM60.4 5.5h4.4v4.4h-4.4ZM55.4 10.5h4.4v4.4h-4.4ZM40.4 15.5h4.4v4.4h-4.4ZM45.4 15.5h4.4v4.4h-4.4ZM50.4 15.5h4.4v4.4h-4.4ZM60.4 15.5h4.4v4.4h-4.4ZM50.4 20.5h4.4v4.4h-4.4ZM40.4 25.5h4.4v4.4h-4.4ZM55.4 25.5h4.4v4.4h-4.4ZM60.4 25.5h4.4v4.4h-4.4ZM40.4 30.4h4.4v4.4h-4.4ZM50.4 30.4h4.4v4.4h-4.4ZM60.4 30.4h4.4v4.4h-4.4ZM45.4 35.4h4.4v4.4h-4.4ZM.5 40.4h4.4v4.4h-4.4ZM5.5 40.4h4.4v4.4h-4.4ZM10.5 40.4h4.4v4.4h-4.4ZM15.5 40.4h4.4v4.4h-4.4ZM20.5 40.4h4.4v4.4h-4.4ZM30.4 40.4h4.4v4.4h-4.4ZM35.4 40.4h4.4v4.4h-4.4ZM40.4 40.4h4.4v4.4h-4.4ZM45.4 40.4h4.4v4.4h-4.4ZM55.4 40.4h4.4v4.4h-4.4ZM65.4 40.4h4.4v4.4h-4.4ZM75.4 40.4h4.4v4.4h-4.4ZM85.4 40.4h4.4v4.4h-4.4ZM95.4 40.4h4.4v4.4h-4.4ZM.5 45.4h4.4v4.4h-4.4ZM5.5 45.4h4.4v4.4h-4.4ZM15.5 45.4h4.4v4.4h-4.4ZM20.5 45.4h4.4v4.4h-4.4ZM25.5 45.4h4.4v4.4h-4.4ZM35.4 45.4h4.4v4.4h-4.4ZM40.4 45.4h4.4v4.4h-4.4ZM50.4 45.4h4.4v4.4h-4.4ZM75.4 45.4h4.4v4.4h-4.4ZM80.4 45.4h4.4v4.4h-4.4ZM85.4 45.4h4.4v4.4h-4.4ZM90.4 45.4h4.4v4.4h-4.4ZM95.4 45.4h4.4v4.4h-4.4ZM100.3 45.4h4.4v4.4h-4.4ZM30.4 50.4h4.4v4.4h-4.4ZM35.4 50.4h4.4v4.4h-4.4ZM50.4 50.4h4.4v4.4h-4.4ZM60.4 50.4h4.4v4.4h-4.4ZM65.4 50.4h4.4v4.4h-4.4ZM90.4 50.4h4.4v4.4h-4.4ZM95.4 50.4h4.4v4.4h-4.4ZM.5 55.4h4.4v4.4h-4.4ZM20.5 55.4h4.4v4.4h-4.4ZM40.4 55.4h4.4v4.4h-4.4ZM55.4 55.4h4.4v4.4h-4.4ZM60.4 55.4h4.4v4.4h-4.4ZM65.4 55.4h4.4v4.4h-4.4ZM80.4 55.4h4.4v4.4h-4.4ZM85.4 55.4h4.4v4.4h-4.4ZM90.4 55.4h4.4v4.4h-4.4ZM20.5 60.4h4.4v4.4h-4.4ZM25.5 60.4h4.4v4.4h-4.4ZM30.4 60.4h4.4v4.4h-4.4ZM45.4 60.4h4.4v4.4h-4.4ZM70.4 60.4h4.4v4.4h-4.4ZM80.4 60.4h4.4v4.4h-4.4ZM85.4 60.4h4.4v4.4h-4.4ZM100.3 60.4h4.4v4.4h-4.4ZM40.4 65.4h4.4v4.4h-4.4ZM55.4 65.4h4.4v4.4h-4.4ZM65.4 65.4h4.4v4.4h-4.4ZM70.4 65.4h4.4v4.4h-4.4ZM75.4 65.4h4.4v4.4h-4.4ZM80.4 65.4h4.4v4.4h-4.4ZM85.4 65.4h4.4v4.4h-4.4ZM90.4 65.4h4.4v4.4h-4.4ZM100.3 65.4h4.4v4.4h-4.4ZM40.4 70.4h4.4v4.4h-4.4ZM55.4 70.4h4.4v4.4h-4.4ZM60.4 70.4h4.4v4.4h-4.4ZM75.4 70.4h4.4v4.4h-4.4ZM90.4 70.4h4.4v4.4h-4.4ZM95.4 70.4h4.4v4.4h-4.4ZM45.4 75.4h4.4v4.4h-4.4ZM65.4 75.4h4.4v4.4h-4.4ZM80.4 75.4h4.4v4.4h-4.4ZM85.4 75.4h4.4v4.4h-4.4ZM90.4 75.4h4.4v4.4h-4.4ZM95.4 75.4h4.4v4.4h-4.4ZM40.4 80.4h4.4v4.4h-4.4ZM50.4 80.4h4.4v4.4h-4.4ZM60.4 80.4h4.4v4.4h-4.4ZM70.4 80.4h4.4v4.4h-4.4ZM80.4 80.4h4.4v4.4h-4.4ZM85.4 80.4h4.4v4.4h-4.4ZM40.4 85.4h4.4v4.4h-4.4ZM65.4 85.4h4.4v4.4h-4.4ZM70.4 85.4h4.4v4.4h-4.4ZM75.4 85.4h4.4v4.4h-4.4ZM80.4 85.4h4.4v4.4h-4.4ZM90.4 85.4h4.4v4.4h-4.4ZM95.4 85.4h4.4v4.4h-4.4ZM40.4 90.4h4.4v4.4h-4.4ZM50.4 90.4h4.4v4.4h-4.4ZM55.4 90.4h4.4v4.4h-4.4ZM60.4 90.4h4.4v4.4h-4.4ZM65.4 90.4h4.4v4.4h-4.4ZM75.4 90.4h4.4v4.4h-4.4ZM90.4 90.4h4.4v4.4h-4.4ZM40.4 95.4h4.4v4.4h-4.4ZM45.4 95.4h4.4v4.4h-4.4ZM50.4 95.4h4.4v4.4h-4.4ZM55.4 95.4h4.4v4.4h-4.4ZM65.4 95.4h4.4v4.4h-4.4ZM75.4 95.4h4.4v4.4h-4.4ZM80.4 95.4h4.4v4.4h-4.4ZM90.4 95.4h4.4v4.4h-4.4ZM40.4 100.3h4.4v4.4h-4.4ZM60.4 100.3h4.4v4.4h-4.4ZM65.4 100.3h4.4v4.4h-4.4ZM70.4 100.3h4.4v4.4h-4.4ZM75.4 100.3h4.4v4.4h-4.4ZM80.4 100.3h4.4v4.4h-4.4ZM85.4 100.3h4.4v4.4h-4.4ZM95.4 100.3h4.4v4.4h-4.4Z";
+
+// One precomputed <path> instead of ~200 <rect> nodes: identical cells, a
+// fraction of the SSR'd HTML. The old rx=0.3 corner rounding is dropped —
+// imperceptible at 5px cell size.
+const BARCODE_MATRIX_PATH = (() => {
+  let d = "";
+  for (let r = 0; r < BARCODE_MATRIX.length; r++) {
+    for (let c = 0; c < BARCODE_MATRIX[r].length; c++) {
+      if (!BARCODE_MATRIX[r][c]) continue;
+      const x = c * CELL + 0.3;
+      const y = r * CELL + 0.3;
+      d += `M${x} ${y}h${CELL - 0.6}v${CELL - 0.6}h-${CELL - 0.6}Z`;
+    }
+  }
+  return d;
+})();
+
 function SmallBarcode() {
   return (
     <div className={styles.barcodeBox} aria-hidden="true" style={{ width: BARCODE_SIZE, height: BARCODE_SIZE }}>
       <svg width={BARCODE_SIZE} height={BARCODE_SIZE} viewBox={`0 0 ${BARCODE_SIZE} ${BARCODE_SIZE}`} style={{ display: "block" }}>
-        {BARCODE_MATRIX.map((row, r) =>
-          row.map((v, c) =>
-            v ? (
-              <rect key={`${r}-${c}`} x={c * CELL + 0.3} y={r * CELL + 0.3} width={CELL - 0.6} height={CELL - 0.6} fill="var(--neutral-900)" rx={0.3} />
-            ) : null
-          )
-        )}
+        <path d={BARCODE_MATRIX_PATH} fill="var(--neutral-900)" />
       </svg>
       <svg width={BARCODE_SIZE} height={BARCODE_SIZE} viewBox={`0 0 ${BARCODE_SIZE} ${BARCODE_SIZE}`} style={{ display: "block" }}>
-        <rect fill="var(--neutral-900)" x="50.4" y=".5" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="40.4" y="5.5" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="50.4" y="5.5" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="55.4" y="5.5" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="60.4" y="5.5" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="55.4" y="10.5" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="40.4" y="15.5" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="45.4" y="15.5" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="50.4" y="15.5" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="60.4" y="15.5" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="50.4" y="20.5" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="40.4" y="25.5" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="55.4" y="25.5" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="60.4" y="25.5" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="40.4" y="30.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="50.4" y="30.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="60.4" y="30.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="45.4" y="35.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x=".5" y="40.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="5.5" y="40.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="10.5" y="40.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="15.5" y="40.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="20.5" y="40.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="30.4" y="40.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="35.4" y="40.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="40.4" y="40.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="45.4" y="40.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="55.4" y="40.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="65.4" y="40.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="75.4" y="40.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="85.4" y="40.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="95.4" y="40.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x=".5" y="45.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="5.5" y="45.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="15.5" y="45.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="20.5" y="45.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="25.5" y="45.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="35.4" y="45.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="40.4" y="45.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="50.4" y="45.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="75.4" y="45.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="80.4" y="45.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="85.4" y="45.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="90.4" y="45.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="95.4" y="45.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="100.3" y="45.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="30.4" y="50.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="35.4" y="50.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="50.4" y="50.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="60.4" y="50.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="65.4" y="50.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="90.4" y="50.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="95.4" y="50.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x=".5" y="55.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="20.5" y="55.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="40.4" y="55.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="55.4" y="55.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="60.4" y="55.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="65.4" y="55.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="80.4" y="55.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="85.4" y="55.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="90.4" y="55.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="20.5" y="60.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="25.5" y="60.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="30.4" y="60.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="45.4" y="60.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="70.4" y="60.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="80.4" y="60.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="85.4" y="60.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="100.3" y="60.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="40.4" y="65.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="55.4" y="65.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="65.4" y="65.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="70.4" y="65.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="75.4" y="65.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="80.4" y="65.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="85.4" y="65.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="90.4" y="65.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="100.3" y="65.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="40.4" y="70.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="55.4" y="70.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="60.4" y="70.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="75.4" y="70.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="90.4" y="70.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="95.4" y="70.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="45.4" y="75.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="65.4" y="75.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="80.4" y="75.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="85.4" y="75.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="90.4" y="75.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="95.4" y="75.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="40.4" y="80.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="50.4" y="80.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="60.4" y="80.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="70.4" y="80.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="80.4" y="80.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="85.4" y="80.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="40.4" y="85.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="65.4" y="85.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="70.4" y="85.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="75.4" y="85.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="80.4" y="85.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="90.4" y="85.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="95.4" y="85.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="40.4" y="90.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="50.4" y="90.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="55.4" y="90.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="60.4" y="90.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="65.4" y="90.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="75.4" y="90.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="90.4" y="90.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="40.4" y="95.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="45.4" y="95.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="50.4" y="95.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="55.4" y="95.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="65.4" y="95.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="75.4" y="95.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="80.4" y="95.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="90.4" y="95.4" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="40.4" y="100.3" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="60.4" y="100.3" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="65.4" y="100.3" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="70.4" y="100.3" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="75.4" y="100.3" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="80.4" y="100.3" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="85.4" y="100.3" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
-        <rect fill="var(--neutral-900)" x="95.4" y="100.3" width={CELL - 0.6} height={CELL - 0.6} rx={0.3}/>
+        <path d={BARCODE_ART_PATH} fill="var(--neutral-900)" />
         <g>
           <rect fill="var(--neutral-900)" x="10.1" y="10.1" width="15" height="15"/>
           <path fill="var(--neutral-900)" d="M.1.1v35h35V.1H.1ZM30.1,30.1H5.1V5.1h25v25Z"/>
