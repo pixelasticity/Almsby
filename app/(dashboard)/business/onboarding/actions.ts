@@ -27,11 +27,10 @@ export async function createBusinessAction(
     return { error: "You must be signed in to set up a business." };
   }
 
-  let existing: { id: string } | null = null;
-  let created = false;
   try {
     const db = getDb();
-    existing = await db.business.findFirst({ where: { ownerId: user.id } });
+    // Idempotent: re-submitting onboarding keeps the existing Business.
+    const existing = await db.business.findFirst({ where: { ownerId: user.id } });
     if (!existing) {
       await db.business.create({
         data: {
@@ -42,15 +41,12 @@ export async function createBusinessAction(
           currency: result.data.currency,
         },
       });
-      created = true;
     }
   } catch (error) {
     console.error("createBusinessAction failed:", user.id, error);
     return { error: "Could not set up your business. Please try again." };
   }
 
-  // After the try/catch so the NEXT_REDIRECT isn't swallowed.
-  if (existing) redirect("/dashboard");
-  if (created) redirect("/dashboard");
+  // Redirect after the try/catch so NEXT_REDIRECT isn't swallowed.
   redirect("/dashboard");
 }

@@ -7,7 +7,9 @@
     "dashboard": "Panel",
     "products": "Productos",
     "settings": "Ajustes",
-    "signOut": "Cerrar sesión"
+    "signOut": "Cerrar sesión",
+    "primary": "Principal",
+    "skipToContent": "Saltar al contenido"
   },
   "landing": {
     "heroBadge": "GS1 Sunrise 2027 · Pasaportes Digitales de Producto de la UE",
@@ -126,6 +128,7 @@
     "gtinErrorMissingProduct": "Falta la referencia del producto. Actualiza la página e inténtalo de nuevo.",
     "gtinErrorAuth": "Debes iniciar sesión para importar un GTIN.",
     "gtinErrorNotFound": "No se encontró el producto para tu cuenta.",
+    "gtinErrorInUse": "Ese GTIN ya está asociado a otro producto de tu negocio.",
     "gtinErrorSave": "No se pudo guardar el GTIN. Inténtalo de nuevo.",
     "backToProducts": "Volver a productos"
   },
@@ -168,7 +171,9 @@
         },
         "helper": "Establece los cálculos de impuestos base y los pagos de tu tienda.",
         "cta": "Lanzar el espacio de trabajo"
-      }
+      },
+      "back": "Atrás",
+      "metaTitle": "Configura tu negocio"
     },
     "errors": {
       "nameRequired": "Introduce un nombre de negocio para continuar.",

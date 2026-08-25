@@ -49,7 +49,28 @@ supabase/
 tests/                    # Vitest suite
 .github/workflows/
   ci.yml                  # lint + typecheck + test + build (every PR)
+  a11y.yml                # accessibility: jsx-a11y lint + runtime axe scan (every PR)
   deploy-migrations.yml   # migrations: push dev→staging, merge master→production
+```
+
+## Accessibility (CI + local)
+
+Two complementary layers, both gating every PR:
+
+1. **Static** — the `Lint` step enforces the full `eslint-plugin-jsx-a11y`
+   recommended rule set (on top of Next's built-in subset).
+2. **Runtime** — the dedicated `A11y` workflow builds the app with dummy env
+   vars, starts it, and runs axe-core (WCAG 2.x A/AA) over every route that is
+   reachable without an authenticated session (`/`, `/sign-in`, `/sign-up`,
+   `/s/{gtin}`). Serious/critical violations fail the build; per-route JSON
+   reports are uploaded as artifacts. The scan emulates reduced motion so
+   entrance animations don't produce false contrast failures.
+
+Run locally against a production server:
+
+```bash
+npm run build && npm run start   # or npx next dev
+A11Y_CHANNEL=chrome npm run scan:a11y   # channel only needed on macOS < 14
 ```
 
 ## Internationalization (next-intl)

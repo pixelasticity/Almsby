@@ -1,3 +1,5 @@
+import { cleanInput, optionalInput } from "@/lib/input";
+
 /**
  * Pure, testable validation for the Phase 1 product creation form (#2).
  * Kept free of DB/auth so it can be unit-tested like lib/gs1/*.
@@ -10,6 +12,13 @@ export const PRODUCT_STATUSES: readonly ProductStatus[] = [
   "active",
   "archived",
 ];
+
+/** ProductStatus → i18n key in the `products` namespace (list + detail pages). */
+export const STATUS_I18N_KEYS: Record<ProductStatus, string> = {
+  draft: "statusDraft",
+  active: "statusActive",
+  archived: "statusArchived",
+};
 
 export type ProductFormInput = {
   name: string;
@@ -33,17 +42,9 @@ export type ProductValidation =
   | { ok: true; data: NormalizedProductInput }
   | { ok: false; error: string };
 
-const clean = (value: string | null | undefined): string =>
-  value?.trim() ?? "";
-
-const optionalString = (value: string | null | undefined): string | null => {
-  const v = clean(value);
-  return v.length > 0 ? v : null;
-};
-
 /** Validate + normalize the raw product creation form fields. */
 export function validateProductInput(input: ProductFormInput): ProductValidation {
-  const name = clean(input.name);
+  const name = cleanInput(input.name);
   if (!name) {
     return { ok: false, error: "Product name is required." };
   }
@@ -58,10 +59,10 @@ export function validateProductInput(input: ProductFormInput): ProductValidation
     ok: true,
     data: {
       name,
-      brand: optionalString(input.brand),
-      netContent: optionalString(input.netContent),
-      countryOfOrigin: optionalString(input.countryOfOrigin),
-      materialComposition: optionalString(input.materialComposition),
+      brand: optionalInput(input.brand),
+      netContent: optionalInput(input.netContent),
+      countryOfOrigin: optionalInput(input.countryOfOrigin),
+      materialComposition: optionalInput(input.materialComposition),
       status,
     },
   };

@@ -6,6 +6,9 @@ import {
   importGtinAction,
   type GtinImportState,
 } from "@/app/(dashboard)/products/[id]/actions";
+import FormError from "@/components/ui/FormError";
+import FormField from "@/components/ui/FormField";
+import SubmitButton from "@/components/ui/SubmitButton";
 import styles from "./GtinImportForm.module.css";
 
 // Map the classifier's state to the i18n key for the exact inline warning.
@@ -20,6 +23,7 @@ const ERROR_KEYS: Record<string, string> = {
   missingProduct: "gtinErrorMissingProduct",
   authRequired: "gtinErrorAuth",
   productNotFound: "gtinErrorNotFound",
+  gtinInUse: "gtinErrorInUse",
   saveFailed: "gtinErrorSave",
 };
 
@@ -30,10 +34,10 @@ export default function GtinImportForm({
   productId: string;
   existingGtin?: string | null;
 }) {
-  const [state, formAction, isPending] = useActionState<
-    GtinImportState,
-    FormData
-  >(importGtinAction, {});
+  const [state, formAction] = useActionState<GtinImportState, FormData>(
+    importGtinAction,
+    {}
+  );
   const t = useTranslations("products");
 
   const saved = existingGtin ?? state?.gtin;
@@ -50,10 +54,12 @@ export default function GtinImportForm({
     <form action={formAction} className={styles.form} noValidate>
       <input type="hidden" name="productId" value={productId} />
 
-      <div className={styles.field}>
-        <label className={styles.label} htmlFor="gtin">
-          {t("gtinLabel")}
-        </label>
+      <FormField
+        styles={styles}
+        htmlFor="gtin"
+        label={t("gtinLabel")}
+        helper={t("gtinHelper")}
+      >
         <input
           id="gtin"
           name="gtin"
@@ -62,29 +68,25 @@ export default function GtinImportForm({
           autoComplete="off"
           className={styles.input}
           placeholder={`${t("gtinPlaceholder")}`}
+          aria-describedby={warning ? "gtin-helper gtin-error" : "gtin-helper"}
+          aria-invalid={warning ? true : undefined}
         />
-        <p className={styles.helper}>{t("gtinHelper")}</p>
-      </div>
+      </FormField>
 
       {saved ? (
         <p className={styles.saved}>
           {t("gtinSaved")}: <strong>{saved}</strong>
         </p>
       ) : (
-        warning && (
-          <p role="alert" className={styles.error}>
-            {warning}
-          </p>
-        )
+        <FormError id="gtin-error" message={warning} className={styles.error} />
       )}
 
-      <button
-        type="submit"
+      <SubmitButton
         className={styles.submit}
-        disabled={isPending || Boolean(saved)}
+        disabled={Boolean(saved)}
       >
-        {isPending ? "…" : saved ? t("gtinSavedBtn") : t("gtinSubmit")}
-      </button>
+        {saved ? t("gtinSavedBtn") : t("gtinSubmit")}
+      </SubmitButton>
     </form>
   );
 }

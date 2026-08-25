@@ -1,16 +1,38 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { getCurrentUser } from "@/lib/auth/server";
 import { getDb } from "@/lib/db";
 import GtinImportForm from "@/components/products/GtinImportForm";
+import { STATUS_I18N_KEYS, type ProductStatus } from "@/lib/products/validate";
 import styles from "./page.module.css";
 
-const STATUS_KEYS: Record<string, string> = {
-  draft: "statusDraft",
-  active: "statusActive",
-  archived: "statusArchived",
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const t = await getTranslations("products");
+  let title = t("title");
+  try {
+    // Name-only lookup for the tab title; the page render does the full
+    // ownership-scoped fetch. Fall back to the generic title on any failure.
+    const user = await getCurrentUser();
+    if (user) {
+      const db = getDb();
+      const product = await db.product.findFirst({
+        where: { id, business: { ownerId: user.id } },
+        select: { name: true },
+      });
+      if (product) title = product.name;
+    }
+  } catch (error) {
+    console.error("ProductDetailPage: metadata lookup failed", id, error);
+  }
+  return { title };
+}
 
 export default async function ProductDetailPage({
   params,
@@ -48,14 +70,14 @@ export default async function ProductDetailPage({
   return (
     <div className={styles.page}>
       <Link href="/products" className={styles.back}>
-        ← {t("backToProducts")}
+        <span aria-hidden="true">←</span> {t("backToProducts")}
       </Link>
 
       <header className={styles.head}>
         <h1>{title}</h1>
         <p className={styles.meta}>
           {brand ? `${brand} · ` : ""}
-          {t(STATUS_KEYS[status] ?? "statusDraft")}
+          {t(STATUS_I18N_KEYS[status as ProductStatus] ?? "statusDraft")}
         </p>
       </header>
 

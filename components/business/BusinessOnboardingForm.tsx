@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useActionState } from "react";
 import { useTranslations } from "next-intl";
 import { createBusinessAction } from "@/app/(dashboard)/business/onboarding/actions";
+import SubmitButton from "@/components/ui/SubmitButton";
 import styles from "./BusinessOnboardingForm.module.css";
 
 const STEPS = 3;
@@ -44,6 +45,7 @@ export default function BusinessOnboardingForm() {
           <span
             key={n}
             className={`${styles.step} ${step >= n ? styles.stepActive : ""}`}
+            aria-current={step === n ? "step" : undefined}
           >
             {n}
           </span>
@@ -157,7 +159,7 @@ export default function BusinessOnboardingForm() {
       <div className={styles.actions}>
         {step > 1 && (
           <button type="button" className={styles.secondary} onClick={back}>
-            Back
+            {t("creation.back")}
           </button>
         )}
         {step < STEPS ? (
@@ -170,13 +172,9 @@ export default function BusinessOnboardingForm() {
             {t(`creation.step${step}.cta`)}
           </button>
         ) : (
-          <button
-            type="submit"
-            className={styles.primary}
-            disabled={isPending}
-          >
-            {isPending ? "…" : t("creation.step3.cta")}
-          </button>
+          <SubmitButton className={styles.primary}>
+            {t("creation.step3.cta")}
+          </SubmitButton>
         )}
       </div>
     </form>
