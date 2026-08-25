@@ -1,0 +1,44 @@
+/* GTIN setup fork — toggle between import (have prefix) and concierge (need one). */
+.fork {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.tabs {
+  display: flex;
+  gap: 8px;
+}
+.tab {
+  padding: 8px 14px;
+  border: 1px solid var(--neutral-300);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--neutral-600);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.tab:hover {
+  background: var(--neutral-200);
+}
+.tabActive {
+  composes: tab;
+  background: var(--green-600);
+  color: #fff;
+  border-color: var(--green-600);
+}
+.savedBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.saved {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--green-700);
+}
+.saved strong {
+  font-variant-numeric: tabular-nums;
+}

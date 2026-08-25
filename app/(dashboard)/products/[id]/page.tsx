@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { getCurrentUser } from "@/lib/auth/server";
 import { getDb } from "@/lib/db";
-import GtinImportForm from "@/components/products/GtinImportForm";
+import GtinSetup from "@/components/products/GtinSetup";
 import { STATUS_I18N_KEYS, type ProductStatus } from "@/lib/products/validate";
 import styles from "./page.module.css";
 
@@ -91,7 +91,7 @@ export default async function ProductDetailPage({
           <p className={styles.muted}>{t("gtinSectionEmpty")}</p>
         )}
         <div className={styles.gtinWrap}>
-          <GtinImportForm productId={id} existingGtin={gtin} />
+          <GtinSetup productId={id} existingGtin={gtin} />
         </div>
       </section>
     </div>

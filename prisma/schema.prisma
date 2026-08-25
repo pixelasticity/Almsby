@@ -20,6 +20,7 @@ model Business {
   name             String
   gs1Prefix        String?
   membershipStatus String    @default("none") // none | in_progress | active
+  gtinSequenceLastUsed Int    @default(0) // last item-reference issued under gs1Prefix (concierge-allocation, #4)
   subscriptionTier String    @default("starter") // starter | growth | scale
   industryCategory String? // onboarding step 2: primary focus (optional for now)
   operatingCountry String? // onboarding step 3: operating country (optional)
