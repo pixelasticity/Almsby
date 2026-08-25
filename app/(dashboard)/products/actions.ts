@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/server";
 import { getDb } from "@/lib/db";
+import { getOwnedBusiness } from "@/lib/products/queries";
 import { validateProductInput } from "@/lib/products/validate";
 
 export type ProductFormState = { error?: string };
@@ -31,9 +32,7 @@ export async function createProductAction(
 
   try {
     const db = getDb();
-    const business = await db.business.findFirst({
-      where: { ownerId: user.id },
-    });
+    const business = await getOwnedBusiness(user.id);
     if (!business) {
       return {
         error:

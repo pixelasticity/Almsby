@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { getCurrentUser } from "@/lib/auth/server";
-import { getDb } from "@/lib/db";
+import { getOwnedBusiness } from "@/lib/products/queries";
 import BusinessOnboardingForm from "@/components/business/BusinessOnboardingForm";
 import styles from "./page.module.css";
 
@@ -17,10 +17,7 @@ export default async function BusinessOnboardingPage() {
   let hasBusiness = false;
   if (user) {
     try {
-      const db = getDb();
-      const existing = await db.business.findFirst({
-        where: { ownerId: user.id },
-      });
+      const existing = await getOwnedBusiness(user.id);
       hasBusiness = Boolean(existing);
     } catch (error) {
       console.error("BusinessOnboardingPage: db check failed", error);

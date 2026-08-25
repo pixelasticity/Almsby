@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/server";
 import { getDb } from "@/lib/db";
+import { getOwnedBusiness } from "@/lib/products/queries";
 import { validateBusinessOnboarding } from "@/lib/products/business-onboarding";
 
 export type BusinessOnboardingState = { error?: string };
@@ -30,7 +31,7 @@ export async function createBusinessAction(
   try {
     const db = getDb();
     // Idempotent: re-submitting onboarding keeps the existing Business.
-    const existing = await db.business.findFirst({ where: { ownerId: user.id } });
+    const existing = await getOwnedBusiness(user.id);
     if (!existing) {
       await db.business.create({
         data: {
