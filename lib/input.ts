@@ -14,3 +14,13 @@ export function optionalInput(value: string | null | undefined): string | null {
   const v = cleanInput(value);
   return v.length > 0 ? v : null;
 }
+
+/**
+ * Pragmatic email shape check: something@something.tld with no whitespace.
+ * Shared by auth sign-up and the waitlist form so both stay in sync.
+ * (Real deliverability is proven by the confirmation email, not a regex.)
+ */
+export function isValidEmail(value: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+}
+

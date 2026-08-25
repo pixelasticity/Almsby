@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createCookieBoundSupabaseClient } from "@/lib/auth/supabase-cookie-client";
+import { sanitizeRedirectPath } from "@/lib/auth/redirect";
 
 /**
  * Email-confirmation callback for the Supabase PKCE flow.
@@ -12,9 +13,8 @@ export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url);
   const tokenHash = searchParams.get("token_hash");
   const type = searchParams.get("type");
-  const next = searchParams.get("next") ?? "/dashboard";
-  const safeNext =
-    next.startsWith("/") && !next.startsWith("//") ? next : "/dashboard";
+  const next = searchParams.get("next");
+  const safeNext = sanitizeRedirectPath(next);
 
   if (tokenHash && type === "email") {
     const response = NextResponse.redirect(`${origin}${safeNext}`);

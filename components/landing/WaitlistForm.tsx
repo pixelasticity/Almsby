@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { ArrowRightIcon, CheckIcon } from "@/components/icons";
+import { isValidEmail } from "@/lib/input";
 import styles from "@/styles/landing.module.css";
 
 // Phase 0: visual-only waitlist form - no backend yet. Validates the email
@@ -18,7 +19,7 @@ export default function WaitlistForm() {
   const submit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const value = email.trim();
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+    if (!isValidEmail(value)) {
       setError(tr("error"));
       return;
     }
