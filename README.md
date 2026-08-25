@@ -65,6 +65,8 @@ Two complementary layers, both gating every PR:
    `/s/{gtin}`). Serious/critical violations fail the build; per-route JSON
    reports are uploaded as artifacts. The scan emulates reduced motion so
    entrance animations don't produce false contrast failures.
+   Known limitation: authenticated dashboard routes are not scanned yet —
+   covering them needs CI to provision a Supabase session (follow-up).
 
 Run locally against a production server:
 
