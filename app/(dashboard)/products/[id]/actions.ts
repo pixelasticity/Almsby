@@ -3,6 +3,7 @@
 import { Prisma } from "@prisma/client";
 import { getCurrentUser } from "@/lib/auth/server";
 import { getDb } from "@/lib/db";
+import { getOwnedProduct } from "@/lib/products/queries";
 import { classifyGtinError, toGtin14 } from "@/lib/gs1/gtin";
 
 export type GtinImportState = {
@@ -53,9 +54,7 @@ export async function importGtinAction(
   try {
     const db = getDb();
     // Ownership guard: the product must belong to the signed-in user's Business.
-    const product = await db.product.findFirst({
-      where: { id: productId, business: { ownerId: user.id } },
-    });
+    const product = await getOwnedProduct(productId, user.id);
     if (!product) {
       return { error: "productNotFound" };
     }

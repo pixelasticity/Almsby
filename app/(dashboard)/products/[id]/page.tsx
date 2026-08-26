@@ -1,31 +1,12 @@
 import Link from "next/link";
-import { cache } from "react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { getCurrentUser } from "@/lib/auth/server";
-import { getDb } from "@/lib/db";
+import { getOwnedProduct } from "@/lib/products/queries";
 import GtinSetup from "@/components/products/GtinSetup";
 import { STATUS_I18N_KEYS, type ProductStatus } from "@/lib/products/validate";
 import styles from "./page.module.css";
-
-/**
- * Ownership-scoped product lookup, cached per request: generateMetadata and
- * the page render share one query instead of issuing two. Narrow projection —
- * only the fields the tab title / header / GTIN section display.
- */
-const getOwnedProduct = cache(async (productId: string, userId: string) => {
-  const db = getDb();
-  return db.product.findFirst({
-    where: { id: productId, business: { ownerId: userId } },
-    select: {
-      name: true,
-      brand: true,
-      status: true,
-      gtin: { select: { gtinValue: true } },
-    },
-  });
-});
 
 export async function generateMetadata({
   params,
