@@ -212,5 +212,13 @@
       "countryRequired": "Selecciona tu país de operación principal.",
       "currencyRequired": "Selecciona una moneda por defecto para precios y pagos."
     }
+  },
+  "errors": {
+    "notFoundTitle": "Página no encontrada",
+    "notFoundBody": "La página que buscas no existe o pudo haberse movido.",
+    "notFoundCta": "Volver al inicio",
+    "errorTitle": "Algo salió mal",
+    "errorBody": "Ocurrió un error inesperado. Inténtalo de nuevo.",
+    "errorRetry": "Reintentar"
   }
 }
