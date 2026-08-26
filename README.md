@@ -50,6 +50,7 @@ tests/                    # Vitest suite
 .github/workflows/
   ci.yml                  # lint + typecheck + test + build (every PR)
   a11y.yml                # accessibility: jsx-a11y lint + runtime axe scan (every PR)
+  release-please.yml      # versioning: maintains the Release PR (version + CHANGELOG + tag)
   deploy-migrations.yml   # migrations: push dev→staging, merge master→production
 ```
 
@@ -74,6 +75,18 @@ Run locally against a production server:
 npm run build && npm run start   # or npx next dev
 A11Y_CHANNEL=chrome npm run scan:a11y   # channel only needed on macOS < 14
 ```
+
+## Versioning (Release Please)
+
+Conventional Commits drive releases automatically. A workflow watches
+`development` and maintains a single Release PR: merging it bumps
+`package.json`, updates `CHANGELOG.md`, cuts a `vX.Y.Z` tag, and publishes a
+GitHub Release. Semver mapping — `feat:` → minor, `fix:`/`perf:` → patch,
+`BREAKING CHANGE:` footer → major; other types (`chore`, `docs`, `ci`,
+`refactor`, `a11y`) don't bump the version. Caveat: the automated Release PR
+shows no CI checks (a GitHub limitation for bot-created PRs); it only touches
+version metadata. Tags currently mark development states — production tagging
+can be added at launch.
 
 ## Internationalization (next-intl)
 
