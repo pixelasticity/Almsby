@@ -1,0 +1,23 @@
+version: 2
+updates:
+  # App dependencies. Minor+patch are grouped into one weekly PR; majors
+  # (e.g. the eventual Prisma 6→7 that clears GHSA-ggr8-5vv4-36mx) arrive as
+  # individual PRs for deliberate review.
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    groups:
+      minor-and-patch:
+        update-types:
+          - "minor"
+          - "patch"
+
+  # Keep workflow action pins (actions/checkout, setup-node, upload-artifact)
+  # current.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
