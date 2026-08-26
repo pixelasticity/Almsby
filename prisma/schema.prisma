@@ -27,6 +27,9 @@ model Business {
   currency         String? // onboarding step 3: default currency (optional)
   createdAt        DateTime  @default(now())
   products         Product[]
+
+  // Every ownership-scoped lookup starts here.
+  @@index([ownerId])
 }
 
 model Product {
@@ -45,6 +48,9 @@ model Product {
   gtin             GTIN?
   storyPage        StoryPage?
   complianceStatus ComplianceStatus?
+
+  // FK join path for all ownership queries (Postgres does not auto-index).
+  @@index([businessId])
 }
 
 // ── Scaffolded for later phases — schema only, no logic in Phase 0 ──────────
