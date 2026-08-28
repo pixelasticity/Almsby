@@ -160,7 +160,11 @@
       "prefixExhausted": "Your GS1 prefix has run out of available sequences, or we hit a rare conflict. Please contact support."
     },
     "gtinSetupImport": "I already have a GTIN",
-    "gtinSetupConcierge": "I need a GTIN"
+    "gtinSetupConcierge": "I need a GTIN",
+    "barcodeSectionTitle": "Barcode (dual-marked)",
+    "barcodeUnverifiedNote": "This barcode renders correctly but has not yet been verified by an automated decode scan (#7). Do not print for retail until verified.",
+    "labelPrintHint": "Print this label with your browser's print feature. Sizing is calibrated for print in #9.",
+    "labelPrintLink": "Print label"
   },
   "settings": {
     "title": "Settings",

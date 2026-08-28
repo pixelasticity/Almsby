@@ -160,7 +160,11 @@
       "prefixExhausted": "Tu prefijo GS1 ha agotado sus secuencias disponibles, o hemos detectado un conflicto inusual. Ponte en contacto con soporte."
     },
     "gtinSetupImport": "Ya tengo un GTIN",
-    "gtinSetupConcierge": "Necesito un GTIN"
+    "gtinSetupConcierge": "Necesito un GTIN",
+    "barcodeSectionTitle": "Código de barras (doble marcado)",
+    "barcodeUnverifiedNote": "Este código de barras se renderiza correctamente, pero aún no se ha verificado mediante un escaneo de decodificación automatizado (#7). No lo uses para minoristas hasta que se verifique.",
+    "labelPrintHint": "Imprime esta etiqueta con la función de impresión de tu navegador. El marcado está calibrado para imprimir en #9.",
+    "labelPrintLink": "Imprimir etiqueta"
   },
   "settings": {
     "title": "Ajustes",

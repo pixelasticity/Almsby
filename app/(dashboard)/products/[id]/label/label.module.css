@@ -1,0 +1,36 @@
+/* Print label page — the symbol prints at 1:1; app chrome is print-hidden. */
+.page {
+  padding: 24px;
+}
+.noPrint {
+  margin-bottom: 24px;
+}
+.noPrint a {
+  color: var(--blue-500);
+  text-decoration: none;
+}
+.hint {
+  margin: 8px 0 0;
+  font-size: 12px;
+  color: var(--neutral-500);
+}
+.label {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 320px;
+}
+.name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+}
+@media print {
+  .noPrint {
+    display: none !important;
+  }
+  .page {
+    padding: 0;
+  }
+}
