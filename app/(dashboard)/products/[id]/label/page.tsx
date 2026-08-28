@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { getCurrentUser } from "@/lib/auth/server";
 import { getDb } from "@/lib/db";
+import { toGtin14 } from "@/lib/gs1/gtin";
 import DualMarkLabel from "@/components/label/DualMarkLabel";
 import styles from "./label.module.css";
 
@@ -21,7 +22,7 @@ export default async function ProductLabelPage({
   const user = await getCurrentUser();
   if (!user) notFound();
 
-  let gtin: string | null = null;
+  let gtin14: string | null = null;
   let name = "";
   try {
     const db = getDb();
@@ -31,7 +32,8 @@ export default async function ProductLabelPage({
     });
     if (!product || !product.gtin) notFound();
     name = product.name;
-    gtin = product.gtin.gtinValue;
+    // Renderers require a GTIN-14; normalize the stored value (UPC-A/EAN-12/13) up.
+    gtin14 = toGtin14(product.gtin.gtinValue);
   } catch {
     notFound();
   }
@@ -44,7 +46,7 @@ export default async function ProductLabelPage({
       </div>
       <div className={styles.label}>
         <h1 className={styles.name}>{name}</h1>
-        <DualMarkLabel gtin14={gtin!} />
+        <DualMarkLabel gtin14={gtin14 ?? ""} />
       </div>
     </div>
   );
