@@ -5,6 +5,7 @@ import { getTranslations } from "next-intl/server";
 import { getCurrentUser } from "@/lib/auth/server";
 import { getOwnedProduct } from "@/lib/products/queries";
 import GtinSetup from "@/components/products/GtinSetup";
+import DualMarkLabel from "@/components/label/DualMarkLabel";
 import { STATUS_I18N_KEYS, type ProductStatus } from "@/lib/products/validate";
 import styles from "./page.module.css";
 
@@ -80,6 +81,20 @@ export default async function ProductDetailPage({
           </p>
         ) : (
           <p className={styles.muted}>{t("gtinSectionEmpty")}</p>
+        )}
+        {gtin && (
+          <>
+            <div className={styles.barcodeCard}>
+              <h3 className={styles.cardTitle}>{t("barcodeSectionTitle")}</h3>
+              <DualMarkLabel gtin14={gtin} />
+              <p className={styles.unverifiedNote}>
+                {t("barcodeUnverifiedNote")}
+              </p>
+              <Link href={`/products/${id}/label`} className={styles.printLink}>
+                {t("labelPrintLink")}
+              </Link>
+            </div>
+          </>
         )}
         <div className={styles.gtinWrap}>
           <GtinSetup productId={id} existingGtin={gtin} />
