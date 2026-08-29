@@ -164,7 +164,9 @@
     "barcodeSectionTitle": "Barcode (dual-marked)",
     "barcodeUnverifiedNote": "This barcode renders correctly but has not yet been verified by an automated decode scan (#7). Do not print for retail until verified.",
     "labelPrintHint": "Print this label with your browser's print feature. Sizing is calibrated for print in #9.",
-    "labelPrintLink": "Print label"
+    "labelPrintLink": "Print label",
+    "labelVerified": "Verified: both symbols decode correctly. Safe to print.",
+    "labelFailed": "Barcode failed decode validation. Do not print — contact support."
   },
   "settings": {
     "title": "Settings",
