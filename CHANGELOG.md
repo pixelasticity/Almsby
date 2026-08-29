@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.2](https://github.com/pixelasticity/Almsby/compare/v1.0.1...v1.0.2) (2026-08-29)
+
+
+### Bug Fixes
+
+* **barcode:** replace mounted setState-in-effect with useSyncExternalStore ([0b6f189](https://github.com/pixelasticity/Almsby/commit/0b6f1892a9677a880cb44e80735c91e690514283))
+* **env,barcode:** literal NEXT_PUBLIC access + log URI-construction failures ([a83b721](https://github.com/pixelasticity/Almsby/commit/a83b721c6a194a8fd8ca04273dadea75876f2467))
+
 ## [1.0.1](https://github.com/pixelasticity/Almsby/compare/v1.0.0...v1.0.1) (2026-08-29)
 
 
