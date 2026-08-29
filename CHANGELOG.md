@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.3](https://github.com/pixelasticity/Almsby/compare/v1.0.2...v1.0.3) (2026-08-29)
+
+
+### Bug Fixes
+
+* **barcode:** self-describing SVG dimensions + explicit on-screen sizes ([f55a0e9](https://github.com/pixelasticity/Almsby/commit/f55a0e9774a5cd6f12fbc2192ae6a9542631d7fa))
+
 ## [1.0.2](https://github.com/pixelasticity/Almsby/compare/v1.0.1...v1.0.2) (2026-08-29)
 
 
