@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.2](https://github.com/pixelasticity/Almsby/compare/v1.0.1...v1.0.2) (2026-08-29)
+
+
+### Bug Fixes
+
+* **env,barcode:** literal NEXT_PUBLIC access + log URI-construction failures ([a83b721](https://github.com/pixelasticity/Almsby/commit/a83b721c6a194a8fd8ca04273dadea75876f2467))
+
 ## [1.0.1](https://github.com/pixelasticity/Almsby/compare/v1.0.0...v1.0.1) (2026-08-29)
 
 
