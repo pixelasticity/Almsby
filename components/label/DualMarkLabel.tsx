@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   renderDigitalLinkQr,
   renderGs1DataMatrix,
@@ -22,11 +22,21 @@ export default function DualMarkLabel({
 }: {
   gtin14: string;
 }) {
+  // These renderers use bwip-js, whose output differs between the browser and
+  // Node SSR. Rendering during SSR produces empty server HTML, then the client
+  // paints the barcode (a flash), then the hydration mismatch collapses it.
+  // Defer rendering until after client mount so server + first client paint agree.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const { qr, dm } = useMemo(() => {
+    if (!mounted) return { qr: null, dm: null };
     const qr = renderDigitalLinkQr(gtin14);
     const dm = renderGs1DataMatrix(gtin14);
     return { qr, dm };
-  }, [gtin14]);
+  }, [gtin14, mounted]);
 
   if (!qr || !dm) return null;
 
