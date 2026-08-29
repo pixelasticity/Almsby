@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { getCurrentUser } from "@/lib/auth/server";
 import { getOwnedProduct } from "@/lib/products/queries";
+import { toGtin14 } from "@/lib/gs1/gtin";
 import GtinSetup from "@/components/products/GtinSetup";
 import DualMarkLabel from "@/components/label/DualMarkLabel";
 import { STATUS_I18N_KEYS, type ProductStatus } from "@/lib/products/validate";
@@ -59,6 +60,10 @@ export default async function ProductDetailPage({
     notFound();
   }
 
+  // DualMarkLabel's renderers require a GTIN-14; normalize the stored value
+  // (a UPC-A/EAN-12/13) up to 14 digits. If it can't normalize, the card hides.
+  const gtin14 = gtin ? toGtin14(gtin) : null;
+
   return (
     <div className={styles.page}>
       <Link href="/products" className={styles.back}>
@@ -82,11 +87,11 @@ export default async function ProductDetailPage({
         ) : (
           <p className={styles.muted}>{t("gtinSectionEmpty")}</p>
         )}
-        {gtin && (
+        {gtin14 && (
           <>
             <div className={styles.barcodeCard}>
               <h3 className={styles.cardTitle}>{t("barcodeSectionTitle")}</h3>
-              <DualMarkLabel gtin14={gtin} />
+              <DualMarkLabel gtin14={gtin14} />
               <p className={styles.unverifiedNote}>
                 {t("barcodeUnverifiedNote")}
               </p>

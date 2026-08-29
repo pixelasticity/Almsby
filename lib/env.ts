@@ -42,9 +42,35 @@ export const env = {
     return required("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY");
   },
 
-  /** Server-only secret key (admin, bypasses RLS). Optional for Phase 0 core flows. */
+     /** Server-only secret key (admin, bypasses RLS). Optional for Phase 0 core flows. */
   get secretKey(): string | undefined {
     // Preferred modern name, with the legacy SUPABASE_SERVICE_ROLE_KEY as fallback.
     return process.env.SUPABASE_SECRET_KEY ?? process.env.SUPABASE_SERVICE_ROLE_KEY;
   },
 };
+
+/**
+ * Localhost dev URLs (e.g. the local Supabase CLI `http://127.0.0.1:54321`)
+ * must never be inlined into a deployed production/staging build, otherwise
+ * server-side calls (e.g. `supabase.auth.signUp`) fail with an opaque
+ * `fetch failed` from the platform's sandbox. Fail loud & early instead.
+ */
+const isLocalDev = process.env.NODE_ENV !== "production";
+function assertNotLocalhost(key: "NEXT_PUBLIC_SUPABASE_URL" | "NEXT_PUBLIC_APP_URL") {
+  const val = process.env[key];
+  if (!val) return; // `required()` already surfaces "Missing ... environment variable"
+  try {
+    const { hostname } = new URL(val);
+    if (!isLocalDev && (hostname === "127.0.0.1" || hostname === "localhost")) {
+      throw new Error(
+        `[env] ${key} is a localhost dev URL (${val}) in a deployed environment. ` +
+          "Set the real production URL in Vercel; this build can't reach Supabase.",
+      );
+    }
+  } catch (e) {
+    if (e instanceof Error && e.message.startsWith("[env]")) throw e;
+    // Not a parseable URL — let `required()` / upstream handle.
+  }
+}
+assertNotLocalhost("NEXT_PUBLIC_SUPABASE_URL");
+assertNotLocalhost("NEXT_PUBLIC_APP_URL");

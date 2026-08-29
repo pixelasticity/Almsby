@@ -31,25 +31,27 @@ there with a seeded product. *(Owner: founder)*
 Concierge shipped (#27). Copy exists; the *comprehension read-through* is a
 manual task not yet recorded. *(Owner: founder / non-technical reader)*
 
-## 🔲 BLOCKED — waiting on barcode generation (Sr. Dev, in progress)
+## 🔓 UNBLOCKED — barcode generation merged (#35), execution pending
 
 ### 2. CI decode test across edge-case batch (brief §10.2)
 > A generated barcode decodes correctly via the automated CI test, across
 > the full edge-case GTIN batch.
 
-**Blocked:** no barcode rendering exists yet. Suggested approach forwarded:
-bwip-js render → rasterize → zxing-wasm decode, asserting payload == Digital
-Link URI for every GTIN in the §4 batch. Lands as part of the generation PR.
+**Code complete** in `test/barcode-decode`: `tests/gs1/barcode-decode.test.ts`
+rasterizes the exact shipped SVGs (resvg) and asserts a zxing-wasm decode
+round-trip — QR → Digital Link URI, GS1 DataMatrix → AI(01)+GTIN — across the
+§4 batch representatives. Covers the transparency pitfall (alpha flattened to
+white before decode). Closes on merge.
 
 ### 3. Physical multi-scanner test (brief §10.3)
 > A physically printed barcode (real printer, real label stock, real size)
 > decodes correctly on at least 3 scanner types: phone camera, retail-style
 > handheld, one other.
 
-**Blocked by #2**, then needs: printed labels from the real generator + a
-scan protocol doc (device classes, X-dimension ≥0.35mm, quiet zones,
-pass/fail, results log). Protocol will be drafted as soon as generation
-merges. This is the Phase 1 gate proper. *(Owner: founder, physical)*
+**Unblocked.** Protocol drafted: `phase1-scan-protocol.md` (label prep,
+device matrix, pass criteria, results log). Print labels from
+`/products/{id}/label` and execute. This is the Phase 1 gate proper.
+*(Owner: founder, physical)*
 
 ## ⚠️ GATE — check before any symbol is trusted
 
