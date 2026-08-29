@@ -6,7 +6,7 @@
  * at print-realistic resolution, feed the pixels to zxing-wasm, and assert
  * the payload round-trips to the GTIN across the edge-case batch.
  */
-import { readBarcodesFromImageData } from "zxing-wasm/reader";
+import { readBarcodesFromImageData, getZXingModule } from "zxing-wasm/reader";
 import { Resvg } from "@resvg/resvg-js";
 import { beforeAll, describe, expect, it } from "vitest";
 import { renderDigitalLinkQr, renderGs1DataMatrix } from "@/lib/gs1/barcode";
@@ -14,11 +14,13 @@ import { toGtin14 } from "@/lib/gs1/gtin";
 
 const RESOLVER = "https://id.almsby.com";
 
-// §4 batch representatives: 13-digit input normalized to GTIN-14, a GTIN-14
-// with a zero prefix, and the documented example GTIN.
-const GTINS_14 = ["04006381333931", "00012345678905", "00614141123452"].map(
-  (g) => toGtin14(g) ?? g
-);
+// §4 batch representatives, as individually-named cases (not it.each) so a
+// decode failure is attributable to the exact GTIN.
+const QT_CASES = [
+  { name: "13-digit normalized", gtin: toGtin14("4006381333931")! },
+  { name: "zero-prefix", gtin: toGtin14("00012345678905")! },
+  { name: "documented example", gtin: "00614141123452" },
+];
 
 type ImageDataLike = {
   data: Uint8ClampedArray;
@@ -57,31 +59,45 @@ async function decode(image: ImageDataLike) {
   });
 }
 
-beforeAll(() => {
+beforeAll(async () => {
   process.env.NEXT_PUBLIC_RESOLVER_URL = RESOLVER;
+  // zxing-wasm lazily instantiates the WASM module on the FIRST decode call,
+  // charging that one-time ~600ms init to whichever test happens to run first
+  // (the intermittent timeout root cause). Pre-warm it here ONCE so no test
+  // case carries the cold-start tax. Runs once per test FILE (each vitest file
+  // gets its own worker; this file is not sharded across workers in CI, which
+  // runs a plain `vitest`), so the cost is paid exactly once per suite.
+  await getZXingModule();
 });
 
 describe("DoD §10.2 — rendered symbols decode (QR)", () => {
-  it.each(GTINS_14)("QR for %s decodes to the Digital Link URI", (gtin) => {
-    const rendered = renderDigitalLinkQr(gtin);
-    expect(rendered).not.toBeNull();
-    expect(rendered!.uri).toBe(`${RESOLVER}/01/${gtin}`);
-    return expect(decode(rasterize(rendered!.svg, 600))).resolves.toContainEqual(
-      expect.objectContaining({ text: `${RESOLVER}/01/${gtin}` })
-    );
-  });
+  for (const { name, gtin } of QT_CASES) {
+    it(`QR for ${name} (${gtin}) decodes to the Digital Link URI`, () => {
+      const rendered = renderDigitalLinkQr(gtin);
+      expect(rendered).not.toBeNull();
+      expect(rendered!.uri).toBe(`${RESOLVER}/01/${gtin}`);
+      const decoded = decode(
+        rasterize(rendered!.svg, 400) // measured: 400px decodes 3/3 in ~258ms avg
+      );
+      return expect(decoded).resolves.toContainEqual(
+        expect.objectContaining({ text: `${RESOLVER}/01/${gtin}` })
+      );
+    });
+  }
 });
 
 describe("DoD §10.2 — rendered symbols decode (GS1 DataMatrix)", () => {
-  it.each(GTINS_14)("DataMatrix for %s decodes to AI(01)+GTIN", async (gtin) => {
-    const svg = renderGs1DataMatrix(gtin);
-    expect(svg).not.toBeNull();
-    // zxing may render GS1 content as "(01)0400…" (AI-formatted) or raw
-    // "010400…"; assert on the digits so either formatting passes.
-    const results = await decode(rasterize(svg!, 400));
-    const digits = results
-      .filter((r) => r.isValid)
-      .map((r) => r.text.replace(/[^0-9]/g, ""));
-    expect(digits.some((d) => d.includes(`01${gtin}`))).toBe(true);
-  });
+  for (const { name, gtin } of QT_CASES) {
+    it(`DataMatrix for ${name} (${gtin}) decodes to AI(01)+GTIN`, async () => {
+      const svg = renderGs1DataMatrix(gtin);
+      expect(svg).not.toBeNull();
+      // zxing may render GS1 content as "(01)0400…" (AI-formatted) or raw
+      // "010400…"; assert on the digits so either formatting passes.
+      const results = await decode(rasterize(svg!, 400));
+      const digits = results
+        .filter((r) => r.isValid)
+        .map((r) => r.text.replace(/[^0-9]/g, ""));
+      expect(digits.some((d) => d.includes(`01${gtin}`))).toBe(true);
+    });
+  }
 });
