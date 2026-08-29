@@ -18,12 +18,21 @@
 .qrSlot svg,
 .dmSlot svg {
   display: block;
-  width: auto;
-  height: auto;
-  max-width: 180px;
-  max-height: 180px;
-  /* integer-only scaling: never fractional (would blur module edges) */
+  /* On-screen display sizes are a scanning-UX choice, not spec-governed — the
+     GS1 X-dimension floor (0.25mm) governs print, which #9 sizes. Bigger here
+     makes test-scanning with a phone easier. Rendering is vector, so
+     fractional module edges are fine on screen; integer-only scaling is
+     enforced where it matters, at print rasterization (#9). */
+  max-width: 100%;
   image-rendering: pixelated;
+}
+.qrSlot svg {
+  width: 6.6cm;
+  height: 6.6cm;
+}
+.dmSlot svg {
+  width: 3.8cm;
+  height: 3.8cm;
 }
 .dmSlot {
   display: inline-flex;

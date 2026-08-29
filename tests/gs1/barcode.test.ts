@@ -32,6 +32,24 @@ describe("barcode rendering (#6)", () => {
     expect(/<rect|<path/.test(svg!)).toBe(true);
   });
 
+  it("emits intrinsic width/height on both symbols (bwip-js only writes a viewBox)", () => {
+    // Without width/height the SVG has no intrinsic size and collapses to 0x0
+    // under CSS auto sizing — the dashboard regression where the symbols were
+    // present in the DOM but invisible.
+    const qr = renderDigitalLinkQr(GTIN)!;
+    const dm = renderGs1DataMatrix(GTIN)!;
+    expect(qr.svg).toMatch(/<svg[^>]*\swidth="\d+"/);
+    expect(qr.svg).toMatch(/<svg[^>]*\sheight="\d+"/);
+    expect(dm).toMatch(/<svg[^>]*\swidth="\d+"/);
+    expect(dm).toMatch(/<svg[^>]*\sheight="\d+"/);
+    // Both symbologies are square: width must equal height.
+    const dims = (svg: string) => svg.match(/width="(\d+)" height="(\d+)"/)!;
+    const [, qw, qh] = dims(qr.svg);
+    expect(qw).toBe(qh);
+    const [, dw, dh] = dims(dm);
+    expect(dw).toBe(dh);
+  });
+
   it("rejects a non-14-digit input for both symbols", () => {
     expect(renderDigitalLinkQr("123")).toBeNull();
     expect(renderGs1DataMatrix("123")).toBeNull();
