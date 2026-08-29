@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.0.1](https://github.com/pixelasticity/Almsby/compare/v1.0.0...v1.0.1) (2026-08-29)
+
+
+### Bug Fixes
+
+* **barcode:** defer DualMarkLabel render past hydration to avoid mismatch ([e389520](https://github.com/pixelasticity/Almsby/commit/e38952033cb8baa44f1eddc311ad9c617c7f9295))
+* **env,barcode:** localhost guard + normalize GTIN to GTIN-14 for DualMarkLabel ([58d7458](https://github.com/pixelasticity/Almsby/commit/58d74589c86e92b8baa4bb4d614388a3c54665b9))
+* **env:** skip localhost guard in CI builds ([0b842cb](https://github.com/pixelasticity/Almsby/commit/0b842cb9eb80602953483171b358a6e072bc6a28))
+
 ## 1.0.0 (2026-08-28)
 
 
