@@ -1,11 +1,30 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useSyncExternalStore } from "react";
 import {
   renderDigitalLinkQr,
   renderGs1DataMatrix,
 } from "@/lib/gs1/barcode";
 import styles from "./DualMarkLabel.module.css";
+
+// Stable references so useSyncExternalStore never resubscribes.
+const emptySubscribe = () => () => {};
+const getHydrated = () => true;
+const getServerHydrated = () => false;
+
+/**
+ * True only after client hydration.
+ *
+ * The barcode renderers use bwip-js, whose output can differ between the
+ * browser and Node SSR. Rendering during SSR produced empty server HTML, then
+ * the client painted the barcode (a flash), then the hydration mismatch
+ * collapsed it. useSyncExternalStore is the hydration-safe "mounted": server
+ * and first client paint agree (both false), then React re-renders once
+ * hydration completes — with no setState-in-effect cascading renders.
+ */
+function useHydrated(): boolean {
+  return useSyncExternalStore(emptySubscribe, getHydrated, getServerHydrated);
+}
 
 /**
  * Dual-marked GS1 label (#6): the same product is carried by a GS1 Digital Link
@@ -22,21 +41,14 @@ export default function DualMarkLabel({
 }: {
   gtin14: string;
 }) {
-  // These renderers use bwip-js, whose output differs between the browser and
-  // Node SSR. Rendering during SSR produces empty server HTML, then the client
-  // paints the barcode (a flash), then the hydration mismatch collapses it.
-  // Defer rendering until after client mount so server + first client paint agree.
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const hydrated = useHydrated();
 
   const { qr, dm } = useMemo(() => {
-    if (!mounted) return { qr: null, dm: null };
+    if (!hydrated) return { qr: null, dm: null };
     const qr = renderDigitalLinkQr(gtin14);
     const dm = renderGs1DataMatrix(gtin14);
     return { qr, dm };
-  }, [gtin14, mounted]);
+  }, [gtin14, hydrated]);
 
   if (!qr || !dm) return null;
 
