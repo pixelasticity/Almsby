@@ -75,7 +75,14 @@ function buildGtinUri(gtin14: string): string | null {
   if (!/^\d{14}$/.test(gtin14)) return null;
   try {
     return buildDigitalLinkUri(gtin14);
-  } catch {
-    return null; // env not set — caller decides
+  } catch (error) {
+    // Never silent: a swallowed failure here means a maker sees "no barcode"
+    // with zero indication why, and support has no error to work from.
+    // Fail-closed, never silently wrong.
+    console.error(
+      `[barcode] Failed to build the Digital Link URI for ${gtin14}:`,
+      error,
+    );
+    return null;
   }
 }
