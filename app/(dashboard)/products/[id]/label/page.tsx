@@ -39,7 +39,10 @@ export default async function ProductLabelPage({
     name = product.name;
     // Renderers require a GTIN-14; normalize the stored value (UPC-A/EAN-12/13) up.
     gtin14 = toGtin14(product.gtin.gtinValue);
-  } catch {
+  } catch (error) {
+    // Not silent: a DB/ownership failure here must be visible to support, not
+    // an unexplained 404. Log, then degrade to the 404 surface.
+    console.error("[label] page load failed", id, error);
     notFound();
   }
 
