@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.1.0](https://github.com/pixelasticity/Almsby/compare/v1.0.3...v1.1.0) (2026-08-30)
+
+
+### Features
+
+* **barcode:** per-generation decode verification gates the label ([#7](https://github.com/pixelasticity/Almsby/issues/7)) ([098ad49](https://github.com/pixelasticity/Almsby/commit/098ad490e1ad81e54afb3cbd1954ed4019481f50))
+
+
+### Bug Fixes
+
+* **auth:** opaque "{ }" signup error passthrough + audit silent catches ([#43](https://github.com/pixelasticity/Almsby/issues/43)) ([6736357](https://github.com/pixelasticity/Almsby/commit/67363575f0cf40879a7827f193938b2b3edb8a9f))
+* **build:** externalize resvg/zxing-wasm natives + promote to runtime deps ([4d69fff](https://github.com/pixelasticity/Almsby/commit/4d69fff4cf98f894e6d5fc6011d99d5febb22bf6))
+
 ## [1.0.3](https://github.com/pixelasticity/Almsby/compare/v1.0.2...v1.0.3) (2026-08-29)
 
 
