@@ -16,6 +16,13 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  // Native/WASM packages must be resolved at runtime, not bundled: @resvg/
+  // resvg-js ships a .node binary and zxing-wasm a .wasm asset — Turbopack
+  // cannot place non-ECMAScript assets into ESM chunks ("asset is not
+  // placeable in ESM chunks"). The per-generation verify harness
+  // (lib/gs1/verify.ts) pulls both into the label page Server Component, so
+  // externalize exactly those two; everything else stays bundled.
+  serverExternalPackages: ["@resvg/resvg-js", "zxing-wasm"],
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },
