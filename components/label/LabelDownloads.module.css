@@ -1,0 +1,60 @@
+/* #9 downloads — gated section under the label. */
+.downloads {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--neutral-200, #e5e5e5);
+  max-width: 480px;
+}
+.title {
+  margin: 0 0 10px;
+  font-size: 14px;
+  font-weight: 700;
+}
+.presetRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+  font-size: 13px;
+}
+.presetLabel {
+  font-weight: 600;
+}
+.presetNote {
+  font-size: 12px;
+  color: var(--neutral-500);
+}
+.buttonRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.button,
+.buttonDisabled {
+  display: inline-block;
+  padding: 7px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--neutral-300, #d4d4d4);
+  background: var(--neutral-50, #fafafa);
+  color: var(--neutral-900);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+.button:hover:not(:disabled) {
+  background: var(--neutral-100, #f0f0f0);
+}
+.buttonDisabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+button.buttonDisabled {
+  cursor: not-allowed;
+}
+.disabledNote {
+  margin: 10px 0 0;
+  font-size: 12px;
+  color: #9f1c1c;
+}

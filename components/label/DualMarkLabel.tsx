@@ -4,6 +4,7 @@ import { useMemo, useSyncExternalStore } from "react";
 import {
   renderDigitalLinkQr,
   renderGs1DataMatrix,
+  renderLegacyBarcode,
 } from "@/lib/gs1/barcode";
 import styles from "./DualMarkLabel.module.css";
 
@@ -27,12 +28,17 @@ function useHydrated(): boolean {
 }
 
 /**
- * Dual-marked GS1 label (#6): the same product is carried by a GS1 Digital Link
- * QR (full resolver URI) and a GS1 DataMatrix (AI(01)+GTIN + "GS1" caption).
- * The two symbols are REFERENTIALLY equivalent (same GTIN / same product) —
+ * Dual-marked GS1 label (#6 + #9): the same product is carried by a GS1
+ * Digital Link QR (full resolver URI), a GS1 DataMatrix (AI(01)+GTIN + "GS1"
+ * caption), and the legacy EAN-13 linear mark (brief §7 requires the legacy
+ * barcode "rendered alongside" — derived from the same GTIN; the slot is
+ * skipped entirely when the GTIN has no legacy derivation, e.g. a non-zero
+ * indicator digit).
+ *
+ * The 2D symbols are REFERENTIALLY equivalent (same GTIN / same product) —
  * not cryptographically so: no signing, hashing, or verification anywhere.
  *
- * Both symbols are rendered strictly (crisp modules, no rounded cells) with
+ * All symbols are rendered strictly (crisp modules, no rounded cells) with
  * quiet zones baked into the SVG. Sized independently (DataMatrix may be
  * smaller). Label geometry targets X-dimension >= 0.35mm at print (#9).
  */
@@ -43,11 +49,12 @@ export default function DualMarkLabel({
 }) {
   const hydrated = useHydrated();
 
-  const { qr, dm } = useMemo(() => {
-    if (!hydrated) return { qr: null, dm: null };
+  const { qr, dm, legacy } = useMemo(() => {
+    if (!hydrated) return { qr: null, dm: null, legacy: null };
     const qr = renderDigitalLinkQr(gtin14);
     const dm = renderGs1DataMatrix(gtin14);
-    return { qr, dm };
+    const legacy = renderLegacyBarcode(gtin14);
+    return { qr, dm, legacy };
   }, [gtin14, hydrated]);
 
   if (!qr || !dm) return null;
@@ -63,6 +70,12 @@ export default function DualMarkLabel({
           <div dangerouslySetInnerHTML={{ __html: dm }} />
           <figcaption className={styles.dmCaption}>GS1</figcaption>
         </figure>
+        {legacy && (
+          <div
+            className={styles.legacySlot}
+            dangerouslySetInnerHTML={{ __html: legacy.svg }}
+          />
+        )}
       </div>
       <p className={styles.uri}>{qr.uri}</p>
     </div>

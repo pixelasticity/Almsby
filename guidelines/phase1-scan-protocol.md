@@ -20,8 +20,13 @@ prod-encoded labels instead.
    possible: GTIN-8, GTIN-12/13 normalized).
 2. Open the label print route, print on **real label stock at real size** —
    no screen screenshots. Confirm: X-dimension ≥ 0.35 mm, quiet zones intact
-   (≥4 modules QR / 2–3× DataMatrix), dual marks both present, "GS1" caption
-   under the DataMatrix.
+   (≥4 modules QR / 2–3× DataMatrix / 11×+7× EAN-13), all symbols present
+   (QR + DataMatrix + legacy EAN-13), "GS1" caption under the DataMatrix.
+   Use the exact-size print route (`/products/{id}/label/print`) for a
+   true-to-size sheet, and in the browser print dialog set scale to 100%
+   ("Actual size") and margins to None — dialogs that silently apply
+   printer-default scaling/margins are exactly how an on-screen-perfect
+   label prints unscannable.
 3. Print at least 2 copies of each label (print-quality variance is part of
    the test).
 

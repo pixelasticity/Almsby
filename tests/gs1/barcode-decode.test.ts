@@ -40,6 +40,10 @@ describe("DoD §10.2 — generated symbols decode (per-GTIN)", () => {
       expect(v.qr.ok).toBe(true);
       expect(v.qr.uri).toBe(`https://id.almsby.com/01/${gtin}`);
       expect(v.dm.ok).toBe(true);
-    });
+      expect(v.legacy.ok).toBe(true);
+      // #9: all QT_CASES GTINs are 0-prefixed, so a legacy EAN-13 exists and
+      // must equal the GTIN-14 minus its indicator zero.
+      expect(v.legacy.value).toBe(gtin.slice(1));
+    }, 15_000); // measured: 3 decodes/call (QR+DM+EAN13); 5s default is too tight under parallel workers
   }
 });

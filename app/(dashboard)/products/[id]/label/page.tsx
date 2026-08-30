@@ -1,3 +1,9 @@
+/**
+ * Print-friendly dual-mark label for a product (#6, downloads in #9).
+ * Browser print-to-PDF (via @media print) strips the app chrome and prints the
+ * symbols at 1:1. Symbols are decode-verified per-generation before print
+ * (#7); print-ready downloads and exact-size printing land in #9 below.
+ */
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
@@ -9,14 +15,8 @@ import {
   warmBarcodeVerifier,
 } from "@/lib/gs1/verify";
 import DualMarkLabel from "@/components/label/DualMarkLabel";
+import LabelDownloads from "@/components/label/LabelDownloads";
 import styles from "./label.module.css";
-
-/**
- * Print-friendly dual-mark label for a product (#6).
- * Browser print-to-PDF (via @media print) strips the app chrome and prints the
- * symbol at 1:1. Symbols are decode-verified per-generation before print (#7);
- * print-safety sizing is finalized in #9.
- */
 export default async function ProductLabelPage({
   params,
 }: {
@@ -47,13 +47,19 @@ export default async function ProductLabelPage({
   }
 
   // Per-generation decode verification (#7's remaining half): before a maker
-  // can print/download, prove both symbols round-trip through a real decoder.
+  // can print/download, prove every symbol round-trips through a real decoder.
   // Pre-warm the WASM once per process; the verification itself is ~1s here.
   await warmBarcodeVerifier();
   const verification = gtin14 ? await verifyBarcode(gtin14) : null;
 
-  // Fail-closed: if either symbol fails to decode, the label is NOT usable.
-  const verified = verification !== null && verification.qr.ok && verification.dm.ok;
+  // Fail-closed: if ANY shipped symbol fails to decode, the label is NOT
+  // usable. An absent legacy symbol (non-zero indicator digit) is a vacuous
+  // pass, not a failure.
+  const verified =
+    verification !== null &&
+    verification.qr.ok &&
+    verification.dm.ok &&
+    verification.legacy.ok;
 
   return (
     <div className={styles.page}>
@@ -76,6 +82,9 @@ export default async function ProductLabelPage({
       <div className={styles.label}>
         <h1 className={styles.name}>{name}</h1>
         <DualMarkLabel gtin14={gtin14 ?? ""} />
+        {gtin14 && (
+          <LabelDownloads productId={id} gtin14={gtin14} verified={verified} />
+        )}
       </div>
     </div>
   );

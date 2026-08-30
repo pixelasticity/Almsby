@@ -8,7 +8,11 @@
 
 import { readBarcodesFromImageData, getZXingModule } from "zxing-wasm/reader";
 import { Resvg } from "@resvg/resvg-js";
-import { renderDigitalLinkQr, renderGs1DataMatrix } from "./barcode";
+import {
+  renderDigitalLinkQr,
+  renderGs1DataMatrix,
+  renderLegacyBarcode,
+} from "./barcode";
 
 /** Resolution levers (measured in the #7 flake work): 400px decodes 3/3
  *  with ~30% less rasterize time than 600px. */
@@ -18,6 +22,7 @@ const DM_RASTER_PX = 400;
 export type BarcodeVerification = {
   qr: { ok: boolean; uri: string | null };
   dm: { ok: boolean };
+  legacy: { ok: boolean; value: string | null };
 };
 
 type ImageDataLike = {
@@ -48,12 +53,13 @@ function rasterize(svg: string, width: number): ImageDataLike {
   };
 }
 
-async function decode(image: ImageDataLike) {
+async function decode(image: ImageDataLike, formats: string[]) {
   const imageData = image as unknown as ImageData;
-  return readBarcodesFromImageData(imageData, {
+  const options = {
     tryHarder: true,
-    formats: ["QRCode", "DataMatrix"],
-  });
+    formats,
+  } as NonNullable<Parameters<typeof readBarcodesFromImageData>[1]>;
+  return readBarcodesFromImageData(imageData, options);
 }
 
 function digitsOf(results: Awaited<ReturnType<typeof decode>>) {
@@ -79,20 +85,33 @@ export async function verifyBarcode(
   let uri: string | null = null;
   if (qr) {
     uri = qr.uri;
-    const results = await decode(rasterize(qr.svg, QR_RASTER_PX));
+    const results = await decode(rasterize(qr.svg, QR_RASTER_PX), ["QRCode"]);
     qrOk = results.some((r) => r.text === qr.uri);
   }
 
   let dmOk = false;
   if (dm) {
-    const results = await decode(rasterize(dm, DM_RASTER_PX));
+    const results = await decode(rasterize(dm, DM_RASTER_PX), ["DataMatrix"]);
     const digits = digitsOf(results);
     // zxing may render GS1 content as "(01)0400…" (AI-formatted) or raw
     // "010400…"; assert on the digits so either formatting passes.
     dmOk = digits.some((d) => d.includes(`01${gtin14}`));
   }
 
-  return { qr: { ok: qrOk, uri }, dm: { ok: dmOk } };
+  // Legacy EAN-13 (brief §7): verified when it exists and decodes; when the
+  // GTIN has no legacy derivation the absence is a vacuous pass, not a failure.
+  const legacyRender = renderLegacyBarcode(gtin14);
+  let legacyOk = true;
+  let legacyValue: string | null = null;
+  if (legacyRender) {
+    legacyValue = legacyRender.value;
+    // Linear symbols decode best with a little more width.
+    const results = await decode(rasterize(legacyRender.svg, 600), ["EAN13"]);
+    const digits = digitsOf(results);
+    legacyOk = digits.some((d) => d.includes(legacyRender.value));
+  }
+
+  return { qr: { ok: qrOk, uri }, dm: { ok: dmOk }, legacy: { ok: legacyOk, value: legacyValue } };
 }
 
 /**

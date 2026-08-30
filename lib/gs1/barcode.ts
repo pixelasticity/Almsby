@@ -22,9 +22,11 @@ const bwipSvg = bwipjs as unknown as {
   toSVG(opts: Record<string, unknown>): string;
 };
 
-/** Quiet zone modules: QR needs 4; DataMatrix 2-3X for handheld scanners. */
-const QR_QUIET_MODULES = 4;
-const DM_QUIET_MODULES = 3;
+/** Quiet zone modules: QR needs 4; DataMatrix 2-3X; EAN-13 left 11 / right 7. */
+export const QR_QUIET_MODULES = 4;
+export const DM_QUIET_MODULES = 3;
+export const EAN_QUIET_LEFT_MODULES = 11; // GS1 EAN-13: 11X left, 7X right
+export const EAN_QUIET_RIGHT_MODULES = 7;
 
 /**
  * bwip-js emits only a viewBox — no width/height attributes — so the SVG has
@@ -81,6 +83,64 @@ export function renderGs1DataMatrix(gtin14: string): string | null {
     paddingbottom: DM_QUIET_MODULES,
   });
   return withIntrinsicSize(svg);
+}
+
+/**
+ * Derive the legacy EAN-13 value from a GTIN-14, per brief §7 ("the legacy
+ * barcode, EAN/UPC, derived from the same GTIN").
+ *
+ * Rules (check-digit invariant under leading-zero removal — GS1 weighting
+ * attaches from the right, so dropping indicator zeros never changes the
+ * check digit):
+ *   - "0" + 13 digits → EAN-13 (the 13 digits after the indicator). A stored
+ *     UPC-A shows up as EAN-13 with a leading 0 — the same mark, valid at
+ *     every retail POS.
+ *   - Any other indicator digit (1–8: variable-measure, restricted, coupon
+ *     ranges) has no standard legacy retail symbol → null (skip gracefully,
+ *     never error).
+ * An explicitly stored legacy value wins when present and shape-valid.
+ */
+export function deriveLegacyValue(
+  gtin14: string,
+  stored?: string | null
+): string | null {
+  if (stored && /^\d{12,13}$/.test(stored)) return stored;
+  if (/^0\d{13}$/.test(gtin14)) return gtin14.slice(1);
+  return null;
+}
+
+export type LegacyBarcodeRender = { svg: string; value: string };
+
+/**
+ * The legacy linear mark (EAN-13) for a GTIN-14 — brief §7's dual-marking
+ * partner for the 2D symbols. Returns null when the GTIN has no legacy
+ * derivation (non-zero indicator digit) so callers skip the slot silently.
+ */
+export function renderLegacyBarcode(
+  gtin14: string,
+  stored?: string | null
+): LegacyBarcodeRender | null {
+  const value = deriveLegacyValue(gtin14, stored);
+  if (!value) return null;
+  try {
+    const svg = bwipSvg.toSVG({
+      bcid: "ean13",
+      text: value, // 13 digits incl. check digit — bwip-js validates it
+      scale: 1,
+      monochrome: true,
+      // EAN-13 quiet zones are left/right only (GS1 General Specifications).
+      paddingleft: EAN_QUIET_LEFT_MODULES,
+      paddingright: EAN_QUIET_RIGHT_MODULES,
+    });
+    return { svg: withIntrinsicSize(svg), value };
+  } catch (error) {
+    // Same discipline as buildGtinUri: never a silent "no barcode".
+    console.error(
+      `[barcode] Failed to render the legacy EAN-13 for ${gtin14}:`,
+      error
+    );
+    return null;
+  }
 }
 
 /** Build the Digital Link URI for a GTIN-14 from the resolver env (pure seam). */
