@@ -1,7 +1,7 @@
 # Phase 1 — Definition of Done status tracker
 
 Mirrors `almsby-phase1-dev-brief.md` §10. Update this file as items close;
-the brief itself stays immutable as the spec. Last reviewed: 2026-08-26.
+the brief itself stays immutable as the spec. Last reviewed: 2026-08-30.
 
 ---
 
@@ -60,11 +60,23 @@ device matrix, pass criteria, results log). Print labels from
 > as placeholder) before any barcode generated during this phase is treated
 > as real.
 
-Resolver discipline is enforced structurally (CI grep + single construction
-point). But the *value* configured per environment has NOT been audited this
-cycle — with domains still undecided (per founder checklist item 6), treat
-every barcode generated so far as encoding a placeholder URI.
-*(Owner: founder, before trusting any print)*
+**✅ Confirmed 2026-08-30** (closes #17):
+- **Values verified in plaintext** via `vercel env pull`: production
+  `NEXT_PUBLIC_RESOLVER_URL=https://id.almsby.com`; preview/`development`
+  branch `https://id.staging.almsby.com`. Both distinct from `NEXT_PUBLIC_APP_URL`
+  (`almsby.com` / `staging.almsby.com`) per Phase 0 discipline. Envs are
+  **branch-scoped** (Preview(development)) — note when adding new vars.
+- **Domains live:** prod `id.almsby.com` publicly serves the resolver (404 for
+  an unknown GTIN = correct fail-closed); staging aliased to the latest
+  `development` deployment — but ⚠️ **behind Vercel SSO Deployment Protection**
+  (302 → vercel.com login). Scan the staging caveat in
+  `phase1-scan-protocol.md` before printing staging labels.
+- **Regression-proofed:** commit `d64e0cb` adds a runtime guard — a resolver
+  value that is unset/localhost/`*.vercel.app` fails server boot in non-dev/CI
+  and fail-closes at the generation path. "Verified once" is now "cannot
+  silently regress."
+- Barcodes generated **before** 2026-08-30 encode a placeholder URI; anything
+  generated after encodes the real domain.
 
 ## Notes
 - Item ordering here is the brief's numbering (§10.x), not priority.

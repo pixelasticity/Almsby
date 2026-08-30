@@ -2,9 +2,17 @@
 
 Executes brief §10.3. Prerequisite: barcode generation merged (#35) — labels
 print from `/products/{id}/label`. **Do not trust any symbol until the
-`NEXT_PUBLIC_RESOLVER_URL` gate (§10.6) is cleared** — with domains undecided,
-labels encode a placeholder URI and this test validates *scanability*, not
-final content.
+`NEXT_PUBLIC_RESOLVER_URL` gate (§10.6) is cleared.** ✅ Cleared 2026-08-30:
+labels now encode the real per-env resolver domain
+(`id.staging.almsby.com` on staging / `id.almsby.com` on prod). Labels printed
+**before** that date encode a placeholder URI — regenerate them.
+
+⚠️ **Staging is behind Vercel SSO Deployment Protection**: `id.staging.almsby.com`
+302s to a vercel.com login for non-authenticated requests, so a physical scanner
+resolving a staging-encoded URI hits a login wall, not the story. Before running
+this test against staging labels, either disable Vercel Authentication for the
+project (Vercel → Settings → Deployment Protection) or run the test against
+prod-encoded labels instead.
 
 ## Label preparation
 
