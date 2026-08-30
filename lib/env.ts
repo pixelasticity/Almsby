@@ -39,10 +39,14 @@ export const env = {
 
   /** The ONLY base URL allowed when constructing GS1 Digital Link URIs. */
   get resolverUrl(): string {
-    return requiredPublic(
+    const value = requiredPublic(
       "NEXT_PUBLIC_RESOLVER_URL",
       process.env.NEXT_PUBLIC_RESOLVER_URL,
     );
+    // Placeholder guard (#17 / DoD §10.6): a label encodes this URL verbatim,
+    // so fail loudly in deployed envs rather than minting unresolvable symbols.
+    assertResolverValueUsable(value);
+    return value;
   },
 
   get databaseUrl(): string {
@@ -103,3 +107,52 @@ function assertNotLocalhost(name: string, value: string | undefined) {
 }
 assertNotLocalhost("NEXT_PUBLIC_SUPABASE_URL", process.env.NEXT_PUBLIC_SUPABASE_URL);
 assertNotLocalhost("NEXT_PUBLIC_APP_URL", process.env.NEXT_PUBLIC_APP_URL);
+
+/**
+ * Resolver URL guard (issue #17 / DoD §10.6).
+ *
+ * Source-level correctness (the CI grep) only proves the code reads
+ * NEXT_PUBLIC_RESOLVER_URL in the right place. It cannot catch a VALUE that is
+ * correctly coded but wrong in the actual deployment config — a placeholder in
+ * Vercel's env panel encodes a placeholder into every label's Digital Link URI.
+ * That is the exact failure mode this phase exists to prevent, so the check
+ * must live where the value is READ, not where the code is written:
+ *
+ *   - inside env.resolverUrl — every URI is built through it, so any attempt to
+ *     construct a Digital Link in a deployed environment with a placeholder
+ *     throws + logs and a maker sees "failed to generate / decode", never a
+ *     silently-bad barcode; and
+ *   - on server start via instrumentation.ts → assertResolverConfigured(), so a
+ *     misconfigured deploy fails to boot instead of running at all.
+ *
+ * Local dev and CI are exempt by design (same carve-out as assertNotLocalhost):
+ * dev labels are not retail-facing, and CI builds can't reach real infra and use
+ * dummy values. Every deployed environment (staging + production) is enforced.
+ */
+const RESOLVER_UNTRUSTED_SUBSTRINGS = ["localhost", "127.0.0.1", "vercel.app"];
+
+/** True for resolver bases that can never produce a retailer-resolvable URI. */
+export function isPlaceholderResolverUrl(value: string): boolean {
+  const normalized = value.toLowerCase();
+  return RESOLVER_UNTRUSTED_SUBSTRINGS.some((needle) =>
+    normalized.includes(needle),
+  );
+}
+
+function assertResolverValueUsable(value: string): void {
+  if (isLocalDev || isCi) return;
+  if (isPlaceholderResolverUrl(value)) {
+    throw new Error(
+      `[env] NEXT_PUBLIC_RESOLVER_URL="${value}" looks like a placeholder, not a real resolver. ` +
+        "Every barcode encodes this URL — a localhost/127.0.0.1/vercel.app value would " +
+        "produce symbols that cannot resolve for retailers. Set the real resolver domain in " +
+        "this deployment (production: https://id.almsby.com, staging: https://id.staging.almsby.com).",
+    );
+  }
+}
+
+/** Boot-time assertion (see instrumentation.ts). No-op in local dev and CI. */
+export function assertResolverConfigured(): void {
+  if (isLocalDev || isCi) return;
+  void env.resolverUrl; // presence check + placeholder guard above
+}
