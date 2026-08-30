@@ -15,6 +15,24 @@
  */
 import bwipjs from "bwip-js";
 import { buildDigitalLinkUri } from "./digital-link";
+import { OCRB_TTF_BASE64 } from "./ocrb-font";
+
+/**
+ * Register the embedded OCR-B with bwip-js exactly once (idempotent — the
+ * font compiler is a global registry; re-registering is wasteful, and the
+ * renderers may run in multiple contexts).
+ */
+let ocrbRegistered = false;
+function ensureOcrbFont(): void {
+  if (ocrbRegistered) return;
+  const bytes = Uint8Array.from(atob(
+    OCRB_TTF_BASE64
+  ), (c) => c.charCodeAt(0));
+  // bwip-js v4: loadFont(name, [multY,] multX, data) — 100 = size multiplier;
+  // actual glyph size is controlled per-render via the textsize option.
+  bwipjs.loadFont("OCR-B", 100, bytes);
+  ocrbRegistered = true;
+}
 
 // @types/bwip-js (v3) predates the runtime v4 that ships `toSVG`. Type it here
 // so callers get the exact SVG-string API without fighting the stale namespace.
@@ -123,6 +141,11 @@ export function renderLegacyBarcode(
   const value = deriveLegacyValue(gtin14, stored);
   if (!value) return null;
   try {
+    // Genuine OCR-B for the Human Readable Interpretation (brief §7 / GS1
+    // spec: EAN-13 digits under the bars). Embedded via ocrb-font so every
+    // render context (screen, SVG download, PNG, print PDF) shows identical,
+    // license-clean glyphs.
+    ensureOcrbFont();
     const svg = bwipSvg.toSVG({
       bcid: "ean13",
       text: value, // 13 digits incl. check digit — bwip-js validates it
@@ -131,6 +154,10 @@ export function renderLegacyBarcode(
       // EAN-13 quiet zones are left/right only (GS1 General Specifications).
       paddingleft: EAN_QUIET_LEFT_MODULES,
       paddingright: EAN_QUIET_RIGHT_MODULES,
+      // Human Readable Interpretation: digits under the bars in real OCR-B.
+      includetext: true,
+      font: "OCR-B",
+      textsize: 10,
     });
     return { svg: withIntrinsicSize(svg), value };
   } catch (error) {

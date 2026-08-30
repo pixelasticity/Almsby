@@ -58,10 +58,17 @@ describe("renderLegacyBarcode — strict SVG structure", () => {
   });
 
   it("is self-describing (intrinsic width/height, like the 2D symbols)", () => {
-    // Measured bwip-js output for EAN-13: 95 symbol modules + 11 + 7 quiet
-    // + 1 guard-bar extension column = 114 wide, 73 tall.
-    expect(rendered.svg).toMatch(/<svg[^>]+width="114"/);
-    expect(rendered.svg).toMatch(/viewBox="0 0 114 73"/);
+    // Measured bwip-js output for EAN-13 with OCR-B HRI: 95 symbol modules
+    // + 11 + 7 quiet + 1 guard-bar extension column + text band = 125x82.
+    expect(rendered.svg).toMatch(/<svg[^>]+width="125"/);
+    expect(rendered.svg).toMatch(/viewBox="0 0 125 82"/);
+  });
+
+  it("renders the Human Readable Interpretation in genuine OCR-B glyphs", () => {
+    // 13 digits, each baked as a filled vector path by bwip-js — no font
+    // dependency at render time, prints crisp at any scale.
+    const glyphFills = rendered.svg.match(/fill="#000000"/g) ?? [];
+    expect(glyphFills.length).toBe(13);
   });
 
   it("bakes GS1 quiet zones into the SVG (>= symbol + 11X + 7X wide)", () => {
