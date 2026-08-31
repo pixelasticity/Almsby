@@ -30,6 +30,15 @@ const EMPTY_RENDERS: BarcodeRenders = { qr: null, dm: null, legacy: null };
  * NOTE: this only renders the SVG strings. It never calls the
  * decode-verification harness (lib/gs1/verify.ts) — that stays server-side,
  * exactly once per label page in app/(dashboard)/products/[id]/label/page.tsx.
+ *
+ * SCOPE NOTE: this hook deduplicates the render MEMO across components, not
+ * the render COUNT. DualMarkLabel (display) and LabelDownloads (downloads)
+ * are separate React instances, so the label page still computes the three
+ * symbols twice (6 renders). Halving that (6→3) requires lifting the renders
+ * into a shared client parent that passes results to both children — a
+ * page-level restructure, deferred. Tracked in guidelines/technical-debt.md;
+ * revisit only if label-page CPU shows up in profiling (server-side decode
+ * verification dominates this page today, ~1s).
  */
 export function useBarcodeRenders(
   gtin14: string,
