@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.2.0](https://github.com/pixelasticity/Almsby/compare/v1.1.0...v1.2.0) (2026-08-31)
+
+
+### Features
+
+* **env:** resolver URL placeholder guard + boot-time assertion ([#17](https://github.com/pixelasticity/Almsby/issues/17)) ([d64e0cb](https://github.com/pixelasticity/Almsby/commit/d64e0cbb60046d5edbe3c1f2d1062cb80b279d72))
+* **label:** genuine OCR-B HRI for the legacy EAN-13 ([#9](https://github.com/pixelasticity/Almsby/issues/9)) ([878ee4d](https://github.com/pixelasticity/Almsby/commit/878ee4dee8d509a8b4e3d60e7f2aeeb20d29a102))
+* **label:** print-ready downloads ([#9](https://github.com/pixelasticity/Almsby/issues/9)) — legacy EAN-13, gated assets, exact-size print ([7eb287f](https://github.com/pixelasticity/Almsby/commit/7eb287f5e96e97a96d761ac8a71f9d831b477dd0))
+
 ## [1.1.0](https://github.com/pixelasticity/Almsby/compare/v1.0.3...v1.1.0) (2026-08-30)
 
 
