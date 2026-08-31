@@ -48,6 +48,7 @@ supabase/
   config.toml             # local Supabase CLI stack config
 guidelines/                 # specs & briefs (source of truth for scope)
   phase1-dod-status.md      # live tracker for the Phase 1 DoD checkboxes
+  technical-debt.md         # leveled-up debt / deferred optimizations (living log)
 tests/                    # Vitest suite
 .github/workflows/
   ci.yml                  # lint + typecheck + test + build (every PR)
