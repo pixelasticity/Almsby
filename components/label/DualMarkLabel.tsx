@@ -1,31 +1,16 @@
 "use client";
 
-import { useMemo, useSyncExternalStore } from "react";
-import {
-  renderDigitalLinkQr,
-  renderGs1DataMatrix,
-  renderLegacyBarcode,
-} from "@/lib/gs1/barcode";
+import { useBarcodeRenders } from "@/lib/hooks/useBarcodeRenders";
+import { useHydrated } from "@/lib/hooks/useHydrated";
 import styles from "./DualMarkLabel.module.css";
 
-// Stable references so useSyncExternalStore never resubscribes.
-const emptySubscribe = () => () => {};
-const getHydrated = () => true;
-const getServerHydrated = () => false;
-
 /**
- * True only after client hydration.
- *
- * The barcode renderers use bwip-js, whose output can differ between the
- * browser and Node SSR. Rendering during SSR produced empty server HTML, then
- * the client painted the barcode (a flash), then the hydration mismatch
- * collapsed it. useSyncExternalStore is the hydration-safe "mounted": server
- * and first client paint agree (both false), then React re-renders once
- * hydration completes — with no setState-in-effect cascading renders.
+ * Shows the barcode grid only after client hydration: the bwip-js renderers'
+ * output can differ between the browser and Node SSR, which previously
+ * produced empty server HTML, then a flash, then a hydration mismatch that
+ * collapsed the barcode. useHydrated (lib/hooks/useHydrated) is the
+ * hydration-safe "mounted" gate.
  */
-function useHydrated(): boolean {
-  return useSyncExternalStore(emptySubscribe, getHydrated, getServerHydrated);
-}
 
 /**
  * Dual-marked GS1 label (#6 + #9): the same product is carried by a GS1
@@ -56,13 +41,9 @@ export default function DualMarkLabel({
 }) {
   const hydrated = useHydrated();
 
-  const { qr, dm, legacy } = useMemo(() => {
-    if (!hydrated) return { qr: null, dm: null, legacy: null };
-    const qr = renderDigitalLinkQr(gtin14);
-    const dm = renderGs1DataMatrix(gtin14);
-    const legacy = renderLegacyBarcode(gtin14);
-    return { qr, dm, legacy };
-  }, [gtin14, hydrated]);
+  // Renders are gated on hydration (matching the pre-hook behavior): the
+  // bwip-js SVGs are only generated once the client has mounted.
+  const { qr, dm, legacy } = useBarcodeRenders(gtin14, hydrated);
 
   if (!qr || !dm) return null;
 

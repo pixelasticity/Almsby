@@ -6,6 +6,7 @@ import {
   importGtinAction,
   type GtinImportState,
 } from "@/app/(dashboard)/products/[id]/actions";
+import { resolveActionErrorKey } from "@/lib/products/action-errors";
 import FormError from "@/components/ui/FormError";
 import FormField from "@/components/ui/FormField";
 import SubmitButton from "@/components/ui/SubmitButton";
@@ -42,12 +43,14 @@ export default function GtinImportForm({
 
   const saved = existingGtin ?? state?.gtin;
   // Prefer the classifier state's translated warning, then generic key copy.
+  const clsKey = resolveActionErrorKey(state?.cls, CLS_KEYS, "");
+  const errorKey = resolveActionErrorKey(state?.error, ERROR_KEYS, "");
   const warning = state?.cls
-    ? CLS_KEYS[state.cls]
-      ? t(CLS_KEYS[state.cls])
+    ? clsKey
+      ? t(clsKey)
       : undefined
-    : state?.error && ERROR_KEYS[state.error]
-      ? t(ERROR_KEYS[state.error])
+    : errorKey
+      ? t(errorKey)
       : state?.error;
 
   return (

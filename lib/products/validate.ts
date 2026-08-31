@@ -20,6 +20,16 @@ export const STATUS_I18N_KEYS: Record<ProductStatus, string> = {
   archived: "statusArchived",
 };
 
+/** Narrow a DB status string to the ProductStatus union (DB column is raw String). */
+export function isProductStatus(value: string): value is ProductStatus {
+  return (PRODUCT_STATUSES as readonly string[]).includes(value);
+}
+
+/** i18n key for a status string; unknown values fall back to the "draft" copy. */
+export function statusI18nKey(status: string): string {
+  return isProductStatus(status) ? STATUS_I18N_KEYS[status] : "statusDraft";
+}
+
 export type ProductFormInput = {
   name: string;
   brand: string;
@@ -49,10 +59,8 @@ export function validateProductInput(input: ProductFormInput): ProductValidation
     return { ok: false, error: "Product name is required." };
   }
 
-  const status: ProductStatus = PRODUCT_STATUSES.some(
-    (s) => s === input.status
-  )
-    ? (input.status as ProductStatus)
+  const status: ProductStatus = isProductStatus(input.status)
+    ? input.status
     : "draft";
 
   return {

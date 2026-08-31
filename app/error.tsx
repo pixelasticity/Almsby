@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useEffect } from "react";
+import { env } from "@/lib/env";
 import styles from "./error.module.css";
 
 /**
@@ -31,8 +32,8 @@ export default function GlobalError({
           <button type="button" className={styles.cta} onClick={() => reset()}>
             {t("errorRetry")}
           </button>
-          <Link href="/" className={styles.link}>
-            almsby.io
+          <Link href={env.appUrl} className={styles.link}>
+            {t("notFoundCta")}
           </Link>
         </div>
       </div>

@@ -94,7 +94,7 @@ export async function GET(
     const db = getDb();
     const product = await db.product.findFirst({
       where: { id, business: { ownerId: user.id } },
-      include: { gtin: { include: { barcode: true } } },
+      include: { gtin: true },
     });
     if (!product || !product.gtin) {
       return new NextResponse("Not found", { status: 404 });

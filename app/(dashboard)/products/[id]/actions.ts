@@ -5,6 +5,7 @@ import { getCurrentUser } from "@/lib/auth/server";
 import { getDb } from "@/lib/db";
 import { getOwnedProduct } from "@/lib/products/queries";
 import { classifyGtinError, toGtin14 } from "@/lib/gs1/gtin";
+import { coerceFormString } from "@/lib/input";
 
 export type GtinImportState = {
   error?: string;
@@ -28,8 +29,8 @@ export async function importGtinAction(
   _prev: GtinImportState | undefined,
   formData: FormData
 ): Promise<GtinImportState> {
-  const productId = String(formData.get("productId") ?? "");
-  const raw = String(formData.get("gtin") ?? "").trim();
+  const productId = coerceFormString(formData, "productId");
+  const raw = coerceFormString(formData, "gtin").trim();
 
   if (!productId) {
     return { error: "missingProduct" };

@@ -23,14 +23,6 @@ export type OnboardingValidation =
   | { ok: true; data: NormalizedBusinessOnboardingInput }
   | { ok: false; error: string };
 
-const clean = (value: string | null | undefined): string =>
-  value?.trim() ?? "";
-
-const optional = (value: string | null | undefined): string | null => {
-  const v = clean(value);
-  return v.length > 0 ? v : null;
-};
-
 /** Validate + normalize the onboarding form across its 3 steps. */
 export function validateBusinessOnboarding(
   input: BusinessOnboardingInput
@@ -51,11 +43,11 @@ export function validateBusinessOnboarding(
     };
   }
 
-  const country = optional(input.operatingCountry);
+  const country = optionalInput(input.operatingCountry);
   if (!country) {
     return { ok: false, error: "Select your primary operating country." };
   }
-  const currencyValue = optional(input.currency);
+  const currencyValue = optionalInput(input.currency);
   if (!currencyValue) {
     return { ok: false, error: "Select a default currency for pricing and payouts." };
   }

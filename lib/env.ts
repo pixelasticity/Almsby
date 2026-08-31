@@ -91,6 +91,14 @@ const isLocalDev = process.env.NODE_ENV !== "production";
 // URL there still fails fast instead of deploying a broken app.
 const isCi = process.env.CI === "true";
 function assertNotLocalhost(name: string, value: string | undefined) {
+  // Server-side only. In the client bundle NODE_ENV is inlined as "production"
+  // but CI is NOT a NEXT_PUBLIC_* var, so process.env.CI is undefined there —
+  // the isCi carve-out would evaluate false and this guard would throw on the
+  // dummy localhost values every CI build legitimately inlines, crashing
+  // hydration on every page (surfaced as a bare __next_error__ shell). The
+  // invariant is fully enforced on the server: this module runs there at boot,
+  // and instrumentation.ts re-checks config at server start.
+  if (typeof window !== "undefined") return;
   if (!value) return; // `required()` surfaces "Missing ... environment variable"
   try {
     const { hostname } = new URL(value);

@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { createServerSupabaseClient } from "@/lib/auth/server";
 import { sanitizeRedirectPath } from "@/lib/auth/redirect";
-import { isValidEmail } from "@/lib/input";
+import { isValidEmail, coerceFormString } from "@/lib/input";
 import { env } from "@/lib/env";
 import { toErrorMessage } from "@/lib/errors";
 
@@ -23,8 +23,8 @@ export async function signUpAction(
   _prev: AuthState | undefined,
   formData: FormData
 ): Promise<AuthState> {
-  const email = String(formData.get("email") ?? "").trim();
-  const password = String(formData.get("password") ?? "");
+  const email = coerceFormString(formData, "email").trim();
+  const password = coerceFormString(formData, "password");
 
   if (!isValidEmail(email)) {
     return { error: "Please enter a valid email address." };
@@ -74,9 +74,9 @@ export async function signInAction(
   _prev: AuthState | undefined,
   formData: FormData
 ): Promise<AuthState> {
-  const email = String(formData.get("email") ?? "").trim();
-  const password = String(formData.get("password") ?? "");
-  const next = String(formData.get("next") ?? "/dashboard");
+  const email = coerceFormString(formData, "email").trim();
+  const password = coerceFormString(formData, "password");
+  const next = coerceFormString(formData, "next") || "/dashboard";
 
   if (!email || !password) {
     return { error: "Email and password are required." };

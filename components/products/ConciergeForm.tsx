@@ -4,6 +4,10 @@ import { useState } from "react";
 import { useActionState } from "react";
 import { useTranslations } from "next-intl";
 import { conciergeAction } from "@/app/(dashboard)/products/[id]/concierge/actions";
+import { resolveActionErrorKey } from "@/lib/products/action-errors";
+import FormError from "@/components/ui/FormError";
+import FormField from "@/components/ui/FormField";
+import SubmitButton from "@/components/ui/SubmitButton";
 import styles from "./ConciergeForm.module.css";
 
 type Mode = "choice" | "explain" | "prefix";
@@ -14,15 +18,16 @@ export default function ConciergeForm({
   productId: string;
 }) {
   const [mode, setMode] = useState<Mode>("choice");
-  const [state, formAction, isPending] = useActionState<
+  const [state, formAction] = useActionState<
     { error?: string } | { ok: true; gtin: string },
     FormData
   >(conciergeAction, {});
   const t = useTranslations("products");
   const errKey = "error" in state ? state.error : undefined;
 
-  // Map action error keys → i18n keys, with an explicit generic fallback
-  // (next-intl would throw on an unknown key, so we never pass one blindly).
+  // Map action error keys → i18n keys (relative to the `concierge` namespace),
+  // with an explicit generic fallback (next-intl would throw on an unknown
+  // key, so we never pass one blindly).
   const ERROR_KEYS: Record<string, string> = {
     missingProduct: "missingProduct",
     authRequired: "authRequired",
@@ -33,8 +38,7 @@ export default function ConciergeForm({
     prefixInvalid: "prefixInvalid",
     prefixExhausted: "prefixExhausted",
   };
-  const msgKey =
-    errKey && ERROR_KEYS[errKey] ? ERROR_KEYS[errKey] : "genericError";
+  const msgKey = resolveActionErrorKey(errKey, ERROR_KEYS, "genericError");
 
   return (
     <div className={styles.wrap}>
@@ -94,38 +98,44 @@ export default function ConciergeForm({
         <form action={formAction} className={styles.modal} noValidate>
           <input type="hidden" name="productId" value={productId} />
           <h3 className={styles.head}>{t("concierge.prefixTitle")}</h3>
-          <label className={styles.label} htmlFor="gs1Prefix">
-            {t("concierge.prefixLabel")}
-          </label>
-          <input
-            id="gs1Prefix"
-            name="gs1Prefix"
-            type="text"
-            inputMode="numeric"
-            autoComplete="off"
-            className={styles.input}
-            placeholder={t("concierge.prefixPlaceholder")}
-          />
-          <p className={styles.helper}>{t("concierge.prefixHelper")}</p>
 
-          {errKey && (
-            <p role="alert" className={styles.error}>
-              {t(`concierge.${msgKey}`)}
-            </p>
-          )}
+          <FormField
+            styles={styles}
+            htmlFor="gs1Prefix"
+            label={t("concierge.prefixLabel")}
+            helper={t("concierge.prefixHelper")}
+          >
+            <input
+              id="gs1Prefix"
+              name="gs1Prefix"
+              type="text"
+              inputMode="numeric"
+              autoComplete="off"
+              className={styles.input}
+              placeholder={t("concierge.prefixPlaceholder")}
+              aria-describedby={
+                errKey ? "gs1Prefix-helper gs1Prefix-error" : "gs1Prefix-helper"
+              }
+              aria-invalid={errKey ? true : undefined}
+            />
+          </FormField>
+
+          {errKey ? (
+            <FormError
+              id="gs1Prefix-error"
+              message={t(`concierge.${msgKey}`)}
+              className={styles.error}
+            />
+          ) : null}
           {"ok" in state && state.ok && (
             <p className={styles.saved}>
               {t("concierge.generated")}: <strong>{state.gtin}</strong>
             </p>
           )}
 
-          <button
-            type="submit"
-            className={styles.primary}
-            disabled={isPending}
-          >
-            {isPending ? "…" : t("concierge.submit")}
-          </button>
+          <SubmitButton className={styles.primary} pendingLabel="…">
+            {t("concierge.submit")}
+          </SubmitButton>
           <button
             type="button"
             className={styles.ghost}
