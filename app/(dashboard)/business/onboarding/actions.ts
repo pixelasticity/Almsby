@@ -5,6 +5,7 @@ import { getCurrentUser } from "@/lib/auth/server";
 import { getDb } from "@/lib/db";
 import { getOwnedBusiness } from "@/lib/products/queries";
 import { validateBusinessOnboarding } from "@/lib/products/business-onboarding";
+import { coerceFormString } from "@/lib/input";
 
 export type BusinessOnboardingState = { error?: string };
 
@@ -13,10 +14,10 @@ export async function createBusinessAction(
   formData: FormData
 ): Promise<BusinessOnboardingState> {
   const result = validateBusinessOnboarding({
-    name: String(formData.get("name") ?? ""),
-    industryCategory: String(formData.get("industryCategory") ?? ""),
-    operatingCountry: String(formData.get("operatingCountry") ?? ""),
-    currency: String(formData.get("currency") ?? ""),
+    name: coerceFormString(formData, "name"),
+    industryCategory: coerceFormString(formData, "industryCategory"),
+    operatingCountry: coerceFormString(formData, "operatingCountry"),
+    currency: coerceFormString(formData, "currency"),
   });
 
   if (!result.ok) {

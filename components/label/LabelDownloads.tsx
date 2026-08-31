@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useSyncExternalStore, useState } from "react";
+import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import {
   renderDigitalLinkQr,
@@ -13,16 +13,8 @@ import {
   PNG_DPI,
 } from "@/lib/gs1/print-size";
 import { isDownloadEnabled } from "@/lib/gs1/download-gate";
+import { useHydrated } from "@/lib/hooks/useHydrated";
 import styles from "./LabelDownloads.module.css";
-
-// Stable references so useSyncExternalStore never resubscribes.
-const emptySubscribe = () => () => {};
-const getHydrated = () => true;
-const getServerHydrated = () => false;
-
-function useHydrated(): boolean {
-  return useSyncExternalStore(emptySubscribe, getHydrated, getServerHydrated);
-}
 
 function downloadSvg(svg: string, filename: string) {
   const blob = new Blob([svg], { type: "image/svg+xml" });

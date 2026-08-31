@@ -7,7 +7,7 @@ import { getOwnedProduct } from "@/lib/products/queries";
 import { toGtin14 } from "@/lib/gs1/gtin";
 import GtinSetup from "@/components/products/GtinSetup";
 import DualMarkLabel from "@/components/label/DualMarkLabel";
-import { STATUS_I18N_KEYS, type ProductStatus } from "@/lib/products/validate";
+import { statusI18nKey } from "@/lib/products/validate";
 import styles from "./page.module.css";
 
 export async function generateMetadata({
@@ -74,7 +74,7 @@ export default async function ProductDetailPage({
         <h1>{title}</h1>
         <p className={styles.meta}>
           {brand ? `${brand} · ` : ""}
-          {t(STATUS_I18N_KEYS[status as ProductStatus] ?? "statusDraft")}
+          {t(statusI18nKey(status))}
         </p>
       </header>
 

@@ -16,6 +16,7 @@
 import bwipjs from "bwip-js";
 import { buildDigitalLinkUri } from "./digital-link";
 import { OCRB_TTF_BASE64 } from "./ocrb-font";
+import { parseViewBox } from "./print-size";
 
 /**
  * Register the embedded OCR-B with bwip-js exactly once (idempotent — the
@@ -54,9 +55,9 @@ export const EAN_QUIET_RIGHT_MODULES = 7;
  * scaling stays in CSS and print sizing (X-dimension x modules) lands in #9.
  */
 function withIntrinsicSize(svg: string): string {
-  const m = svg.match(/viewBox="0 0 (\d+) (\d+)"/);
-  if (!m) return svg;
-  return svg.replace("<svg", `<svg width="${m[1]}" height="${m[2]}"`);
+  const vb = parseViewBox(svg);
+  if (!vb) return svg;
+  return svg.replace("<svg", `<svg width="${vb.w}" height="${vb.h}"`);
 }
 
 export type BarcodeRender = { svg: string; uri: string | null };

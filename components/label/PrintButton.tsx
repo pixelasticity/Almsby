@@ -1,16 +1,7 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
 import { useTranslations } from "next-intl";
-
-// Stable references so useSyncExternalStore never resubscribes.
-const emptySubscribe = () => () => {};
-const getHydrated = () => true;
-const getServerHydrated = () => false;
-
-function useHydrated(): boolean {
-  return useSyncExternalStore(emptySubscribe, getHydrated, getServerHydrated);
-}
+import { useHydrated } from "@/lib/hooks/useHydrated";
 
 /**
  * Print trigger for the exact-size label route (#9). Hydration-safe: renders

@@ -24,3 +24,14 @@ export function isValidEmail(value: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 }
 
+/**
+ * Read a text field from FormData as a string. FormData values can be File
+ * objects when a payload is malformed or hostile; `String(file)` would
+ * silently produce "[object File]" — so File values collapse to "" instead of
+ * persisting garbage into DB columns.
+ */
+export function coerceFormString(formData: FormData, name: string): string {
+  const value = formData.get(name);
+  return typeof value === "string" ? value : "";
+}
+
