@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.2](https://github.com/pixelasticity/Almsby/compare/v1.3.1...v1.3.2) (2026-08-31)
+
+
+### Bug Fixes
+
+* **app:** drive global error home link from NEXT_PUBLIC_APP_URL ([94f1aea](https://github.com/pixelasticity/Almsby/commit/94f1aea2e36d021e7dd44385c4632ec591c83d90))
+* **env:** scope localhost-deploy guard to the server ([9f957c2](https://github.com/pixelasticity/Almsby/commit/9f957c239aa232d354aeb246baa8463b53ba6a06))
+
 ## [1.3.1](https://github.com/pixelasticity/Almsby/compare/v1.3.0...v1.3.1) (2026-08-31)
 
 
