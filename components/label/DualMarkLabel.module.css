@@ -27,12 +27,12 @@
   image-rendering: pixelated;
 }
 .qrSlot svg {
-  width: 6.6cm;
-  height: 6.6cm;
+  width: 3.3cm;
+  height: 3.3cm;
 }
 .dmSlot svg {
-  width: 3.8cm;
-  height: 3.8cm;
+  width: 1.9cm;
+  height: 1.9cm;
 }
 /* Legacy EAN-13: linear aspect (≈95×77 modules incl. quiet zones). Width is
    a display choice; print sizing goes through the X-dimension floor (#9). */
