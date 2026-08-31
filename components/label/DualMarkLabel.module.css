@@ -44,6 +44,16 @@
   line-height: 0;
   align-self: flex-end;
 }
+/* #45 — explains an intentionally absent legacy symbol (non-zero GS1
+   indicator digit) instead of leaving an unexplained gap. */
+.legacyNote {
+  margin: 0;
+  align-self: center;
+  font-size: 12px;
+  font-style: italic;
+  color: var(--neutral-500);
+  max-width: 220px;
+}
 .dmSlot {
   display: inline-flex;
   flex-direction: column;

@@ -180,7 +180,8 @@
     "labelPrintExact": "Imprimir / PDF (tamaño exacto)",
     "labelDownloadsLocked": "Las descargas están bloqueadas hasta que los símbolos pasen la verificación de decodificación.",
     "labelPrintExactHint": "Esta página se imprime con un tamaño exacto de {width} × {height} mm. En el diálogo de impresión, ajusta la escala al 100 % (\"Tamaño real\") y los márgenes en Ninguno; después elige \"Guardar como PDF\" o imprime directamente.",
-    "labelPrintButton": "Imprimir"
+    "labelPrintButton": "Imprimir",
+    "labelLegacyNotApplicable": "Sin código EAN-13: los GTIN con un dígito indicador GS1 distinto de cero no tienen equivalente EAN-13."
   },
   "settings": {
     "title": "Ajustes",

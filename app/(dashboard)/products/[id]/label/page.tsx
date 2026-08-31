@@ -10,6 +10,7 @@ import { getTranslations } from "next-intl/server";
 import { getCurrentUser } from "@/lib/auth/server";
 import { getDb } from "@/lib/db";
 import { toGtin14 } from "@/lib/gs1/gtin";
+import { deriveLegacyValue } from "@/lib/gs1/barcode";
 import {
   verifyBarcode,
   warmBarcodeVerifier,
@@ -81,7 +82,17 @@ export default async function ProductLabelPage({
       </div>
       <div className={styles.label}>
         <h1 className={styles.name}>{name}</h1>
-        <DualMarkLabel gtin14={gtin14 ?? ""} />
+        <DualMarkLabel
+          gtin14={gtin14 ?? ""}
+          legacyNote={
+            // #45: a GTIN with a non-zero GS1 indicator digit has no EAN-13
+            // equivalent — say so instead of silently showing a missing slot.
+            // Invalid/missing GTINs stay silent (nothing to explain yet).
+            gtin14 && deriveLegacyValue(gtin14) === null
+              ? t("labelLegacyNotApplicable")
+              : undefined
+          }
+        />
         {gtin14 && (
           <LabelDownloads productId={id} gtin14={gtin14} verified={verified} />
         )}

@@ -44,8 +44,15 @@ function useHydrated(): boolean {
  */
 export default function DualMarkLabel({
   gtin14,
+  legacyNote,
 }: {
   gtin14: string;
+  /**
+   * Pre-translated explanation rendered when the legacy slot is absent for a
+   * *known* reason (#45 — non-zero GS1 indicator digit has no EAN-13
+   * equivalent). Omitted for invalid/missing GTINs, which stay silent.
+   */
+  legacyNote?: string;
 }) {
   const hydrated = useHydrated();
 
@@ -75,6 +82,9 @@ export default function DualMarkLabel({
             className={styles.legacySlot}
             dangerouslySetInnerHTML={{ __html: legacy.svg }}
           />
+        )}
+        {!legacy && legacyNote && hydrated && (
+          <p className={styles.legacyNote}>{legacyNote}</p>
         )}
       </div>
       <p className={styles.uri}>{qr.uri}</p>

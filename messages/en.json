@@ -180,7 +180,8 @@
     "labelPrintExact": "Print / PDF (exact size)",
     "labelDownloadsLocked": "Downloads are locked until the symbols pass decode verification.",
     "labelPrintExactHint": "This page prints at an exact size of {width} × {height} mm. In the print dialog, set scale to 100% (\"Actual size\") and margins to None — then choose \"Save as PDF\" or print directly.",
-    "labelPrintButton": "Print"
+    "labelPrintButton": "Print",
+    "labelLegacyNotApplicable": "No legacy barcode: GTINs with a non-zero GS1 indicator digit have no EAN-13 equivalent."
   },
   "settings": {
     "title": "Settings",
