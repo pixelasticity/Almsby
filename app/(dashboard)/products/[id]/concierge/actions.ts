@@ -8,6 +8,7 @@ import {
   nextSequentialGtin,
   hasValidCheckDigit,
 } from "@/lib/gs1/allocate";
+import { coerceFormString } from "@/lib/input";
 
 export type ConciergeState =
   | { error?: string }
@@ -31,8 +32,8 @@ export async function conciergeAction(
   _prev: ConciergeState | undefined,
   formData: FormData
 ): Promise<ConciergeState> {
-  const productId = String(formData.get("productId") ?? "");
-  const prefix = String(formData.get("gs1Prefix") ?? "").trim();
+  const productId = coerceFormString(formData, "productId");
+  const prefix = coerceFormString(formData, "gs1Prefix").trim();
 
   if (!productId) return { error: "missingProduct" };
 

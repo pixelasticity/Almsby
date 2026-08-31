@@ -27,6 +27,7 @@ import {
 import {
   MIN_X_DIMENSION_MM,
   labelLayout,
+  parseViewBox,
   type SymbolGeometry,
 } from "@/lib/gs1/print-size";
 import { verifyBarcode, warmBarcodeVerifier } from "@/lib/gs1/verify";
@@ -173,9 +174,11 @@ export default async function ProductLabelPrintPage({
   );
 }
 
-/** Local viewBox parser (print-size's parseViewBox returns w/h). */
+/** Throwing wrapper over print-size's parseViewBox: every symbol here has just
+ *  passed decode verification, so a missing viewBox is a crash-worthy bug,
+ *  not a case to silently skip. */
 function parseVB(svg: string): { w: number; h: number } {
-  const m = svg.match(/viewBox="0 0 ([\d.]+) ([\d.]+)"/);
-  if (!m) throw new Error("barcode SVG missing viewBox");
-  return { w: Number(m[1]), h: Number(m[2]) };
+  const vb = parseViewBox(svg);
+  if (!vb) throw new Error("barcode SVG missing viewBox");
+  return vb;
 }

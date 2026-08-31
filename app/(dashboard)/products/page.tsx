@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { getCurrentUser } from "@/lib/auth/server";
 import { getDb } from "@/lib/db";
-import { STATUS_I18N_KEYS, type ProductStatus } from "@/lib/products/validate";
+import { statusI18nKey } from "@/lib/products/validate";
 import ProductForm from "@/components/products/ProductForm";
 import styles from "./products.module.css";
 
@@ -58,7 +58,7 @@ export default async function ProductsPage() {
                   {p.name}
                 </Link>
                 <span className={styles.itemStatus}>
-                  {t(STATUS_I18N_KEYS[p.status as ProductStatus] ?? "statusDraft")}
+                  {t(statusI18nKey(p.status))}
                 </span>
               </li>
             ))}
