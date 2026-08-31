@@ -1,18 +1,14 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useTranslations } from "next-intl";
-import {
-  renderDigitalLinkQr,
-  renderGs1DataMatrix,
-  renderLegacyBarcode,
-} from "@/lib/gs1/barcode";
 import {
   X_DIMENSION_PRESETS,
   pngScaleForX,
   PNG_DPI,
 } from "@/lib/gs1/print-size";
 import { isDownloadEnabled } from "@/lib/gs1/download-gate";
+import { useBarcodeRenders } from "@/lib/hooks/useBarcodeRenders";
 import { useHydrated } from "@/lib/hooks/useHydrated";
 import styles from "./LabelDownloads.module.css";
 
@@ -49,13 +45,7 @@ export default function LabelDownloads({
   const preset =
     X_DIMENSION_PRESETS.find((p) => p.id === presetId) ?? X_DIMENSION_PRESETS[0];
 
-  const { qr, dm, legacy } = useMemo(() => {
-    return {
-      qr: renderDigitalLinkQr(gtin14),
-      dm: renderGs1DataMatrix(gtin14),
-      legacy: renderLegacyBarcode(gtin14),
-    };
-  }, [gtin14]);
+  const { qr, dm, legacy } = useBarcodeRenders(gtin14, true);
 
   const enabled = isDownloadEnabled(verified, hydrated);
   const pngParams = `x=${preset.mm}`;
