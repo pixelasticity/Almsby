@@ -1,11 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
-import {
-  renderDigitalLinkQr,
-  renderGs1DataMatrix,
-  renderLegacyBarcode,
-} from "@/lib/gs1/barcode";
+import { useBarcodeRenders } from "@/lib/hooks/useBarcodeRenders";
 import { useHydrated } from "@/lib/hooks/useHydrated";
 import styles from "./DualMarkLabel.module.css";
 
@@ -46,13 +41,9 @@ export default function DualMarkLabel({
 }) {
   const hydrated = useHydrated();
 
-  const { qr, dm, legacy } = useMemo(() => {
-    if (!hydrated) return { qr: null, dm: null, legacy: null };
-    const qr = renderDigitalLinkQr(gtin14);
-    const dm = renderGs1DataMatrix(gtin14);
-    const legacy = renderLegacyBarcode(gtin14);
-    return { qr, dm, legacy };
-  }, [gtin14, hydrated]);
+  // Renders are gated on hydration (matching the pre-hook behavior): the
+  // bwip-js SVGs are only generated once the client has mounted.
+  const { qr, dm, legacy } = useBarcodeRenders(gtin14, hydrated);
 
   if (!qr || !dm) return null;
 
