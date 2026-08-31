@@ -59,9 +59,10 @@ describe("renderLegacyBarcode — strict SVG structure", () => {
 
   it("is self-describing (intrinsic width/height, like the 2D symbols)", () => {
     // Measured bwip-js output for EAN-13 with OCR-B HRI: 95 symbol modules
-    // + 11 + 7 quiet + 1 guard-bar extension column + text band = 125x82.
+    // + 11 + 7 quiet + 1 guard-bar extension column + text band (82) + the
+    // 2-module HRI clearance (#47) = 125 wide, 84 tall.
     expect(rendered.svg).toMatch(/<svg[^>]+width="125"/);
-    expect(rendered.svg).toMatch(/viewBox="0 0 125 82"/);
+    expect(rendered.svg).toMatch(/viewBox="0 0 125 84"/);
   });
 
   it("renders the Human Readable Interpretation in genuine OCR-B glyphs", () => {
@@ -69,6 +70,17 @@ describe("renderLegacyBarcode — strict SVG structure", () => {
     // dependency at render time, prints crisp at any scale.
     const glyphFills = rendered.svg.match(/fill="#000000"/g) ?? [];
     expect(glyphFills.length).toBe(13);
+  });
+
+  it("clears the HRI digits from the data bars (#47)", () => {
+    // Every glyph path carries the downward translate; bar strokes do not.
+    const translated = rendered.svg.match(
+      /<path transform="translate\(0 2\)" d=/g
+    );
+    expect(translated?.length).toBe(13);
+    // Bars (stroke paths) are untouched by the shift.
+    expect(rendered.svg).toMatch(/<path stroke="#000000" stroke-width="1" d=/);
+    expect(rendered.svg).not.toMatch(/<path stroke[^>]*transform=/);
   });
 
   it("bakes GS1 quiet zones into the SVG (>= symbol + 11X + 7X wide)", () => {

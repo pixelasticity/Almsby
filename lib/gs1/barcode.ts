@@ -127,6 +127,28 @@ export function deriveLegacyValue(
   return null;
 }
 
+/** Vertical clearance (modules) between the data bars' bottoms and the HRI
+ *  digit tops (#47). bwip-js places the glyphs flush against the bars; GS1-
+ *  style EAN-13 printing keeps a small visible gap. ≈0.7mm at X = 0.35mm. */
+const HRI_CLEARANCE_MODULES = 2;
+
+/**
+ * Shift the HRI glyph paths (bwip-js emits them as fill paths, distinct from
+ * the stroked bars) down by HRI_CLEARANCE_MODULES and extend the viewBox to
+ * match (#47). Measured motivation: bwip-js places the glyph tops exactly at
+ * the data-bar bottom row — zero clearance. The `textyoffset` option moves
+ * text the wrong way (up, into the bars), so the transform is applied here,
+ * deterministically. Only fill paths are translated; bar strokes stay put.
+ */
+function withHriClearance(svg: string): string {
+  const m = svg.match(/viewBox="0 0 (\d+) (\d+)"/);
+  if (!m) return svg;
+  const taller = svg
+    .replace(/<path d=/g, `<path transform="translate(0 ${HRI_CLEARANCE_MODULES})" d=`)
+    .replace(/viewBox="0 0 (\d+) (\d+)"/, `viewBox="0 0 ${m[1]} ${Number(m[2]) + HRI_CLEARANCE_MODULES}"`);
+  return taller;
+}
+
 export type LegacyBarcodeRender = { svg: string; value: string };
 
 /**
@@ -159,7 +181,7 @@ export function renderLegacyBarcode(
       font: "OCR-B",
       textsize: 10,
     });
-    return { svg: withIntrinsicSize(svg), value };
+    return { svg: withIntrinsicSize(withHriClearance(svg)), value };
   } catch (error) {
     // Same discipline as buildGtinUri: never a silent "no barcode".
     console.error(
