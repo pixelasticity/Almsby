@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/pixelasticity/Almsby/compare/v1.2.0...v1.3.0) (2026-08-31)
+
+
+### Features
+
+* **label:** explain absent legacy symbol for non-zero indicator GTINs ([#45](https://github.com/pixelasticity/Almsby/issues/45)) ([53a5f36](https://github.com/pixelasticity/Almsby/commit/53a5f36cde1f080408db91743e0a2570021547a3))
+
 ## [1.2.0](https://github.com/pixelasticity/Almsby/compare/v1.1.0...v1.2.0) (2026-08-31)
 
 
