@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.1](https://github.com/pixelasticity/Almsby/compare/v1.3.0...v1.3.1) (2026-08-31)
+
+
+### Bug Fixes
+
+* **label:** clear EAN-13 HRI digits from the data bars ([#47](https://github.com/pixelasticity/Almsby/issues/47)) ([159492e](https://github.com/pixelasticity/Almsby/commit/159492e1b2e77da6e4d3e0a8f7c5b00ccc933d1e))
+
 ## [1.3.0](https://github.com/pixelasticity/Almsby/compare/v1.2.0...v1.3.0) (2026-08-31)
 
 
