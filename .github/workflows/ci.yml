@@ -35,6 +35,26 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Smoke test (server boots + health check)
+        env:
+          NEXT_PUBLIC_APP_URL: http://localhost:3000
+          NEXT_PUBLIC_RESOLVER_URL: https://resolver.almsby.io
+          NEXT_PUBLIC_SUPABASE_URL: http://localhost:54321
+          NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ci-dummy-key
+          DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
+          DIRECT_URL: postgresql://ci:ci@localhost:5432/ci
+        run: |
+          npm run start &
+          for i in $(seq 1 60); do
+            curl -sf http://localhost:3000/api/health > /dev/null && break
+            sleep 1
+          done
+          curl -sf http://localhost:3000/api/health | grep -q '"ok":true' || {
+            echo "Health check failed" >&2
+            exit 1
+          }
+          echo "Health check passed"
+
       - name: Prisma schema validation
         run: |
           # Schema-only validation; no real DB creds in CI, dummy URLs are enough.
