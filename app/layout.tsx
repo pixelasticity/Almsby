@@ -27,6 +27,8 @@ const albert = Albert_Sans({
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  // If custom inline scripts are ever added, apply the CSP nonce from the
+  // middleware-generated X-Nonce response header: (await headers()).get("x-nonce")
   const locale = await getLocale();
   const messages = await getMessages();
   return (
