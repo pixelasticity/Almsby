@@ -1,5 +1,6 @@
 # Almsby — application
-![Uptime Robot status](https://img.shields.io/uptimerobot/status/m803881054-8ec504b5bf887d11a3e9962a)
+![Uptime Robot status](https://img.shields.io/uptimerobot/status/m803881054-8ec504b5bf887d11a3e9962a) ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/pixelasticity/Almsby/ci.yml)
+
 
 Maker dashboard + public story pages + GS1 Digital Link resolver.
 Next.js 16 (App Router) · TypeScript strict · Supabase (Postgres + Auth) ·
