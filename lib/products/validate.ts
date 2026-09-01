@@ -5,16 +5,16 @@ import { cleanInput, optionalInput } from "@/lib/input";
  * Kept free of DB/auth so it can be unit-tested like lib/gs1/*.
  */
 
-export type ProductStatus = "draft" | "active" | "archived";
+type ProductStatus = "draft" | "active" | "archived";
 
-export const PRODUCT_STATUSES: readonly ProductStatus[] = [
+const PRODUCT_STATUSES: readonly ProductStatus[] = [
   "draft",
   "active",
   "archived",
 ];
 
 /** ProductStatus → i18n key in the `products` namespace (list + detail pages). */
-export const STATUS_I18N_KEYS: Record<ProductStatus, string> = {
+const STATUS_I18N_KEYS: Record<ProductStatus, string> = {
   draft: "statusDraft",
   active: "statusActive",
   archived: "statusArchived",
@@ -30,7 +30,7 @@ export function statusI18nKey(status: string): string {
   return isProductStatus(status) ? STATUS_I18N_KEYS[status] : "statusDraft";
 }
 
-export type ProductFormInput = {
+type ProductFormInput = {
   name: string;
   brand: string;
   netContent: string;
@@ -39,7 +39,7 @@ export type ProductFormInput = {
   status: string;
 };
 
-export type NormalizedProductInput = {
+type NormalizedProductInput = {
   name: string;
   brand: string | null;
   netContent: string | null;
@@ -48,7 +48,7 @@ export type NormalizedProductInput = {
   status: ProductStatus;
 };
 
-export type ProductValidation =
+type ProductValidation =
   | { ok: true; data: NormalizedProductInput }
   | { ok: false; error: string };
 
