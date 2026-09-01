@@ -1,4 +1,5 @@
 # Almsby — application
+![Uptime Robot status](https://img.shields.io/uptimerobot/status/m803881054-8ec504b5bf887d11a3e9962a)
 
 Maker dashboard + public story pages + GS1 Digital Link resolver.
 Next.js 16 (App Router) · TypeScript strict · Supabase (Postgres + Auth) ·
