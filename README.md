@@ -1,5 +1,5 @@
 # Almsby — application
-![Uptime Robot status](https://img.shields.io/uptimerobot/status/m803881054-8ec504b5bf887d11a3e9962a) ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/pixelasticity/Almsby/ci.yml)
+![Uptime Robot status](https://img.shields.io/uptimerobot/status/m803881054-8ec504b5bf887d11a3e9962a) ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/pixelasticity/Almsby/ci.yml) ![Mozilla HTTP Observatory Grade](https://img.shields.io/mozilla-observatory/grade/almsby.com)
 
 
 Maker dashboard + public story pages + GS1 Digital Link resolver.
