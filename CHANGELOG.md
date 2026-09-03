@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.0](https://github.com/pixelasticity/Almsby/compare/v1.3.2...v1.4.0) (2026-09-03)
+
+
+### Features
+
+* **security:** CSP nonces via middleware; fix headers dropped on Vercel edge ([9cda05e](https://github.com/pixelasticity/Almsby/commit/9cda05e2328d8342add64fe3777fd0ac434b11c9))
+* **security:** CSP with nonces via middleware; fix Vercel-dropped security headers ([fd96357](https://github.com/pixelasticity/Almsby/commit/fd9635715a4aa7eafe13d2d949a3fd0700c3977d))
+
 ## [1.3.2](https://github.com/pixelasticity/Almsby/compare/v1.3.1...v1.3.2) (2026-08-31)
 
 
