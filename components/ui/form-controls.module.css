@@ -1,0 +1,41 @@
+/* Shared form-control building blocks, consumed from the per-form CSS
+   modules via `composes` — so call sites keep their own class names and no
+   TSX changes are needed. Only declarations that are byte-identical across
+   the adopting forms live here; deliberate per-form variation (AuthForm's
+   compact field/label, the wizard's spacing) intentionally stays local. */
+
+.helper {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--neutral-600);
+}
+
+.error {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--danger-600);
+}
+
+/* The green pill action shared by product/GTIN/onboarding forms. */
+.pill {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 999px;
+  background: var(--green-600);
+  color: #fff;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.pill:hover {
+  background: var(--green-700);
+}
+
+.pill:disabled {
+  opacity: 0.6;
+  cursor: default;
+}

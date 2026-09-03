@@ -3,7 +3,9 @@
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/server";
 import { getDb } from "@/lib/db";
+import { getOwnedBusiness } from "@/lib/products/queries";
 import { validateProductInput } from "@/lib/products/validate";
+import { coerceFormString } from "@/lib/input";
 
 export type ProductFormState = { error?: string };
 
@@ -12,12 +14,12 @@ export async function createProductAction(
   formData: FormData
 ): Promise<ProductFormState> {
   const result = validateProductInput({
-    name: String(formData.get("name") ?? ""),
-    brand: String(formData.get("brand") ?? ""),
-    netContent: String(formData.get("netContent") ?? ""),
-    countryOfOrigin: String(formData.get("countryOfOrigin") ?? ""),
-    materialComposition: String(formData.get("materialComposition") ?? ""),
-    status: String(formData.get("status") ?? "draft"),
+    name: coerceFormString(formData, "name"),
+    brand: coerceFormString(formData, "brand"),
+    netContent: coerceFormString(formData, "netContent"),
+    countryOfOrigin: coerceFormString(formData, "countryOfOrigin"),
+    materialComposition: coerceFormString(formData, "materialComposition"),
+    status: coerceFormString(formData, "status") || "draft",
   });
 
   if (!result.ok) {
@@ -31,9 +33,7 @@ export async function createProductAction(
 
   try {
     const db = getDb();
-    const business = await db.business.findFirst({
-      where: { ownerId: user.id },
-    });
+    const business = await getOwnedBusiness(user.id);
     if (!business) {
       return {
         error:

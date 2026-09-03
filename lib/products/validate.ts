@@ -1,17 +1,36 @@
+import { cleanInput, optionalInput } from "@/lib/input";
+
 /**
  * Pure, testable validation for the Phase 1 product creation form (#2).
  * Kept free of DB/auth so it can be unit-tested like lib/gs1/*.
  */
 
-export type ProductStatus = "draft" | "active" | "archived";
+type ProductStatus = "draft" | "active" | "archived";
 
-export const PRODUCT_STATUSES: readonly ProductStatus[] = [
+const PRODUCT_STATUSES: readonly ProductStatus[] = [
   "draft",
   "active",
   "archived",
 ];
 
-export type ProductFormInput = {
+/** ProductStatus → i18n key in the `products` namespace (list + detail pages). */
+const STATUS_I18N_KEYS: Record<ProductStatus, string> = {
+  draft: "statusDraft",
+  active: "statusActive",
+  archived: "statusArchived",
+};
+
+/** Narrow a DB status string to the ProductStatus union (DB column is raw String). */
+export function isProductStatus(value: string): value is ProductStatus {
+  return (PRODUCT_STATUSES as readonly string[]).includes(value);
+}
+
+/** i18n key for a status string; unknown values fall back to the "draft" copy. */
+export function statusI18nKey(status: string): string {
+  return isProductStatus(status) ? STATUS_I18N_KEYS[status] : "statusDraft";
+}
+
+type ProductFormInput = {
   name: string;
   brand: string;
   netContent: string;
@@ -20,7 +39,7 @@ export type ProductFormInput = {
   status: string;
 };
 
-export type NormalizedProductInput = {
+type NormalizedProductInput = {
   name: string;
   brand: string | null;
   netContent: string | null;
@@ -29,39 +48,29 @@ export type NormalizedProductInput = {
   status: ProductStatus;
 };
 
-export type ProductValidation =
+type ProductValidation =
   | { ok: true; data: NormalizedProductInput }
   | { ok: false; error: string };
 
-const clean = (value: string | null | undefined): string =>
-  value?.trim() ?? "";
-
-const optionalString = (value: string | null | undefined): string | null => {
-  const v = clean(value);
-  return v.length > 0 ? v : null;
-};
-
 /** Validate + normalize the raw product creation form fields. */
 export function validateProductInput(input: ProductFormInput): ProductValidation {
-  const name = clean(input.name);
+  const name = cleanInput(input.name);
   if (!name) {
     return { ok: false, error: "Product name is required." };
   }
 
-  const status: ProductStatus = PRODUCT_STATUSES.some(
-    (s) => s === input.status
-  )
-    ? (input.status as ProductStatus)
+  const status: ProductStatus = isProductStatus(input.status)
+    ? input.status
     : "draft";
 
   return {
     ok: true,
     data: {
       name,
-      brand: optionalString(input.brand),
-      netContent: optionalString(input.netContent),
-      countryOfOrigin: optionalString(input.countryOfOrigin),
-      materialComposition: optionalString(input.materialComposition),
+      brand: optionalInput(input.brand),
+      netContent: optionalInput(input.netContent),
+      countryOfOrigin: optionalInput(input.countryOfOrigin),
+      materialComposition: optionalInput(input.materialComposition),
       status,
     },
   };

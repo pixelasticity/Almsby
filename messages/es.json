@@ -7,7 +7,9 @@
     "dashboard": "Panel",
     "products": "Productos",
     "settings": "Ajustes",
-    "signOut": "Cerrar sesión"
+    "signOut": "Cerrar sesión",
+    "primary": "Principal",
+    "skipToContent": "Saltar al contenido"
   },
   "landing": {
     "heroBadge": "GS1 Sunrise 2027 · Pasaportes Digitales de Producto de la UE",
@@ -111,7 +113,75 @@
     "submit": "Guardar producto",
     "listTitle": "Tus productos",
     "empty": "Aún no hay productos: crea el primero arriba.",
-    "listError": "No se pudieron cargar tus productos ahora mismo. Revisa la conexión y actualiza la página."
+    "listError": "No se pudieron cargar tus productos ahora mismo. Revisa la conexión y actualiza la página.",
+    "gtinSectionTitle": "GTIN",
+    "gtinSectionEmpty": "Aún no hay un GTIN asociado. Impórtalo abajo.",
+    "gtinSaved": "GTIN guardado",
+    "gtinLabel": "GTIN (identificador de código de barras)",
+    "gtinPlaceholder": "p. ej. 04006381333931",
+    "gtinHelper": "Introduce un GTIN-8, GTIN-12 (UPC), GTIN-13 (EAN) o GTIN-14. Se normaliza a GTIN-14.",
+    "gtinSubmit": "Importar GTIN",
+    "gtinSavedBtn": "Importado",
+    "gtinErrorCheckDigit": "Estos números no coinciden con los cálculos estándar de GS1. Revisa si hay erratas.",
+    "gtinErrorLength": "Longitud no válida: el GTIN debe tener 8, 12, 13 o 14 dígitos numéricos.",
+    "gtinErrorInvalid": "Entrada no válida: introduce un GTIN GS1 válido y publicado.",
+    "gtinErrorMissingProduct": "Falta la referencia del producto. Actualiza la página e inténtalo de nuevo.",
+    "gtinErrorAuth": "Debes iniciar sesión para importar un GTIN.",
+    "gtinErrorNotFound": "No se encontró el producto para tu cuenta.",
+    "gtinErrorInUse": "Ese GTIN ya está asociado a otro producto de tu negocio.",
+    "gtinErrorSave": "No se pudo guardar el GTIN. Inténtalo de nuevo.",
+    "backToProducts": "Volver a productos",
+    "concierge": {
+      "choiceTitle": "Configura el código de barras de tu producto",
+      "choiceBody": "Para vender en grandes minoristas y habilitar el escaneo digital, tu producto necesita un identificador de código de barras único (GTIN). Si eres nuevo en esto, te guiaremos paso a paso.",
+      "optionHave": "Ya tengo un GTIN o un prefijo GS1",
+      "optionNeed": "Necesito un GTIN / Explícame cómo funciona",
+      "explainTitle": "¿Qué es un Prefijo GS1 y por qué lo necesitas?",
+      "explainBody": "Un Prefijo de Empresa GS1 actúa como el identificador único de tu negocio en el comercio minorista global. Garantiza que ninguna otra marca pueda generar números de código de barras idénticos.",
+      "explainWhy": "Los escáneres de los minoristas exigen números GS1 oficiales para identificar tu producto y verificar la titularidad de la marca.",
+      "explainHow": "Puedes registrarte directamente en GS1 US en unos 10 minutos.",
+      "explainCta": "Regístrate en GS1 US ↗",
+      "explainRegistered": "Ya registré mi prefijo →",
+      "prefixTitle": "Conecta tu Prefijo GS1",
+      "prefixLabel": "Tu Prefijo de Empresa GS1",
+      "prefixPlaceholder": "p. ej. 0612345",
+      "prefixHelper": "Introduce tu prefijo oficial. Almsby gestionará la secuenciación para que tu próximo producto reciba el número correcto automáticamente.",
+      "submit": "Generar mi GTIN",
+      "generated": "Tu GTIN generado",
+      "back": "← Volver",
+      "genericError": "Algo salió mal. Inténtalo de nuevo.",
+      "missingProduct": "Falta la referencia del producto. Actualiza la página e inténtalo de nuevo.",
+      "authRequired": "Debes iniciar sesión para generar un GTIN.",
+      "productNotFound": "No se encontró el producto para tu cuenta.",
+      "saveFailed": "No se pudo guardar tu GTIN. Inténtalo de nuevo.",
+      "prefixEmpty": "Introduce tu prefijo de empresa GS1 para continuar.",
+      "prefixNonNumeric": "Tu prefijo GS1 solo puede contener dígitos.",
+      "prefixInvalid": "Eso no parece un prefijo GS1 válido. Revisa el número e inténtalo de nuevo.",
+      "prefixExhausted": "Tu prefijo GS1 ha agotado sus secuencias disponibles, o hemos detectado un conflicto inusual. Ponte en contacto con soporte."
+    },
+    "gtinSetupImport": "Ya tengo un GTIN",
+    "gtinSetupConcierge": "Necesito un GTIN",
+    "barcodeSectionTitle": "Código de barras (doble marcado)",
+    "barcodeUnverifiedNote": "Este código de barras se renderiza correctamente, pero aún no se ha verificado mediante un escaneo de decodificación automatizado (#7). No lo uses para minoristas hasta que se verifique.",
+    "labelPrintHint": "Imprime esta etiqueta con la función de impresión de tu navegador. El marcado está calibrado para imprimir en #9.",
+    "labelPrintLink": "Imprimir etiqueta",
+    "labelVerified": "Verificado: todos los códigos se decodifican correctamente. Seguro para imprimir.",
+    "labelFailed": "El código de barras falló la validación de decodificación. No imprimas: contacta con soporte.",
+    "labelDownloadsTitle": "Descargas listas para imprimir",
+    "labelPreset": "Tamaño del símbolo (dimensión X)",
+    "labelPresetOption": "{mm} mm por módulo",
+    "labelPresetNote": "Los PNG se exportan a {mm} mm/módulo, 600 DPI.",
+    "labelDownloadSvgQr": "QR (SVG)",
+    "labelDownloadSvgDm": "DataMatrix (SVG)",
+    "labelDownloadSvgLegacy": "EAN-13 (SVG)",
+    "labelDownloadPngQr": "QR (PNG)",
+    "labelDownloadPngDm": "DataMatrix (PNG)",
+    "labelDownloadPngLegacy": "EAN-13 (PNG)",
+    "labelPrintExact": "Imprimir / PDF (tamaño exacto)",
+    "labelDownloadsLocked": "Las descargas están bloqueadas hasta que los símbolos pasen la verificación de decodificación.",
+    "labelPrintExactHint": "Esta página se imprime con un tamaño exacto de {width} × {height} mm. En el diálogo de impresión, ajusta la escala al 100 % (\"Tamaño real\") y los márgenes en Ninguno; después elige \"Guardar como PDF\" o imprime directamente.",
+    "labelPrintButton": "Imprimir",
+    "labelLegacyNotApplicable": "Sin código EAN-13: los GTIN con un dígito indicador GS1 distinto de cero no tienen equivalente EAN-13."
   },
   "settings": {
     "title": "Ajustes",
@@ -152,7 +222,9 @@
         },
         "helper": "Establece los cálculos de impuestos base y los pagos de tu tienda.",
         "cta": "Lanzar el espacio de trabajo"
-      }
+      },
+      "back": "Atrás",
+      "metaTitle": "Configura tu negocio"
     },
     "errors": {
       "nameRequired": "Introduce un nombre de negocio para continuar.",
@@ -161,5 +233,13 @@
       "countryRequired": "Selecciona tu país de operación principal.",
       "currencyRequired": "Selecciona una moneda por defecto para precios y pagos."
     }
+  },
+  "errors": {
+    "notFoundTitle": "Página no encontrada",
+    "notFoundBody": "La página que buscas no existe o pudo haberse movido.",
+    "notFoundCta": "Volver al inicio",
+    "errorTitle": "Algo salió mal",
+    "errorBody": "Ocurrió un error inesperado. Inténtalo de nuevo.",
+    "errorRetry": "Reintentar"
   }
 }

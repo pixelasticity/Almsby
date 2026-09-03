@@ -1,4 +1,6 @@
 # Almsby — application
+![Uptime Robot status](https://img.shields.io/uptimerobot/status/m803881054-8ec504b5bf887d11a3e9962a) ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/pixelasticity/Almsby/ci.yml) ![Mozilla HTTP Observatory Grade](https://img.shields.io/mozilla-observatory/grade/almsby.com)
+
 
 Maker dashboard + public story pages + GS1 Digital Link resolver.
 Next.js 16 (App Router) · TypeScript strict · Supabase (Postgres + Auth) ·
@@ -46,11 +48,50 @@ prisma/
   schema.prisma           # schema is the source of truth for migrations
 supabase/
   config.toml             # local Supabase CLI stack config
+guidelines/                 # specs & briefs (source of truth for scope)
+  phase1-dod-status.md      # live tracker for the Phase 1 DoD checkboxes
+  technical-debt.md         # leveled-up debt / deferred optimizations (living log)
 tests/                    # Vitest suite
 .github/workflows/
   ci.yml                  # lint + typecheck + test + build (every PR)
+  a11y.yml                # accessibility: jsx-a11y lint + runtime axe scan (every PR)
+  release-please.yml      # versioning: maintains the Release PR (version + CHANGELOG + tag)
   deploy-migrations.yml   # migrations: push dev→staging, merge master→production
 ```
+
+## Accessibility (CI + local)
+
+Two complementary layers, both gating every PR:
+
+1. **Static** — the `Lint` step enforces the full `eslint-plugin-jsx-a11y`
+   recommended rule set (on top of Next's built-in subset).
+2. **Runtime** — the dedicated `A11y` workflow builds the app with dummy env
+   vars, starts it, and runs axe-core (WCAG 2.x A/AA) over every route that is
+   reachable without an authenticated session (`/`, `/sign-in`, `/sign-up`,
+   `/s/{gtin}`). Serious/critical violations fail the build; per-route JSON
+   reports are uploaded as artifacts. The scan emulates reduced motion so
+   entrance animations don't produce false contrast failures.
+   Known limitation: authenticated dashboard routes are not scanned yet —
+   covering them needs CI to provision a Supabase session (follow-up).
+
+Run locally against a production server:
+
+```bash
+npm run build && npm run start   # or npx next dev
+A11Y_CHANNEL=chrome npm run scan:a11y   # channel only needed on macOS < 14
+```
+
+## Versioning (Release Please)
+
+Conventional Commits drive releases automatically. A workflow watches
+`development` and maintains a single Release PR: merging it bumps
+`package.json`, updates `CHANGELOG.md`, cuts a `vX.Y.Z` tag, and publishes a
+GitHub Release. Semver mapping — `feat:` → minor, `fix:`/`perf:` → patch,
+`BREAKING CHANGE:` footer → major; other types (`chore`, `docs`, `ci`,
+`refactor`, `a11y`) don't bump the version. Caveat: the automated Release PR
+shows no CI checks (a GitHub limitation for bot-created PRs); it only touches
+version metadata. Tags currently mark development states — production tagging
+can be added at launch.
 
 ## Internationalization (next-intl)
 

@@ -1,3 +1,5 @@
+import { cleanInput, optionalInput } from "@/lib/input";
+
 /**
  * Pure, testable validation for the Phase 1 business-onboarding wizard.
  * Kept free of DB/auth (like lib/products/validate, lib/gs1/*).
@@ -21,19 +23,11 @@ export type OnboardingValidation =
   | { ok: true; data: NormalizedBusinessOnboardingInput }
   | { ok: false; error: string };
 
-const clean = (value: string | null | undefined): string =>
-  value?.trim() ?? "";
-
-const optional = (value: string | null | undefined): string | null => {
-  const v = clean(value);
-  return v.length > 0 ? v : null;
-};
-
 /** Validate + normalize the onboarding form across its 3 steps. */
 export function validateBusinessOnboarding(
   input: BusinessOnboardingInput
 ): OnboardingValidation {
-  const name = clean(input.name);
+  const name = cleanInput(input.name);
   if (!name) {
     return { ok: false, error: "Enter a business name to continue." };
   }
@@ -41,7 +35,7 @@ export function validateBusinessOnboarding(
     return { ok: false, error: "Business names must be at least 2 characters long." };
   }
 
-  const category = optional(input.industryCategory);
+  const category = optionalInput(input.industryCategory);
   if (!category) {
     return {
       ok: false,
@@ -49,11 +43,11 @@ export function validateBusinessOnboarding(
     };
   }
 
-  const country = optional(input.operatingCountry);
+  const country = optionalInput(input.operatingCountry);
   if (!country) {
     return { ok: false, error: "Select your primary operating country." };
   }
-  const currencyValue = optional(input.currency);
+  const currencyValue = optionalInput(input.currency);
   if (!currencyValue) {
     return { ok: false, error: "Select a default currency for pricing and payouts." };
   }

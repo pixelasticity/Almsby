@@ -1,0 +1,78 @@
+/* Dual-marked label — crisp 1:1 modules, quiet zones baked into the SVGs. */
+.label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 100%;
+}
+.symbols {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.qrSlot,
+.dmSlot {
+  line-height: 0; /* keep 1:1 pixels, no anti-aliased inline gaps */
+}
+.qrSlot svg,
+.dmSlot svg {
+  display: block;
+  /* On-screen display sizes are a scanning-UX choice, not spec-governed — the
+     GS1 X-dimension floor (0.25mm) governs print, which #9 sizes. Bigger here
+     makes test-scanning with a phone easier. Rendering is vector, so
+     fractional module edges are fine on screen; integer-only scaling is
+     enforced where it matters, at print rasterization (#9). */
+  max-width: 100%;
+  image-rendering: pixelated;
+}
+.qrSlot svg {
+  width: 3.3cm;
+  height: 3.3cm;
+}
+.dmSlot svg {
+  width: 1.9cm;
+  height: 1.9cm;
+}
+/* Legacy EAN-13: linear aspect (≈95×77 modules incl. quiet zones). Width is
+   a display choice; print sizing goes through the X-dimension floor (#9). */
+.legacySlot svg {
+  width: 4.5cm;
+  height: auto;
+}
+.legacySlot {
+  line-height: 0;
+  align-self: flex-end;
+}
+/* #45 — explains an intentionally absent legacy symbol (non-zero GS1
+   indicator digit) instead of leaving an unexplained gap. */
+.legacyNote {
+  margin: 0;
+  align-self: center;
+  font-size: 12px;
+  font-style: italic;
+  color: var(--neutral-500);
+  max-width: 220px;
+}
+.dmSlot {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+}
+.dmCaption {
+  margin: 0;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--neutral-700);
+  text-align: center;
+}
+.uri {
+  margin: 0;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  color: var(--neutral-600);
+  word-break: break-all;
+}

@@ -3,7 +3,9 @@
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/server";
 import { getDb } from "@/lib/db";
+import { getOwnedBusiness } from "@/lib/products/queries";
 import { validateBusinessOnboarding } from "@/lib/products/business-onboarding";
+import { coerceFormString } from "@/lib/input";
 
 export type BusinessOnboardingState = { error?: string };
 
@@ -12,10 +14,10 @@ export async function createBusinessAction(
   formData: FormData
 ): Promise<BusinessOnboardingState> {
   const result = validateBusinessOnboarding({
-    name: String(formData.get("name") ?? ""),
-    industryCategory: String(formData.get("industryCategory") ?? ""),
-    operatingCountry: String(formData.get("operatingCountry") ?? ""),
-    currency: String(formData.get("currency") ?? ""),
+    name: coerceFormString(formData, "name"),
+    industryCategory: coerceFormString(formData, "industryCategory"),
+    operatingCountry: coerceFormString(formData, "operatingCountry"),
+    currency: coerceFormString(formData, "currency"),
   });
 
   if (!result.ok) {
@@ -27,11 +29,10 @@ export async function createBusinessAction(
     return { error: "You must be signed in to set up a business." };
   }
 
-  let existing: { id: string } | null = null;
-  let created = false;
   try {
     const db = getDb();
-    existing = await db.business.findFirst({ where: { ownerId: user.id } });
+    // Idempotent: re-submitting onboarding keeps the existing Business.
+    const existing = await getOwnedBusiness(user.id);
     if (!existing) {
       await db.business.create({
         data: {
@@ -42,15 +43,12 @@ export async function createBusinessAction(
           currency: result.data.currency,
         },
       });
-      created = true;
     }
   } catch (error) {
     console.error("createBusinessAction failed:", user.id, error);
     return { error: "Could not set up your business. Please try again." };
   }
 
-  // After the try/catch so the NEXT_REDIRECT isn't swallowed.
-  if (existing) redirect("/dashboard");
-  if (created) redirect("/dashboard");
+  // Redirect after the try/catch so NEXT_REDIRECT isn't swallowed.
   redirect("/dashboard");
 }

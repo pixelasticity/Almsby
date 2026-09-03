@@ -1,0 +1,118 @@
+/* GTIN concierge flow (#4) — mirrors product/business form tokens. */
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.modal {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.head {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+}
+.body,
+.why,
+.how {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--neutral-700);
+}
+.why {
+  color: var(--neutral-600);
+}
+.how {
+  color: var(--neutral-600);
+}
+.label {
+  font-size: 13px;
+  font-weight: 700;
+}
+.input {
+  padding: 10px 12px;
+  border: 1px solid var(--neutral-300);
+  border-radius: 10px;
+  background: #fff;
+  font: inherit;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+.input:focus {
+  outline: 2px solid var(--blue-300);
+  border-color: var(--blue-400);
+}
+.helper {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--neutral-500);
+}
+.error {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--danger-600);
+}
+.saved {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--green-700);
+}
+.primary,
+.secondary,
+.ghost,
+.primaryLink {
+  padding: 10px 16px;
+  border-radius: 999px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+  text-decoration: none;
+}
+.primary {
+  background: var(--green-600);
+  color: #fff;
+  border: none;
+}
+.primary:hover {
+  background: var(--green-700);
+}
+.secondary {
+  background: transparent;
+  color: var(--blue-600);
+  border: 1px solid var(--blue-300);
+}
+.secondary:hover {
+  background: var(--blue-100);
+}
+.ghost {
+  background: transparent;
+  color: var(--neutral-600);
+  border: 1px solid var(--neutral-300);
+}
+.ghost:hover {
+  background: var(--neutral-200);
+}
+.primaryLink {
+  background: var(--blue-600);
+  color: #fff;
+  border: none;
+  display: inline-block;
+}
+.primaryLink:hover {
+  background: var(--blue-700);
+}

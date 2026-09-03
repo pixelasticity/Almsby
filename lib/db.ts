@@ -14,4 +14,3 @@ export function getDb(): PrismaClient {
   return globalForPrisma.almsbyPrisma;
 }
 
-export type Db = PrismaClient;

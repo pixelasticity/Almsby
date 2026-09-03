@@ -1,16 +1,18 @@
+import Link from "next/link";
+import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { getCurrentUser } from "@/lib/auth/server";
 import { getDb } from "@/lib/db";
+import { statusI18nKey } from "@/lib/products/validate";
 import ProductForm from "@/components/products/ProductForm";
 import styles from "./products.module.css";
 
 type ListProduct = { id: string; name: string; status: string };
 
-const STATUS_KEYS: Record<string, string> = {
-  draft: "statusDraft",
-  active: "statusActive",
-  archived: "statusArchived",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("products");
+  return { title: t("title") };
+}
 
 export default async function ProductsPage() {
   const t = await getTranslations("products");
@@ -21,16 +23,12 @@ export default async function ProductsPage() {
   if (user) {
     try {
       const db = getDb();
-      const business = await db.business.findFirst({
-        where: { ownerId: user.id },
+      // Single ownership-scoped query via the Business relation.
+      products = await db.product.findMany({
+        where: { business: { ownerId: user.id } },
+        orderBy: { createdAt: "desc" },
+        select: { id: true, name: true, status: true },
       });
-      if (business) {
-        products = await db.product.findMany({
-          where: { businessId: business.id },
-          orderBy: { createdAt: "desc" },
-          select: { id: true, name: true, status: true },
-        });
-      }
     } catch (error) {
       console.error("ProductsPage: failed to list products", error);
       loadError = true;
@@ -56,9 +54,11 @@ export default async function ProductsPage() {
           <ul className={styles.items}>
             {products.map((p) => (
               <li key={p.id} className={styles.item}>
-                <span className={styles.itemName}>{p.name}</span>
+                <Link href={`/products/${p.id}`} className={styles.itemName}>
+                  {p.name}
+                </Link>
                 <span className={styles.itemStatus}>
-                  {t(STATUS_KEYS[p.status] ?? "statusDraft")}
+                  {t(statusI18nKey(p.status))}
                 </span>
               </li>
             ))}
