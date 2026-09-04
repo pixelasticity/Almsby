@@ -76,6 +76,24 @@ export const env = {
     // Preferred modern name, with the legacy SUPABASE_SERVICE_ROLE_KEY as fallback.
     return process.env.SUPABASE_SECRET_KEY ?? process.env.SUPABASE_SERVICE_ROLE_KEY;
   },
+
+  /** Cloudflare R2 credentials (server-only; story-page photos, #71). */
+  get r2AccountId(): string {
+    return required("R2_ACCOUNT_ID");
+  },
+  get r2AccessKeyId(): string {
+    return required("R2_ACCESS_KEY_ID");
+  },
+  get r2SecretAccessKey(): string {
+    return required("R2_SECRET_ACCESS_KEY");
+  },
+  get r2BucketName(): string {
+    return required("R2_BUCKET_NAME");
+  },
+  /** Public host the bucket is served under (custom CNAME or *.r2.dev). */
+  get r2PublicDomain(): string {
+    return required("R2_PUBLIC_DOMAIN");
+  },
 };
 
 /**
