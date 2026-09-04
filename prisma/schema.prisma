@@ -38,9 +38,14 @@ model Product {
   business            Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
   name                String
   brand               String?
+  category            String? // product category for story-page benchmarking & browse
   netContent          String?
   countryOfOrigin     String?
   materialComposition String?
+  recyclable          Boolean? // nullable — unspecified until the maker states it
+  recyclingInstructions String? // text — disposal/prep instructions (e.g. "remove trims before recycling")
+  takebackProgram     String? // text/URL — if the maker offers one
+  sourcingNotes       String? // maker's own sourcing/provenance narrative
   status              String   @default("draft") // draft | active | archived
   createdAt           DateTime @default(now())
 
@@ -84,7 +89,7 @@ model StoryPage {
   productId   String   @unique
   product     Product  @relation(fields: [productId], references: [id])
   headline    String?
-  bodyContent String? // rich text / structured blocks (Phase 2)
+  bodyContent Json? // structured blocks — {type: 'paragraph' | 'heading', text: string}[] (Phase 2 CMS)
   photos      String[] @default([])
   published   Boolean  @default(false)
   updatedAt   DateTime @updatedAt
