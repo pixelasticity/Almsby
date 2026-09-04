@@ -90,9 +90,13 @@ export const env = {
   get r2BucketName(): string {
     return required("R2_BUCKET_NAME");
   },
-  /** Public host the bucket is served under (custom CNAME or *.r2.dev). */
+  /** Public host the bucket is served under (custom CNAME or *.r2.dev).
+   *  Accept both "example.com" and "https://example.com" — callers always build
+   *  absolute https URLs, so a stray scheme (r2.dev URLs copy with https://)
+   *  must not double-prefix. */
   get r2PublicDomain(): string {
-    return required("R2_PUBLIC_DOMAIN");
+    const value = required("R2_PUBLIC_DOMAIN");
+    return value.replace(/^https?:\/\//, "");
   },
 };
 
