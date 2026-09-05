@@ -1,0 +1,40 @@
+/* Single source of truth for button appearance — consumed by Button.tsx.
+   Primary = green action (matches the .pill in form-controls.module.css),
+   Secondary = neutral. Both use globals.css tokens exclusively. */
+
+.primary,
+.secondary {
+  display: inline-block;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+  cursor: pointer;
+  text-align: center;
+}
+
+.primary {
+  background: var(--green-600);
+  color: #fff;
+}
+
+.primary:hover:not(:disabled) {
+  background: var(--green-700);
+}
+
+.secondary {
+  background: var(--neutral-200);
+  color: var(--neutral-800);
+}
+
+.secondary:hover:not(:disabled) {
+  background: var(--neutral-300);
+}
+
+.primary:disabled,
+.secondary:disabled {
+  opacity: 0.6;
+  cursor: default;
+}

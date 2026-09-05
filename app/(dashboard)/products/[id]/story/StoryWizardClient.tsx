@@ -9,6 +9,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
+import Button from "@/components/ui/Button";
 import FormError from "@/components/ui/FormError";
 import StoryStepHeadline from "@/components/story/StoryStepHeadline";
 import StoryStepBlocks from "@/components/story/StoryStepBlocks";
@@ -138,23 +139,24 @@ export default function StoryWizard({
       <footer className={styles.footer}>
         <div className={styles.nav}>
           {currentStep > 1 && (
-            <button type="button" onClick={goBack} className={styles.secondaryBtn}>
+            <Button variant="secondary" type="button" onClick={goBack}>
               ← {t("back")}
-            </button>
+            </Button>
           )}
           {currentStep < TOTAL_STEPS ? (
-            <button type="button" onClick={goNext} className={styles.primaryBtn}>
+            <Button variant="primary" type="button" onClick={goNext}>
               {t("next")} →
-            </button>
+            </Button>
           ) : (
-            <button
+            <Button
+              variant="primary"
               type="button"
+              pending={isPending}
+              pendingLabel={t("publishing")}
               onClick={handlePublish}
-              disabled={isPending}
-              className={styles.primaryBtn}
             >
-              {isPending ? t("publishing") : t("publish")}
-            </button>
+              {t("publish")}
+            </Button>
           )}
         </div>
       </footer>

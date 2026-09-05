@@ -7,8 +7,9 @@
  */
 "use client";
 
-import { useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
+import Button from "@/components/ui/Button";
 import FormField from "@/components/ui/FormField";
 import FormError from "@/components/ui/FormError";
 import { validatePhotoFile } from "@/lib/story/storage";
@@ -29,6 +30,9 @@ export default function StoryStepPhotos({
   const t = useTranslations("story.stepPhotos");
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const triggerUpload = () => fileInputRef.current?.click();
 
   const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files ?? []);
@@ -75,16 +79,22 @@ export default function StoryStepPhotos({
     <div className={styles.photosStep}>
       <FormField styles={styles} htmlFor="story-photos" label={t("label")} helper={t("helper")}>
         <div id="story-photos">
-          <label className={styles.uploadBtn} htmlFor="photo-input">
-            {isPending ? "…" : t("upload")}
-          </label>
+          <Button
+            variant="primary"
+            type="button"
+            pending={isPending}
+            pendingLabel="…"
+            onClick={triggerUpload}
+          >
+            {t("upload")}
+          </Button>
           <input
+            ref={fileInputRef}
             id="photo-input"
             type="file"
             accept="image/jpeg,image/png,image/webp,image/avif,image/gif"
             multiple
             onChange={handleUpload}
-            disabled={isPending}
             className={styles.hiddenInput}
             aria-label={t("upload")}
           />
