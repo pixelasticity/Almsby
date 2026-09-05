@@ -1,0 +1,162 @@
+/* Story CMS wizard (#72) — colors exclusively from globals.css tokens. */
+
+.wizard {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+.header {
+  margin-bottom: 24px;
+}
+
+.backLink {
+  background: none;
+  border: none;
+  color: var(--neutral-600);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.backLink:hover {
+  text-decoration: underline;
+}
+
+.stepIndicator {
+  font-size: 14px;
+  color: var(--neutral-500);
+  margin-top: 4px;
+}
+
+/* Step layout tokens (FormField consumes .field/.label/.helper/.badge) */
+.field {
+  margin-bottom: 16px;
+}
+
+.label {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--foreground);
+  margin-bottom: 4px;
+  display: block;
+}
+
+.helper {
+  font-size: 13px;
+  color: var(--neutral-500);
+  margin-top: 4px;
+}
+
+.badge {
+  color: var(--neutral-500);
+  font-weight: 600;
+}
+
+.input,
+.blockTextarea {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--neutral-300);
+  border-radius: 6px;
+  background: var(--card);
+  color: var(--foreground);
+  font-size: 16px;
+}
+
+.blockTextarea {
+  flex: 1;
+  resize: vertical;
+  min-height: 80px;
+}
+
+.input:focus,
+.blockTextarea:focus {
+  outline: 2px solid var(--blue-300);
+  outline-offset: 1px;
+  border-color: var(--blue-400);
+}
+
+/* Blocks editor */
+.blocks {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.blockRow {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.blockRow select {
+  padding: 4px 8px;
+  border: 1px solid var(--neutral-300);
+  border-radius: 4px;
+  background: var(--card);
+  color: var(--foreground);
+  font-size: 14px;
+  min-width: 110px;
+}
+
+/* Photos */
+.photosStep {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.hiddenInput {
+  display: none;
+}
+
+.muted {
+  font-size: 14px;
+  color: var(--neutral-500);
+}
+
+.photoGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 12px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.photoItem {
+  position: relative;
+}
+
+.photo {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--card);
+}
+
+/* Footer nav */
+.footer {
+  margin-top: 32px;
+  border-top: 1px solid var(--border);
+  padding-top: 20px;
+}
+
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
