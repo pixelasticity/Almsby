@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { getCurrentUser } from "@/lib/auth/server";
+import { getCurrentUser, requireAuth } from "@/lib/auth/server";
 import { getOwnedProduct } from "@/lib/products/queries";
 import { toGtin14 } from "@/lib/gs1/gtin";
 import GtinSetup from "@/components/products/GtinSetup";
@@ -36,11 +36,12 @@ export default async function ProductDetailPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { id } = await params;
+    const { id } = await params;
   const t = await getTranslations("products");
-  const user = await getCurrentUser();
-
-  if (!user) notFound();
+  // Auth guard: expired session redirects to /sign-in instead of a 404 (#83).
+  // generateMetadata above intentionally keeps getCurrentUser — a metadata
+  // lookup should fall back to the generic title, not navigate.
+  const user = await requireAuth();
 
   let title = "";
   let brand: string | null = null;
