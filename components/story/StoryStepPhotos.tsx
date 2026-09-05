@@ -112,14 +112,15 @@ export default function StoryStepPhotos({
               {/* Freshly-uploaded previews: eager by design — lazy loading is
                   for below-the-fold page content, not a CMS upload grid. */}
               <img src={url} alt="" className={styles.photo} />
-              <button
+              <Button
+                variant="ghost"
                 type="button"
                 onClick={() => removePhoto(url)}
-                className={styles.removeBtn}
+                style={{ color: "var(--neutral-500)", fontSize: "20px" }}
                 title={t("remove")}
               >
                 ×
-              </button>
+              </Button>
             </li>
           ))}
         </ul>

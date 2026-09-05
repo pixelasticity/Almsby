@@ -101,41 +101,6 @@
   min-width: 110px;
 }
 
-.removeBtn,
-.addBtn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 2px 6px;
-  font-size: 16px;
-  line-height: 1;
-}
-
-.removeBtn {
-  color: var(--neutral-500);
-  font-size: 20px;
-}
-
-.removeBtn:hover {
-  color: var(--danger-600);
-}
-
-.removeBtn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-.addBtn {
-  align-self: flex-start;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--green-700);
-}
-
-.addBtn:hover {
-  text-decoration: underline;
-}
-
 /* Photos */
 .photosStep {
   display: flex;

@@ -1,6 +1,7 @@
 /* Single source of truth for button appearance — consumed by Button.tsx.
    Primary = green action (matches the .pill in form-controls.module.css),
-   Secondary = neutral. Both use globals.css tokens exclusively. */
+   Secondary = neutral, Ghost = icon-only (transparent, inherits color).
+   All use globals.css tokens exclusively. */
 
 .primary,
 .secondary {
@@ -37,4 +38,29 @@
 .secondary:disabled {
   opacity: 0.6;
   cursor: default;
+}
+
+/* Ghost: icon-only buttons (remove "×", add block). Transparent, no padding,
+   inherits color so callers set their own via the style prop. */
+.ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 6px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.ghost:hover:not(:disabled) {
+  background: var(--neutral-200);
+}
+
+.ghost:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }

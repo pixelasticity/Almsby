@@ -5,8 +5,8 @@ import { useFormStatus } from "react-dom";
 import styles from "./button.module.css";
 
 type ButtonProps = {
-  /** "primary" = green action, "secondary" = neutral. */
-  variant?: "primary" | "secondary";
+  /** "primary" = green action, "secondary" = neutral, "ghost" = icon-only (no background). */
+  variant?: "primary" | "secondary" | "ghost";
   /** "submit" auto-tracks the parent <form>'s pending state; "button" needs
       the parent to pass `pending` explicitly (e.g. a useTransition flow). */
   type?: "submit" | "button";
@@ -36,7 +36,13 @@ export default function Button({
   const { pending: formPending } = useFormStatus();
 
   const isPending = (type === "submit" && formPending) || pending;
-  const variantClass = variant === "primary" ? styles.primary : styles.secondary;
+
+  const variantClass =
+    variant === "primary"
+      ? styles.primary
+      : variant === "ghost"
+        ? styles.ghost
+        : styles.secondary;
 
   return (
     <button

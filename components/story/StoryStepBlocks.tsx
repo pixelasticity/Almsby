@@ -7,6 +7,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import Button from "@/components/ui/Button";
 import FormField from "@/components/ui/FormField";
 import type { StoryBlock } from "@/lib/story/queries";
 import styles from "./story.module.css";
@@ -66,21 +67,27 @@ export default function StoryStepBlocks({
               rows={3}
               aria-label={block.type === "heading" ? t("heading") : t("paragraph")}
             />
-            <button
+            <Button
+              variant="ghost"
               type="button"
               onClick={() => removeBlock(i)}
               disabled={blocks.length <= 1}
-              className={styles.removeBtn}
+              style={{ color: "var(--neutral-500)", fontSize: "20px" }}
               title={t("remove")}
             >
               ×
-            </button>
+            </Button>
           </div>
         ))}
       </div>
-      <button type="button" onClick={addBlock} className={styles.addBtn}>
+      <Button
+        variant="ghost"
+        type="button"
+        onClick={addBlock}
+        style={{ color: "var(--green-700)", fontSize: "14px", fontWeight: 600 }}
+      >
         {t("addBlock")}
-      </button>
+      </Button>
     </FormField>
   );
 }
