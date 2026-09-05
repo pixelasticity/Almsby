@@ -189,7 +189,48 @@
   },
   "story": {
     "title": "Historia del producto",
-    "placeholder": "Placeholder de la Fase 0. El renderizado completo de la página de historia llega en la Fase 2. GTIN solicitado: {gtin}."
+    "placeholder": "Placeholder de la Fase 0. El renderizado completo de la página de historia llega en la Fase 2. GTIN solicitado: {gtin}.",
+    "create": "Crear historia",
+    "edit": "Editar historia",
+    "backToProduct": "Volver al producto",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "stepIndicator": "Paso {current} de {total}",
+    "stepHeadline": {
+      "label": "Titular",
+      "helper": "Un título breve para tu historia de producto.",
+      "placeholder": "Ej. Fabricado con denim reciclado",
+      "required": "(Obligatorio para publicar)"
+    },
+    "stepBlocks": {
+      "label": "Contenido de la historia",
+      "paragraph": "Párrafo",
+      "heading": "Encabezado",
+      "addBlock": "+ Añadir bloque",
+      "remove": "Eliminar",
+      "empty": "Sin bloques aún. Añade uno para comenzar."
+    },
+    "stepPhotos": {
+      "label": "Fotos",
+      "helper": "Sube fotos que dinamizen tu historia.",
+      "upload": "Subir fotos",
+      "replace": "Cambiar foto",
+      "remove": "Eliminar foto",
+      "empty": "Sin fotos aún."
+    },
+    "saveDraft": "Guardar borrador",
+    "publish": "Publicar",
+    "unpublish": "Despublicar",
+    "statusDraft": "Borrador — aún no visible para los compradores",
+    "statusPublished": "Publicado",
+    "saving": "Guardando…",
+    "saved": "Guardado",
+    "publishing": "Publicando…",
+    "published": "Publicado",
+    "errorHeadlineRequired": "Añade un titular antes de publicar.",
+    "errorSave": "No se pudo guardar la historia. Inténtalo de nuevo.",
+    "errorPublish": "No se pudo publicar la historia. Inténtalo de nuevo.",
+    "errorSignIn": "Debes iniciar sesión para editar una historia."
   },
   "business": {
     "creation": {

@@ -189,7 +189,48 @@
   },
   "story": {
     "title": "Product story",
-    "placeholder": "Phase 0 placeholder. Full story-page rendering lands in Phase 2. Requested GTIN: {gtin}."
+    "placeholder": "Phase 0 placeholder. Full story-page rendering lands in Phase 2. Requested GTIN: {gtin}.",
+    "create": "Create story",
+    "edit": "Edit story",
+    "backToProduct": "Back to product",
+    "back": "Back",
+    "next": "Next",
+    "stepIndicator": "Step {current} of {total}",
+    "stepHeadline": {
+      "label": "Headline",
+      "helper": "A short title for your product story.",
+      "placeholder": "e.g. Crafted from recycled denim",
+      "required": "(Required to publish)"
+    },
+    "stepBlocks": {
+      "label": "Story content",
+      "paragraph": "Paragraph",
+      "heading": "Heading",
+      "addBlock": "+ Add block",
+      "remove": "Remove",
+      "empty": "No blocks yet. Add one to get started."
+    },
+    "stepPhotos": {
+      "label": "Photos",
+      "helper": "Upload photos that bring your story to life.",
+      "upload": "Upload photos",
+      "replace": "Change photo",
+      "remove": "Remove photo",
+      "empty": "No photos yet."
+    },
+    "saveDraft": "Save draft",
+    "publish": "Publish",
+    "unpublish": "Unpublish",
+    "statusDraft": "Draft — not visible to shoppers yet",
+    "statusPublished": "Published",
+    "saving": "Saving…",
+    "saved": "Saved",
+    "publishing": "Publishing…",
+    "published": "Published",
+    "errorHeadlineRequired": "Add a headline before publishing.",
+    "errorSave": "Could not save the story. Please try again.",
+    "errorPublish": "Could not publish the story. Please try again.",
+    "errorSignIn": "You must be signed in to edit a story."
   },
   "business": {
     "creation": {

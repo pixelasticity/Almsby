@@ -1,0 +1,227 @@
+/* Phase 2 — story CMS wizard (#72). Scoped to story components. */
+
+.wizard {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+.header {
+  margin-bottom: 24px;
+}
+
+.backLink {
+  background: none;
+  border: none;
+  color: var(--color-text-secondary, #6b7280);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.backLink:hover {
+  text-decoration: underline;
+}
+
+.stepIndicator {
+  font-size: 14px;
+  color: var(--color-text-secondary, #6b7280);
+  margin-top: 4px;
+}
+
+/* Step-specific layout tokens (FormField consumes .field/.label/.helper/.badge) */
+.field {
+  margin-bottom: 16px;
+}
+
+.label {
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.helper {
+  font-size: 13px;
+  color: var(--color-text-secondary, #6b7280);
+  margin-top: 4px;
+}
+
+.badge {
+  color: var(--color-accent, #dc2626);
+  font-weight: 600;
+}
+
+.input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--color-border, #d1d5db);
+  border-radius: 6px;
+  font-size: 16px;
+}
+
+.input:focus {
+  outline: 2px solid var(--color-accent-focus, #3b82f6);
+  outline-offset: 1px;
+}
+
+/* Blocks editor */
+.blocks {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.blockRow {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.blockRow select {
+  padding: 4px 8px;
+  border: 1px solid var(--color-border, #d1d5db);
+  border-radius: 4px;
+  font-size: 14px;
+  min-width: 110px;
+}
+
+.blockTextarea {
+  flex: 1;
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--color-border, #d1d5db);
+  border-radius: 6px;
+  font-size: 16px;
+  resize: vertical;
+  min-height: 80px;
+}
+
+.removeBtn,
+.addBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px 6px;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.removeBtn {
+  color: var(--color-text-secondary, #6b7280);
+  font-size: 20px;
+}
+
+.removeBtn:hover {
+  color: var(--color-error, #dc2626);
+}
+
+.removeBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.addBtn {
+  align-self: flex-start;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-accent, #2563eb);
+}
+
+.addBtn:hover {
+  text-decoration: underline;
+}
+
+/* Photos */
+.photosStep {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.uploadBtn {
+  display: inline-block;
+  padding: 10px 16px;
+  background: var(--color-accent, #2563eb);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+}
+
+.uploadBtn:hover {
+  background: var(--color-accent-hover, #1d4ed8);
+}
+
+.hiddenInput {
+  display: none;
+}
+
+.muted {
+  font-size: 14px;
+  color: var(--color-text-secondary, #6b7280);
+}
+
+.photoGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 12px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.photoItem {
+  position: relative;
+}
+
+.photo {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid var(--color-border, #d1d5db);
+}
+
+/* Footer nav */
+.footer {
+  margin-top: 32px;
+  border-top: 1px solid var(--color-border, #e5e7eb);
+  padding-top: 20px;
+}
+
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.secondaryBtn,
+.primaryBtn {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.secondaryBtn {
+  background: var(--color-bg-secondary, #f3f4f6);
+  color: var(--color-text, #111827);
+}
+
+.primaryBtn {
+  background: var(--color-accent, #2563eb);
+  color: white;
+}
+
+.primaryBtn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
