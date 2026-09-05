@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { getCurrentUser } from "@/lib/auth/server";
+import { requireAuth } from "@/lib/auth/server";
 import { getOwnedBusiness } from "@/lib/products/queries";
 import BusinessOnboardingForm from "@/components/business/BusinessOnboardingForm";
 import styles from "./page.module.css";
@@ -12,7 +12,8 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function BusinessOnboardingPage() {
-  const user = await getCurrentUser();
+  // Auth guard: onboarding is only meaningful with a session (#83).
+  const user = await requireAuth();
 
   let hasBusiness = false;
   if (user) {

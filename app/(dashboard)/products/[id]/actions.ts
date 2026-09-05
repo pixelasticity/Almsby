@@ -1,7 +1,7 @@
 "use server";
 
 import { Prisma } from "@prisma/client";
-import { getCurrentUser } from "@/lib/auth/server";
+import { requireAuth } from "@/lib/auth/server";
 import { getDb } from "@/lib/db";
 import { getOwnedProduct } from "@/lib/products/queries";
 import { classifyGtinError, toGtin14 } from "@/lib/gs1/gtin";
@@ -42,10 +42,8 @@ export async function importGtinAction(
     return { cls };
   }
 
-  const user = await getCurrentUser();
-  if (!user) {
-    return { error: "authRequired" };
-  }
+    // Auth guard: an expired session redirects to /sign-in mid-submit (#83).
+  const user = await requireAuth();
 
   const gtin14 = toGtin14(raw);
   if (!gtin14) {

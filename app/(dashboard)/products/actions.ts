@@ -1,7 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { getCurrentUser } from "@/lib/auth/server";
+import { requireAuth } from "@/lib/auth/server";
 import { getDb } from "@/lib/db";
 import { getOwnedBusiness } from "@/lib/products/queries";
 import { validateProductInput } from "@/lib/products/validate";
@@ -26,10 +26,8 @@ export async function createProductAction(
     return { error: result.error };
   }
 
-  const user = await getCurrentUser();
-  if (!user) {
-    return { error: "You must be signed in to create a product." };
-  }
+    // Auth guard: an expired session redirects to /sign-in mid-submit (#83).
+  const user = await requireAuth();
 
   try {
     const db = getDb();

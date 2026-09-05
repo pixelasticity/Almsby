@@ -1,7 +1,7 @@
 "use server";
 
 import { Prisma } from "@prisma/client";
-import { getCurrentUser } from "@/lib/auth/server";
+import { requireAuth } from "@/lib/auth/server";
 import { getDb } from "@/lib/db";
 import {
   validatePrefix,
@@ -49,8 +49,8 @@ export async function conciergeAction(
     }
   }
 
-  const user = await getCurrentUser();
-  if (!user) return { error: "authRequired" };
+    // Auth guard: an expired session redirects to /sign-in mid-submit (#83).
+  const user = await requireAuth();
 
   try {
     const db = getDb();

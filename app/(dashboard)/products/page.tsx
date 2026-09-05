@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { getCurrentUser } from "@/lib/auth/server";
+import { requireAuth } from "@/lib/auth/server";
 import { getDb } from "@/lib/db";
 import { statusI18nKey } from "@/lib/products/validate";
 import ProductForm from "@/components/products/ProductForm";
@@ -16,23 +16,23 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function ProductsPage() {
   const t = await getTranslations("products");
-  const user = await getCurrentUser();
+  // Auth guard: an expired session redirects to /sign-in instead of showing
+  // an empty list that looks like "no products yet" (#83).
+  const user = await requireAuth();
   let products: ListProduct[] = [];
   let loadError = false;
 
-  if (user) {
-    try {
-      const db = getDb();
-      // Single ownership-scoped query via the Business relation.
-      products = await db.product.findMany({
-        where: { business: { ownerId: user.id } },
-        orderBy: { createdAt: "desc" },
-        select: { id: true, name: true, status: true },
-      });
-    } catch (error) {
-      console.error("ProductsPage: failed to list products", error);
-      loadError = true;
-    }
+  try {
+    const db = getDb();
+    // Single ownership-scoped query via the Business relation.
+    products = await db.product.findMany({
+      where: { business: { ownerId: user.id } },
+      orderBy: { createdAt: "desc" },
+      select: { id: true, name: true, status: true },
+    });
+  } catch (error) {
+    console.error("ProductsPage: failed to list products", error);
+    loadError = true;
   }
 
   return (
