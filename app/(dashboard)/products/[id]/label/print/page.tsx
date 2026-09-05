@@ -12,7 +12,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { getCurrentUser } from "@/lib/auth/server";
+import { requireAuth } from "@/lib/auth/server";
 import { getDb } from "@/lib/db";
 import { toGtin14 } from "@/lib/gs1/gtin";
 import {
@@ -42,11 +42,11 @@ export default async function ProductLabelPrintPage({
   params: Promise<{ id: string }>;
   searchParams: Promise<{ x?: string }>;
 }) {
-  const { id } = await params;
+    const { id } = await params;
   const { x: xParam } = await searchParams;
   const t = await getTranslations("products");
-  const user = await getCurrentUser();
-  if (!user) notFound();
+  // Auth guard: expired session redirects to /sign-in instead of a 404 (#83).
+  const user = await requireAuth();
 
   // Floor enforced in code: a hand-typed URL cannot print below it.
   const parsedX = Number(xParam);

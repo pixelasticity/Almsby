@@ -7,7 +7,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { getCurrentUser } from "@/lib/auth/server";
+import { requireAuth } from "@/lib/auth/server";
 import { getDb } from "@/lib/db";
 import { toGtin14 } from "@/lib/gs1/gtin";
 import { deriveLegacyValue } from "@/lib/gs1/barcode";
@@ -23,10 +23,10 @@ export default async function ProductLabelPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { id } = await params;
+    const { id } = await params;
   const t = await getTranslations("products");
-  const user = await getCurrentUser();
-  if (!user) notFound();
+  // Auth guard: expired session redirects to /sign-in instead of a 404 (#83).
+  const user = await requireAuth();
 
   let gtin14: string | null = null;
   let name = "";
