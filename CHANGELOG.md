@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.5.0](https://github.com/pixelasticity/Almsby/compare/v1.4.0...v1.5.0) (2026-09-05)
+
+
+### Features
+
+* Phase 1 — GS1 compliance core, label pipeline, and release hardening (v0.1.0 → v1.3.2) ([07fb33a](https://github.com/pixelasticity/Almsby/commit/07fb33ae791f1a1e682bb1061c8d1dac32660fd2))
+* **schema:** close Phase 1 product-field gaps + Phase 2 StoryPage JSON body ([b796c81](https://github.com/pixelasticity/Almsby/commit/b796c81378878d7e44a91ab6e6df7b807eb331b7))
+* **schema:** close Phase 1 product-field gaps, Phase 2 StoryPage JSON body ([6a2afa0](https://github.com/pixelasticity/Almsby/commit/6a2afa0f7312539a38079137fef5ef7edca20141))
+* **story:** data layer — GTIN story query + R2 photo upload ([#71](https://github.com/pixelasticity/Almsby/issues/71)) ([c68cf09](https://github.com/pixelasticity/Almsby/commit/c68cf09935f953ab9dfb0057b47867937be360df))
+* **story:** data layer for story pages — GTIN query + R2 photo upload ([#71](https://github.com/pixelasticity/Almsby/issues/71)) ([48e04e8](https://github.com/pixelasticity/Almsby/commit/48e04e8639dfeb92a035a07f3c4d32232064144e))
+
+
+### Bug Fixes
+
+* **story:** normalize r2PublicDomain to strip leading https:// scheme ([e7eeb8c](https://github.com/pixelasticity/Almsby/commit/e7eeb8c1087afca6f0c953762dc9b030307e056d))
+
 ## [1.4.0](https://github.com/pixelasticity/Almsby/compare/v1.3.2...v1.4.0) (2026-09-03)
 
 
