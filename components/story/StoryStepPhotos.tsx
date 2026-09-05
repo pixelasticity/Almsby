@@ -96,10 +96,12 @@ export default function StoryStepPhotos({
       {photos.length === 0 ? (
         <p className={styles.muted}>{t("empty")}</p>
       ) : (
-        <ul className={styles.photoGrid}>
+                <ul className={styles.photoGrid}>
           {photos.map((url) => (
             <li key={url} className={styles.photoItem}>
-              <img src={url} alt="" className={styles.photo} loading="lazy" />
+              {/* Freshly-uploaded previews: eager by design — lazy loading is
+                  for below-the-fold page content, not a CMS upload grid. */}
+              <img src={url} alt="" className={styles.photo} />
               <button
                 type="button"
                 onClick={() => removePhoto(url)}

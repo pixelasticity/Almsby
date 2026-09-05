@@ -17,11 +17,17 @@ import { NextResponse, type NextRequest } from "next/server";
 export function middleware(_request: NextRequest): NextResponse {
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
 
+  // R2 public host for story photos — only when configured. Middleware runs on
+  // every request, so a missing integration must degrade the CSP gracefully
+  // rather than crash the whole app (process.env is safe here: server-side
+  // runtime, not inlined into a client bundle).
+  const r2PhotoHost = process.env.R2_PUBLIC_DOMAIN?.replace(/^https?:\/\//, "");
+
   const csp = [
     "default-src 'self'",
     `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'`,
     "style-src 'self' 'unsafe-inline'",
-    "img-src 'self' data: blob:",
+    `img-src 'self' data: blob:${r2PhotoHost ? ` https://${r2PhotoHost}` : ""}`,
     "font-src 'self'",
     "connect-src 'self' https://*.supabase.co wss://*.supabase.co",
     "frame-ancestors 'none'",

@@ -37,6 +37,7 @@ export default function StoryStepHeadline({
         id="story-headline"
         name="headline"
         type="text"
+        className={styles.input}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={t("placeholder")}
