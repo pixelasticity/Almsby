@@ -1,25 +1,39 @@
-import React, { useState } from 'react';
-import BlockComposer from './BlockComposer';
-import MobilePreview from './MobilePreview';
-import PassportSummary from './PassportSummary';
+"use client";
 
-export type StoryBlock = 
-  | { type: 'heading'; text: string; level: 1 | 2 }
-  | { type: 'paragraph'; text: string }
-  | { type: 'image'; url: string; caption?: string };
+import React, { useState } from "react";
+import Button from "@/components/ui/Button";
+import BlockComposer from "./BlockComposer";
+import MobilePreview from "./MobilePreview";
+import PassportSummary from "./PassportSummary";
+import styles from "./story-studio.module.css";
 
-export default function StoryStudio({ product }: { product: any }) {
-  const [blocks, setBlocks] = useState<StoryBlock[]>(product.storyBlocks || []);
-  const [isPublished, setIsPublished] = useState(product.published || false);
-  const [activeTab, setActiveTab] = useState<'edit' | 'preview'>('edit');
+export type StoryBlock =
+  | { type: "heading"; text: string; level: 1 | 2 }
+  | { type: "paragraph"; text: string }
+  | { type: "image"; url: string; caption?: string };
 
-  const addBlock = (type: 'heading' | 'paragraph' | 'image') => {
-    const newBlock: StoryBlock = {
-      type,
-      text: type === 'image' ? '' : '',
-      url: type === 'image' ? '' : undefined,
-      level: type === 'heading' ? 1 : undefined,
-    } as any;
+type StudioProduct = {
+  id: string;
+  name: string;
+  gtin?: { gtinValue: string } | null;
+  countryOfOrigin?: string | null;
+  materialComposition?: string | null;
+  recyclable?: boolean | null;
+  storyPage?: { published: boolean } | null;
+};
+
+export default function StoryStudio({ product }: { product: StudioProduct }) {
+  const [blocks, setBlocks] = useState<StoryBlock[]>([]);
+  const [isPublished, setIsPublished] = useState(product.storyPage?.published ?? false);
+  const [activeTab, setActiveTab] = useState<"edit" | "preview">("edit");
+
+  const addBlock = (type: "heading" | "paragraph" | "image") => {
+    const newBlock: StoryBlock =
+      type === "image"
+        ? { type, url: "" }
+        : type === "heading"
+          ? { type, text: "", level: 1 }
+          : { type, text: "" };
     setBlocks([...blocks, newBlock]);
   };
 
@@ -34,66 +48,72 @@ export default function StoryStudio({ product }: { product: any }) {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-[#f8f2f3] text-[#201a17]">
-      <header className="flex items-center justify-between px-6 py-4 bg-[#f7ece6] border-b border-black/5">
-        <div className="flex flex-col">
-          <h1 className="text-xl font-bold font-display-section">{product.name}</h1>
-          <p className="text-sm text-[#504446]">Story Studio</p>
+    <div className={styles.studio}>
+      <header className={styles.header}>
+        <div>
+          <h1 className={styles.headerTitle}>{product.name}</h1>
+          <p className={styles.headerSubtitle}>Story Studio</p>
         </div>
-        <div className="flex items-center gap-4">
-          <span className={`text-xs font-bold uppercase tracking-widest ${isPublished ? 'text-[#4b7052]' : 'text-[#827376]'}`}>
-            {isPublished ? '● Live' : '○ Draft'}
-          </span>
-          <button 
-            onClick={() => setIsPublished(!isPublished)}
-            className={`px-6 py-2 rounded-full text-sm font-bold transition-all ${
-              isPublished 
-                ? 'bg-[#f1e6e0] text-[#734753] border border-[#734753]' 
-                : 'bg-[#734753] text-white shadow-md hover:bg-[#613146]'
-            }`}
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <span
+            className={`${styles.status} ${isPublished ? styles.statusLive : styles.statusDraft}`}
           >
-            {isPublished ? 'Unpublish' : 'Publish Story'}
-          </button>
+            {isPublished ? "● Live" : "○ Draft"}
+          </span>
+          <Button
+            variant={isPublished ? "secondary" : "primary"}
+            type="button"
+            className={styles.publishBtn}
+            onClick={() => setIsPublished(!isPublished)}
+          >
+            {isPublished ? "Unpublish" : "Publish Story"}
+          </Button>
         </div>
       </header>
 
-      <main className="flex-1 flex overflow-hidden">
-        <div className={`flex-1 overflow-y-auto p-6 transition-all duration-300 ${activeTab === 'preview' ? 'hidden md:block' : 'block'}`}>
-          <div className="max-w-3xl mx-auto space-y-8">
+      <main className={styles.main}>
+        <div
+          className={styles.editPanel}
+          style={{ display: activeTab === "preview" ? "none" : "block" }}
+        >
+          <div className={styles.editInner}>
             <section>
-              <h2 className="text-sm font-bold uppercase tracking-wider text-[#827376] mb-4">Story Content</h2>
-              <div className="space-y-4">
-                <BlockComposer 
-                  blocks={blocks} 
-                  updateBlock={updateBlock} 
-                  removeBlock={removeBlock} 
-                  addBlock={addBlock} 
-                />
-              </div>
+              <h2 className={styles.sectionTitle}>Story Content</h2>
+              <BlockComposer
+                blocks={blocks}
+                updateBlock={updateBlock}
+                removeBlock={removeBlock}
+                addBlock={addBlock}
+              />
             </section>
-            <section className="pt-8 border-t border-black/5">
+            <section style={{ paddingTop: "2rem", borderTop: "1px solid var(--border)" }}>
               <PassportSummary product={product} />
             </section>
           </div>
         </div>
 
-        <div className={`w-full md:w-[450px] bg-[#ece0db] border-l border-black/5 relative overflow-hidden ${activeTab === 'edit' ? 'hidden md:block' : 'block'}`}>
-          <div className="absolute inset-0 flex items-center justify-center p-8">
+        <div
+          className={styles.previewPanel}
+          style={{ display: activeTab === "edit" ? "none" : "block" }}
+        >
+          <div className={styles.previewInner}>
             <MobilePreview blocks={blocks} isPublished={isPublished} />
           </div>
         </div>
       </main>
 
-      <div className="md:hidden flex bg-white border-t border-black/5">
-        <button 
-          onClick={() => setActiveTab('edit')}
-          className={`flex-1 py-4 text-sm font-bold ${activeTab === 'edit' ? 'text-[#734753] border-t-2 border-[#734753]' : 'text-[#827376]'}`}
+      <div className={styles.mobileTabs}>
+        <button
+          type="button"
+          onClick={() => setActiveTab("edit")}
+          className={`${styles.mobileTab} ${activeTab === "edit" ? styles.mobileTabActive : ""}`}
         >
           Edit
         </button>
-        <button 
-          onClick={() => setActiveTab('preview')}
-          className={`flex-1 py-4 text-sm font-bold ${activeTab === 'preview' ? 'text-[#734753] border-t-2 border-[#734753]' : 'text-[#827376]'}`}
+        <button
+          type="button"
+          onClick={() => setActiveTab("preview")}
+          className={`${styles.mobileTab} ${activeTab === "preview" ? styles.mobileTabActive : ""}`}
         >
           Preview
         </button>
@@ -101,3 +121,4 @@ export default function StoryStudio({ product }: { product: any }) {
     </div>
   );
 }
+
