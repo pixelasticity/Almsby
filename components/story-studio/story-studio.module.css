@@ -306,6 +306,14 @@
   font-size: 1.25rem;
 }
 
+.previewHeading3 {
+  font-size: 1.125rem;
+}
+
+.previewHeading4 {
+  font-size: 1rem;
+}
+
 .previewParagraph {
   font-size: 0.875rem;
   line-height: 1.6;

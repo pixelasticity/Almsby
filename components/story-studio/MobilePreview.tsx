@@ -26,15 +26,19 @@ type TipTapNode = {
 function renderNode(node: TipTapNode, key: number): React.ReactNode {
   switch (node.type) {
     case "heading": {
-      const level = (node.attrs?.level as number) ?? 2;
+      const level = Math.min(Math.max((node.attrs?.level as number) ?? 2, 2), 6);
       const children = node.content?.map((child, i) => renderNode(child, i));
+      const Heading = `h${level}` as "h2";
+      const headingClass =
+        level <= 3
+          ? level === 2
+            ? styles.previewHeading2
+            : styles.previewHeading3
+          : styles.previewHeading4;
       return (
-        <h2
-          key={key}
-          className={`${styles.previewHeading} ${level === 1 ? styles.previewHeading1 : styles.previewHeading2}`}
-        >
+        <Heading key={key} className={`${styles.previewHeading} ${headingClass}`}>
           {children ?? "Untitled Heading"}
-        </h2>
+        </Heading>
       );
     }
     case "paragraph": {

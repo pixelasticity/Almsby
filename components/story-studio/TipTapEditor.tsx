@@ -15,8 +15,7 @@ type TipTapEditorProps = {
 
 /**
  * TipTap rich-text editor with a CONSTRAINED schema per Phase 2 brief §9:
-  * paragraph, heading (h2/h3), bold, italic, strike, link only.
- *
+ * paragraph, heading (h2-h6), bold, italic, strike, link only.
  * No tables, embeds, inline images, or arbitrary HTML. The bounded extension
  * set is what makes the "no dangerouslySetInnerHTML" safety guarantee real —
  * only nodes we explicitly allow can ever be produced.
@@ -33,7 +32,7 @@ export default function TipTapEditor({ content, onChange }: TipTapEditorProps) {
     extensions: [
       StarterKit.configure({
         // Disable everything we don't want; keep only the constrained set.
-        heading: { levels: [2, 3] },
+        heading: { levels: [2,3,4,5,6] },
         link: { openOnClick: false, HTMLAttributes: { rel: "noopener" } },
         codeBlock: false,
         blockquote: false,
@@ -71,35 +70,37 @@ export default function TipTapEditor({ content, onChange }: TipTapEditorProps) {
 
   if (!editor) return null;
 
-  const headingActive = (level: Level) => editor.isActive("heading", { level });
+  const HEADING_LEVELS: readonly number[] = [2,3,4,5,6];
 
-  const setHeading = (level: Level) => {
-    if (headingActive(level)) {
+  const headingLevel = (level: number) => editor.isActive("heading", { level: level as Level });
+
+  const activeHeading: number =
+    HEADING_LEVELS.find((l) => headingLevel(l)) ?? 0;
+
+  const applyHeading = (level: number) => {
+    if (level === 0) {
       editor.chain().focus().setParagraph().run();
     } else {
-      editor.chain().focus().toggleHeading({ level }).run();
+      editor.chain().focus().toggleHeading({ level: level as Level }).run();
     }
   };
 
   return (
     <div className={styles.editor}>
       <div className={styles.toolbar}>
-        <Button
-          variant={headingActive(2) ? "primary" : "secondary"}
-          type="button"
-          onClick={() => setHeading(2)}
-          style={{ fontWeight: 700 }}
-        >
-          H2
-        </Button>
-        <Button
-          variant={headingActive(3) ? "primary" : "secondary"}
-          type="button"
-          onClick={() => setHeading(3)}
-          style={{ fontWeight: 700 }}
-        >
-          H3
-        </Button>
+        <select
+          className={styles.toolbarSelect}
+          value={String(activeHeading)}
+          onChange={(e) => applyHeading(Number(e.target.value))}
+          aria-label="Paragraph style">
+          <option value="0">Paragraph</option>
+          <option value="2">H2</option>
+          <option value="3">H3</option>
+          <option value="4">H4</option>
+          <option value="5">H5</option>
+          <option value="6">H6</option>
+        </select>
+
         <Button
           variant={editor.isActive("bold") ? "primary" : "secondary"}
           type="button"
