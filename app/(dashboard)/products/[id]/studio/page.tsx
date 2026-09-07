@@ -18,7 +18,7 @@ export default async function StoryStudioPage({
     where: { id: productId, business: { ownerId: user.id } },
     include: {
       gtin: { select: { gtinValue: true } },
-      storyPage: { select: { published: true } },
+      storyPage: { select: { id: true, published: true, bodyContent: true } },
     },
   });
 

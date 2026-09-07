@@ -1,0 +1,73 @@
+/* TipTap editor — constrained schema styling. */
+
+.editor {
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background: var(--card);
+}
+
+.toolbar {
+  display: flex;
+  gap: 0.25rem;
+  padding: 0.5rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--primary-100);
+}
+
+.content {
+  padding: 1rem;
+  min-height: 200px;
+  font-family: var(--font-body);
+  color: var(--foreground);
+}
+
+/* TipTap's editable area — remove the default outline, style the cursor ring. */
+.content [contenteditable]:focus {
+  outline: none;
+}
+
+/* Constrained schema elements — only these can ever render. */
+.content h2 {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 1em 0 0.5em;
+  color: var(--primary-600);
+}
+
+.content h3 {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 1em 0 0.5em;
+  color: var(--primary-600);
+}
+
+.content p {
+  margin: 0.5em 0;
+  line-height: 1.6;
+}
+
+.content strong {
+  font-weight: 700;
+}
+
+.content a {
+  color: var(--blue-600);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.content a:hover {
+  color: var(--blue-700);
+}
+
+/* Placeholder text when empty. */
+.content p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  color: var(--neutral-300);
+  pointer-events: none;
+  float: left;
+  height: 0;
+}

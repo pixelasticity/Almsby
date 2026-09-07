@@ -1,13 +1,93 @@
 import React from "react";
-import { StoryBlock } from "./StoryStudio";
 import styles from "./story-studio.module.css";
 
 interface MobilePreviewProps {
-  blocks: StoryBlock[];
+  content: Record<string, unknown> | null;
   isPublished: boolean;
 }
 
-export default function MobilePreview({ blocks, isPublished }: MobilePreviewProps) {
+type TipTapNode = {
+  type: string;
+  attrs?: Record<string, unknown>;
+  content?: TipTapNode[];
+  text?: string;
+  marks?: { type: string; attrs?: Record<string, unknown> }[];
+};
+
+/**
+ * Renders TipTap JSON for the mobile preview. Because the editor uses a
+ * CONSTRAINED schema (paragraph, heading h2/h3, bold, link only), this renderer
+ * only needs to handle those node/mark types — no arbitrary HTML, no images,
+ * no tables. Unknown node types render as their text content (safe fallback).
+ *
+ * This is NOT dangerouslySetInnerHTML — every node is mapped to a React
+ * element, and the bounded schema guarantees only whitelisted nodes exist.
+ */
+function renderNode(node: TipTapNode, key: number): React.ReactNode {
+  switch (node.type) {
+    case "heading": {
+      const level = (node.attrs?.level as number) ?? 2;
+      const text = extractText(node);
+      return (
+        <h2
+          key={key}
+          className={`${styles.previewHeading} ${level === 1 ? styles.previewHeading1 : styles.previewHeading2}`}
+        >
+          {text || "Untitled Heading"}
+        </h2>
+      );
+    }
+    case "paragraph": {
+      const children = renderMarks(node);
+      return (
+        <p key={key} className={styles.previewParagraph}>
+          {children ?? "Paragraph content goes here..."}
+        </p>
+      );
+    }
+    case "text":
+      return renderMarks(node);
+    case "doc":
+      return node.content?.map((child, i) => renderNode(child, i)) ?? null;
+    default:
+      // Safe fallback for any unhandled node — render its text, never raw HTML.
+      return <React.Fragment key={key}>{extractText(node)}</React.Fragment>;
+  }
+}
+
+/** Renders a text node's marks (bold, link) as React elements. */
+function renderMarks(node: TipTapNode): React.ReactNode {
+  if (!node.text) return null;
+  if (!node.marks || node.marks.length === 0) return node.text;
+
+  // Apply marks left to right.
+  return node.marks.reduce<React.ReactNode>(
+    (acc, mark) => {
+      if (mark.type === "bold") return <strong key={Math.random()}>{acc}</strong>;
+      if (mark.type === "link") {
+        const href = (mark.attrs?.href as string) ?? "#";
+        return (
+          <a key={Math.random()} href={href} target="_blank" rel="noopener noreferrer">
+            {acc}
+          </a>
+        );
+      }
+      return acc;
+    },
+    <>{node.text}</>
+  );
+}
+
+/** Extracts all text content from a node tree (for fallbacks). */
+function extractText(node: TipTapNode): string {
+  if (node.text) return node.text;
+  if (node.content) return node.content.map(extractText).join("");
+  return "";
+}
+
+export default function MobilePreview({ content, isPublished }: MobilePreviewProps) {
+  const nodes = (content as TipTapNode | null)?.content ?? [];
+
   return (
     <div className={styles.phone}>
       <div className={styles.phoneStatusBar}>
@@ -34,49 +114,17 @@ export default function MobilePreview({ blocks, isPublished }: MobilePreviewProp
         )}
 
         <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-          {blocks.length === 0 ? (
+          {nodes.length === 0 ? (
             <div className={styles.blocksEmpty}>
               <p>Start adding blocks to see the story unfold...</p>
             </div>
           ) : (
-            blocks.map((block, index) => {
-              if (block.type === "heading") {
-                return (
-                  <h2
-                    key={index}
-                    className={`${styles.previewHeading} ${block.level === 1 ? styles.previewHeading1 : styles.previewHeading2}`}
-                  >
-                    {block.text || "Untitled Heading"}
-                  </h2>
-                );
-              }
-              if (block.type === "paragraph") {
-                return (
-                  <p key={index} className={styles.previewParagraph}>
-                    {block.text || "Paragraph content goes here..."}
-                  </p>
-                );
-              }
-              if (block.type === "image") {
-                return (
-                  <div key={index} style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                    <div className={styles.previewImage}>
-                      {block.url ? (
-                        <img src={block.url} alt="Story asset" className={styles.previewImageImg} />
-                      ) : (
-                        <div className={styles.previewImageEmpty}>Image Asset</div>
-                      )}
-                    </div>
-                    {block.caption && <p className={styles.previewCaption}>{block.caption}</p>}
-                  </div>
-                );
-              }
-              return null;
-            })
+            nodes.map((node, i) => renderNode(node as TipTapNode, i))
           )}
         </div>
       </div>
     </div>
   );
 }
+
 

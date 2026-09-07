@@ -1,16 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useTransition } from "react";
 import Button from "@/components/ui/Button";
-import BlockComposer from "./BlockComposer";
+import TipTapEditor from "./TipTapEditor";
 import MobilePreview from "./MobilePreview";
 import PassportSummary from "./PassportSummary";
+import { saveStoryAction, publishStoryAction } from "@/app/(dashboard)/products/[id]/studio/actions";
 import styles from "./story-studio.module.css";
-
-export type StoryBlock =
-  | { type: "heading"; text: string; level: 1 | 2 }
-  | { type: "paragraph"; text: string }
-  | { type: "image"; url: string; caption?: string };
 
 type StudioProduct = {
   id: string;
@@ -19,32 +15,38 @@ type StudioProduct = {
   countryOfOrigin?: string | null;
   materialComposition?: string | null;
   recyclable?: boolean | null;
-  storyPage?: { published: boolean } | null;
+  storyPage?: { id: string; published: boolean; bodyContent: unknown } | null;
 };
 
 export default function StoryStudio({ product }: { product: StudioProduct }) {
-  const [blocks, setBlocks] = useState<StoryBlock[]>([]);
+  // TipTap JSON content — stored directly in StoryPage.bodyContent.
+  const [content, setContent] = useState<Record<string, unknown> | null>(
+    (product.storyPage?.bodyContent as Record<string, unknown>) ?? null
+  );
   const [isPublished, setIsPublished] = useState(product.storyPage?.published ?? false);
   const [activeTab, setActiveTab] = useState<"edit" | "preview">("edit");
+  const [isPending, startTransition] = useTransition();
+  const [error, setError] = useState<string | null>(null);
 
-  const addBlock = (type: "heading" | "paragraph" | "image") => {
-    const newBlock: StoryBlock =
-      type === "image"
-        ? { type, url: "" }
-        : type === "heading"
-          ? { type, text: "", level: 1 }
-          : { type, text: "" };
-    setBlocks([...blocks, newBlock]);
+  const handleSave = () => {
+    setError(null);
+    startTransition(async () => {
+      const result = await saveStoryAction(product.id, content);
+      if (result?.error) setError(result.error);
+    });
   };
 
-  const updateBlock = (index: number, updatedBlock: StoryBlock) => {
-    const newBlocks = [...blocks];
-    newBlocks[index] = updatedBlock;
-    setBlocks(newBlocks);
-  };
-
-  const removeBlock = (index: number) => {
-    setBlocks(blocks.filter((_, i) => i !== index));
+  const handlePublish = () => {
+    setError(null);
+    startTransition(async () => {
+      const published = !isPublished;
+      const result = await publishStoryAction(product.id, content, published);
+      if (result?.error) {
+        setError(result.error);
+      } else {
+        setIsPublished(published);
+      }
+    });
   };
 
   return (
@@ -54,22 +56,36 @@ export default function StoryStudio({ product }: { product: StudioProduct }) {
           <h1 className={styles.headerTitle}>{product.name}</h1>
           <p className={styles.headerSubtitle}>Story Studio</p>
         </div>
-        <div style={{ display: "flex", alignItems: "center" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
           <span
             className={`${styles.status} ${isPublished ? styles.statusLive : styles.statusDraft}`}
           >
             {isPublished ? "● Live" : "○ Draft"}
           </span>
           <Button
+            variant="secondary"
+            type="button"
+            pending={isPending}
+            onClick={handleSave}
+          >
+            Save
+          </Button>
+          <Button
             variant={isPublished ? "secondary" : "primary"}
             type="button"
-            className={styles.publishBtn}
-            onClick={() => setIsPublished(!isPublished)}
+            pending={isPending}
+            onClick={handlePublish}
           >
             {isPublished ? "Unpublish" : "Publish Story"}
           </Button>
         </div>
       </header>
+
+      {error && (
+        <div style={{ padding: "0.5rem 1.5rem", background: "var(--danger-100)", color: "var(--danger-700)" }}>
+          {error}
+        </div>
+      )}
 
       <main className={styles.main}>
         <div
@@ -79,12 +95,7 @@ export default function StoryStudio({ product }: { product: StudioProduct }) {
           <div className={styles.editInner}>
             <section>
               <h2 className={styles.sectionTitle}>Story Content</h2>
-              <BlockComposer
-                blocks={blocks}
-                updateBlock={updateBlock}
-                removeBlock={removeBlock}
-                addBlock={addBlock}
-              />
+              <TipTapEditor content={content} onChange={setContent} />
             </section>
             <section style={{ paddingTop: "2rem", borderTop: "1px solid var(--border)" }}>
               <PassportSummary product={product} />
@@ -97,7 +108,7 @@ export default function StoryStudio({ product }: { product: StudioProduct }) {
           style={{ display: activeTab === "edit" ? "none" : "block" }}
         >
           <div className={styles.previewInner}>
-            <MobilePreview blocks={blocks} isPublished={isPublished} />
+            <MobilePreview content={content} isPublished={isPublished} />
           </div>
         </div>
       </main>
@@ -121,4 +132,5 @@ export default function StoryStudio({ product }: { product: StudioProduct }) {
     </div>
   );
 }
+
 
