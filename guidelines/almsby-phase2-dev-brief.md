@@ -55,10 +55,13 @@ model StoryPage {
 
 ## 4. Story page CMS (dashboard side)
 
+**New dependency:** `@tiptap/react`, `@tiptap/starter-kit` (or the specific extension packages for the constrained node set below — prefer minimal individual extensions over the full starter kit if it pulls in unused node types).
+
+
 **Content fields, per MVP scope:**
 ```
 headline         (short, required to publish)
-bodyContent      (structured blocks — origin story, maker's own words; keep simple for MVP: a small array of {type: 'paragraph' | 'heading', text: string} is sufficient, do not build a full rich-text editor)
+bodyContent      (structured content — see section 4; edited via Tiptap, stored as its native JSON document format)
 photos           (array of R2 URLs, uploaded via dashboard)
 ```
 
@@ -68,7 +71,15 @@ photos           (array of R2 URLs, uploaded via dashboard)
 - Publish/unpublish toggle — a `StoryPage` with `published: false` should show a "coming soon" state at the public route (see Section 5 — never a 404, DoD requires no error state for a real scanned product)
 - **Publish/unpublish must call `revalidateTag` for the affected story page** — required, not optional, given the ISR strategy in Section 5. Without this, published changes won't appear until the cache naturally expires.
 
-**Do not build a WYSIWYG/rich-text editor for Phase 2.** A small number of structured block types (paragraph, heading) is sufficient for MVP and avoids a substantial, unnecessary scope increase. Revisit only if real customer feedback demands it.
+**Editor: Tiptap, headless, with a deliberately constrained schema.** Register only these node/mark types — nothing else:
+- Node types: `doc`, `paragraph`, `heading` (levels 2-6 only)
+- Mark types: `bold`, `italic`, `strike`, `link`
+
+**Why this is safe where TinyMCE wasn't:** Tiptap's output is a structured JSON document, matching `bodyContent Json?` natively — no HTML string, no sanitizer needed. Because only the registered node/mark types above can exist in the document, the editor is structurally incapable of producing content outside that set. This is a bounded-output guarantee, not a convention someone has to remember to enforce.
+
+**Do not register additional node/mark types (tables, images-in-body, custom embeds, arbitrary HTML) without a deliberate decision — this isn't a default to expand casually.** Photos are handled separately via the dedicated photo upload field (Section 4 above), not embedded inline in body content for Phase 2.
+
+**Rendering side must stay equally bounded:** write a JSON-node → React-component mapper (`paragraph` → `<p>`, `heading` → `<h2>`/`<h3>`, `bold`/`italic`/`strike`/`link` marks → inline elements). **Never use `dangerouslySetInnerHTML` on this content, at any point.** The safety property only holds if rendering never falls back to raw HTML injection — that's what makes this different from TinyMCE-plus-a-sanitizer, not just a lighter dependency.
 
 ---
 
@@ -145,7 +156,8 @@ Per MVP scope: template-based, no design skill required. **For Phase 2, this mea
 
 ## 9. Explicit guardrails — what NOT to build in Phase 2
 
-- No rich-text/WYSIWYG editor — structured blocks only
+- No expanding the Tiptap schema beyond `paragraph`, `heading` (h2/h3/h4/h5/h6), `bold`, `italic`, `strike`, `link` without a deliberate decision — no tables, embeds, inline images, or arbitrary HTML
+- No `dangerouslySetInnerHTML` anywhere in the story-rendering path, ever — this is what keeps the bounded-schema safety guarantee real
 - No full design/page-builder customization — bounded color choices + photo only
 - No compliance dashboard or aggregation logic (Phase 3)
 - No billing/Stripe integration (Phase 4)
