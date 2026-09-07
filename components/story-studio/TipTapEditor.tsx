@@ -2,7 +2,6 @@
 
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import Link from "@tiptap/extension-link";
 import type { Level } from "@tiptap/extension-heading";
 import { useEffect } from "react";
 import Button from "@/components/ui/Button";
@@ -27,13 +26,13 @@ export default function TipTapEditor({ content, onChange }: TipTapEditorProps) {
       StarterKit.configure({
         // Disable everything we don't want; keep only the constrained set.
         heading: { levels: [2, 3] },
+        link: { openOnClick: false, HTMLAttributes: { rel: "noopener" } },
         codeBlock: false,
         blockquote: false,
         bulletList: false,
         orderedList: false,
         horizontalRule: false,
       }),
-      Link.configure({ openOnClick: false, HTMLAttributes: { rel: "noopener" } }),
     ],
     content: content ?? undefined,
     onUpdate: ({ editor: e }) => {
