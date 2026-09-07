@@ -15,7 +15,7 @@ type TipTapEditorProps = {
 
 /**
  * TipTap rich-text editor with a CONSTRAINED schema per Phase 2 brief §9:
- * paragraph, heading (h2/h3), bold, link only.
+  * paragraph, heading (h2/h3), bold, italic, strike, link only.
  *
  * No tables, embeds, inline images, or arbitrary HTML. The bounded extension
  * set is what makes the "no dangerouslySetInnerHTML" safety guarantee real —
@@ -40,6 +40,10 @@ export default function TipTapEditor({ content, onChange }: TipTapEditorProps) {
         bulletList: false,
         orderedList: false,
         horizontalRule: false,
+        // StarterKit bundles these marks by default; opt out to keep the
+        // constrained schema tight (no underline, no inline code).
+        underline: false,
+        code: false,
       }),
     ],
     content: docContent,
@@ -103,6 +107,22 @@ export default function TipTapEditor({ content, onChange }: TipTapEditorProps) {
           style={{ fontWeight: 700 }}
         >
           B
+        </Button>
+        <Button
+          variant={editor.isActive("italic") ? "primary" : "secondary"}
+          type="button"
+          onClick={() => editor.chain().focus().toggleItalic().run()}
+          style={{ fontStyle: "italic" }}
+        >
+          I
+        </Button>
+        <Button
+          variant={editor.isActive("strike") ? "primary" : "secondary"}
+          type="button"
+          onClick={() => editor.chain().focus().toggleStrike().run()}
+          style={{ textDecoration: "line-through" }}
+        >
+          S
         </Button>
         <Button
           variant={editor.isActive("link") ? "primary" : "secondary"}

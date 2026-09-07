@@ -16,7 +16,7 @@ type TipTapNode = {
 
 /**
  * Renders TipTap JSON for the mobile preview. Because the editor uses a
- * CONSTRAINED schema (paragraph, heading h2/h3, bold, link only), this renderer
+ * CONSTRAINED schema (paragraph, heading h2/h3, bold, italic, strike, link only), this renderer
  * only needs to handle those node/mark types — no arbitrary HTML, no images,
  * no tables. Unknown node types render as their text content (safe fallback).
  *
@@ -27,18 +27,18 @@ function renderNode(node: TipTapNode, key: number): React.ReactNode {
   switch (node.type) {
     case "heading": {
       const level = (node.attrs?.level as number) ?? 2;
-      const text = extractText(node);
+      const children = node.content?.map((child, i) => renderNode(child, i));
       return (
         <h2
           key={key}
           className={`${styles.previewHeading} ${level === 1 ? styles.previewHeading1 : styles.previewHeading2}`}
         >
-          {text || "Untitled Heading"}
+          {children ?? "Untitled Heading"}
         </h2>
       );
     }
     case "paragraph": {
-      const children = renderMarks(node);
+      const children = node.content?.map((child, i) => renderNode(child, i));
       return (
         <p key={key} className={styles.previewParagraph}>
           {children ?? "Paragraph content goes here..."}
@@ -55,7 +55,7 @@ function renderNode(node: TipTapNode, key: number): React.ReactNode {
   }
 }
 
-/** Renders a text node's marks (bold, link) as React elements. */
+/** Renders a text node's marks (bold, italic, strike, link) as React elements. */
 function renderMarks(node: TipTapNode): React.ReactNode {
   if (!node.text) return null;
   if (!node.marks || node.marks.length === 0) return node.text;
@@ -64,6 +64,8 @@ function renderMarks(node: TipTapNode): React.ReactNode {
   return node.marks.reduce<React.ReactNode>(
     (acc, mark) => {
       if (mark.type === "bold") return <strong key={Math.random()}>{acc}</strong>;
+      if (mark.type === "italic") return <em key={Math.random()}>{acc}</em>;
+      if (mark.type === "strike") return <del key={Math.random()}>{acc}</del>;
       if (mark.type === "link") {
         const href = (mark.attrs?.href as string) ?? "#";
         return (
