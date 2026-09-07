@@ -1,0 +1,28 @@
+/* Story entry card on the product detail page (links to /studio). */
+
+.card {
+  margin-top: 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.status {
+  font-size: 14px;
+  color: var(--neutral-500);
+}
+
+.link {
+  align-self: flex-start;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--green-700);
+  text-decoration: none;
+}
+
+.link:hover {
+  text-decoration: underline;
+}

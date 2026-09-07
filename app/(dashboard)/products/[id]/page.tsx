@@ -3,12 +3,14 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { getCurrentUser } from "@/lib/auth/server";
+import { getDb } from "@/lib/db";
 import { getOwnedProduct } from "@/lib/products/queries";
 import { toGtin14 } from "@/lib/gs1/gtin";
 import GtinSetup from "@/components/products/GtinSetup";
 import DualMarkLabel from "@/components/label/DualMarkLabel";
 import { statusI18nKey } from "@/lib/products/validate";
 import styles from "./page.module.css";
+import storyStyles from "./story-entry.module.css";
 
 export async function generateMetadata({
   params,
@@ -105,6 +107,45 @@ export default async function ProductDetailPage({
           <GtinSetup productId={id} existingGtin={gtin} />
         </div>
       </section>
+
+      <StoryEntry productId={id} />
     </div>
+  );
+}
+
+
+/**
+ * Entry point for the Story Studio: shows the story publish status and
+ * links to /products/[id]/studio. A missing StoryPage row means the maker
+ * has not started a story yet — the link still shows (studio handles the
+ * empty state). Failures log loud but degrade to a hidden card.
+ */
+async function StoryEntry({ productId }: { productId: string }) {
+  const t = await getTranslations("story");
+
+  let story: { exists: true; published: boolean } | null = null;
+  try {
+    const db = getDb();
+    const storyPage = await db.storyPage.findUnique({
+      where: { productId },
+      select: { published: true },
+    });
+    if (storyPage) story = { exists: true, published: storyPage.published };
+  } catch (error) {
+    console.error("StoryEntry: failed to load story status", productId, error);
+  }
+
+  if (!story) return null;
+
+  return (
+    <section className={storyStyles.card} aria-label={t("title")}>
+      <h2 className={styles.cardTitle}>{t("title")}</h2>
+      <p className={storyStyles.status}>
+        {story.published ? t("statusPublished") : t("statusDraft")}
+      </p>
+      <Link href={`/products/${productId}/studio`} className={storyStyles.link}>
+        {t("edit")}
+      </Link>
+    </section>
   );
 }

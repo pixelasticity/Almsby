@@ -189,7 +189,10 @@
   },
   "story": {
     "title": "Product story",
-    "placeholder": "Phase 0 placeholder. Full story-page rendering lands in Phase 2. Requested GTIN: {gtin}."
+    "placeholder": "Phase 0 placeholder. Full story-page rendering lands in Phase 2. Requested GTIN: {gtin}.",
+    "edit": "Edit story",
+    "statusDraft": "Draft — not visible to shoppers yet",
+    "statusPublished": "Published"
   },
   "business": {
     "creation": {

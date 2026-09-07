@@ -189,7 +189,10 @@
   },
   "story": {
     "title": "Historia del producto",
-    "placeholder": "Placeholder de la Fase 0. El renderizado completo de la página de historia llega en la Fase 2. GTIN solicitado: {gtin}."
+    "placeholder": "Placeholder de la Fase 0. El renderizado completo de la página de historia llega en la Fase 2. GTIN solicitado: {gtin}.",
+    "edit": "Editar historia",
+    "statusDraft": "Borrador — aún no visible para los compradores",
+    "statusPublished": "Publicado"
   },
   "business": {
     "creation": {

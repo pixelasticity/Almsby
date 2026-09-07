@@ -29,6 +29,9 @@ export default function TipTapEditor({ content, onChange }: TipTapEditorProps) {
   const docContent = normalizeTipTapContent(content);
 
   const editor = useEditor({
+    // v3 default changed to false; without this the toolbar (dropdown value,
+    // active-state highlighting) goes stale when the cursor moves (#72 UX).
+    shouldRerenderOnTransaction: true,
     extensions: [
       StarterKit.configure({
         // Disable everything we don't want; keep only the constrained set.
