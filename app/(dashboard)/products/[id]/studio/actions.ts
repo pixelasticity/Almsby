@@ -4,6 +4,7 @@ import { Prisma } from "@prisma/client";
 import { getCurrentUser } from "@/lib/auth/server";
 import { getDb } from "@/lib/db";
 import { getOwnedProduct } from "@/lib/products/queries";
+import { normalizeTipTapContent } from "@/lib/story/tiptap";
 
 export type StudioActionState = { error?: string };
 
@@ -30,12 +31,24 @@ export async function saveStoryAction(
   const owned = await getOwnedProduct(productId, user.id);
   if (!owned) return { error: "Product not found." };
 
+  // Normalize/validate the payload. The editor always emits a TipTap doc on
+  // update, but a malformed/legacy value (or a tampered client) must never be
+  // written — that would crash the editor on the next load with
+  // "config.doc.type is undefined". null is a legitimate "clear" save.
+  const doc = normalizeTipTapContent(content);
+  if (content != null && doc === null) {
+    return { error: "Story content could not be read. Please refresh and try again." };
+  }
+
   try {
     const db = getDb();
     await db.storyPage.upsert({
       where: { productId },
-      create: { productId, bodyContent: content as unknown as Prisma.InputJsonValue },
-      update: { bodyContent: content as unknown as Prisma.InputJsonValue },
+      create: {
+        productId,
+        bodyContent: doc as unknown as Prisma.InputJsonValue,
+      },
+      update: { bodyContent: doc as unknown as Prisma.InputJsonValue },
     });
   } catch (error) {
     console.error(`saveStoryAction failed for product ${productId}:`, error);
@@ -57,15 +70,26 @@ export async function publishStoryAction(
   const user = await getCurrentUser();
   if (!user) return { error: "You must be signed in to publish a story." };
 
-  const owned = await getOwnedProduct(productId, user.id);
+    const owned = await getOwnedProduct(productId, user.id);
   if (!owned) return { error: "Product not found." };
+
+  // Same guard as saveStoryAction: never persist content that would crash the
+  // editor on next load. null is a legal "clear" (publish empty state).
+  const doc = normalizeTipTapContent(content);
+  if (content != null && doc === null) {
+    return { error: "Story content could not be read. Please refresh and try again." };
+  }
 
   try {
     const db = getDb();
     await db.storyPage.upsert({
       where: { productId },
-      create: { productId, bodyContent: content as unknown as Prisma.InputJsonValue, published },
-      update: { bodyContent: content as unknown as Prisma.InputJsonValue, published },
+      create: {
+        productId,
+        bodyContent: doc as unknown as Prisma.InputJsonValue,
+        published,
+      },
+      update: { bodyContent: doc as unknown as Prisma.InputJsonValue, published },
     });
   } catch (error) {
     console.error(`publishStoryAction failed for product ${productId}:`, error);

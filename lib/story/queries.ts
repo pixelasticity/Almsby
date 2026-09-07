@@ -14,7 +14,15 @@
 import type { Prisma } from "@prisma/client";
 import { getDb } from "@/lib/db";
 
-/** Shape stored in StoryPage.bodyContent — a small array of structured blocks. */
+/**
+ * TipTap JSON document shape stored in StoryPage.bodyContent.
+ *
+ * The column is Json? so legacy pre-TipTap values may still be present as a
+ * flat BlockComposer-style array of { type, text } blocks. The load path
+ * (studio/page.tsx) runs those through normalizeTipTapContent before they
+ * reach the editor, so consumers here can assume the doc shape — but see
+ * lib/story/tiptap.ts for the conversion seam.
+ */
 export type StoryBlock =
   | { type: "heading"; text: string }
   | { type: "paragraph"; text: string };

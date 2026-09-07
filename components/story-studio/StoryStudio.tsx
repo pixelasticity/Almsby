@@ -3,6 +3,7 @@
 import React, { useState, useTransition } from "react";
 import Button from "@/components/ui/Button";
 import TipTapEditor from "./TipTapEditor";
+import EditorErrorBoundary from "./EditorErrorBoundary";
 import MobilePreview from "./MobilePreview";
 import PassportSummary from "./PassportSummary";
 import { saveStoryAction, publishStoryAction } from "@/app/(dashboard)/products/[id]/studio/actions";
@@ -93,9 +94,26 @@ export default function StoryStudio({ product }: { product: StudioProduct }) {
           style={{ display: activeTab === "preview" ? "none" : "block" }}
         >
           <div className={styles.editInner}>
-            <section>
+                        <section>
               <h2 className={styles.sectionTitle}>Story Content</h2>
-              <TipTapEditor content={content} onChange={setContent} />
+              <EditorErrorBoundary
+                fallback={
+                  <div
+                    style={{
+                      padding: "1.5rem",
+                      border: "1px solid var(--danger-300)",
+                      borderRadius: "6px",
+                      color: "var(--danger-700)",
+                    }}
+                  >
+                    The story editor could not be loaded. Refresh the page to try again.
+                    If this keeps happening, the saved story content may be corrupted —
+                    contact support with the exact error.
+                  </div>
+                }
+              >
+                <TipTapEditor content={content} onChange={setContent} />
+              </EditorErrorBoundary>
             </section>
             <section style={{ paddingTop: "2rem", borderTop: "1px solid var(--border)" }}>
               <PassportSummary product={product} />

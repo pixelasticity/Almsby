@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { getDb } from "@/lib/db";
 import { requireAuth } from "@/lib/auth/server";
+import { normalizeTipTapContent } from "@/lib/story/tiptap";
 import StoryStudio from "@/components/story-studio/StoryStudio";
 
 export default async function StoryStudioPage({
@@ -22,7 +23,14 @@ export default async function StoryStudioPage({
     },
   });
 
-  if (!product) notFound();
+    if (!product) notFound();
+
+  // bodyContent is an unconstrained Json? column and may still hold the
+  // legacy BlockComposer array from before the TipTap migration. Normalize it
+  // into a TipTap doc here so the editor (and the mobile preview) ingest safe
+  // JSON. The first Save persists the normalized form, so this is a
+  // self-migrating, no-DB-migration conversion.
+  const bodyContent = normalizeTipTapContent(product.storyPage?.bodyContent ?? null);
 
   return (
     <StoryStudio
@@ -33,7 +41,9 @@ export default async function StoryStudioPage({
         countryOfOrigin: product.countryOfOrigin,
         materialComposition: product.materialComposition,
         recyclable: product.recyclable,
-        storyPage: product.storyPage,
+        storyPage: product.storyPage
+          ? { id: product.storyPage.id, published: product.storyPage.published, bodyContent }
+          : null,
       }}
     />
   );
