@@ -5,7 +5,7 @@ import { normalizeTipTapContent } from "@/lib/story/tiptap";
 import StarterKit from "@tiptap/starter-kit";
 import type { Level } from "@tiptap/extension-heading";
 import { useEffect } from "react";
-import Button from "@/components/ui/Button";
+import FormatButton from "./FormatButton";
 import styles from "./tiptap-editor.module.css";
 
 type TipTapEditorProps = {
@@ -104,40 +104,10 @@ export default function TipTapEditor({ content, onChange }: TipTapEditorProps) {
           <option value="6">H6</option>
         </select>
 
-        <Button
-          variant={editor.isActive("bold") ? "primary" : "secondary"}
-          type="button"
-          onClick={() => editor.chain().focus().toggleBold().run()}
-          style={{ fontWeight: 700 }}
-        >
-          B
-        </Button>
-        <Button
-          variant={editor.isActive("italic") ? "primary" : "secondary"}
-          type="button"
-          onClick={() => editor.chain().focus().toggleItalic().run()}
-          style={{ fontStyle: "italic" }}
-        >
-          I
-        </Button>
-        <Button
-          variant={editor.isActive("strike") ? "primary" : "secondary"}
-          type="button"
-          onClick={() => editor.chain().focus().toggleStrike().run()}
-          style={{ textDecoration: "line-through" }}
-        >
-          S
-        </Button>
-        <Button
-          variant={editor.isActive("link") ? "primary" : "secondary"}
-          type="button"
-          onClick={() => {
-            const url = window.prompt("Link URL:");
-            if (url) editor.chain().focus().setLink({ href: url }).run();
-          }}
-        >
-          Link
-        </Button>
+        <FormatButton editor={editor} markType="bold" />
+        <FormatButton editor={editor} markType="italic" />
+        <FormatButton editor={editor} markType="strike" />
+        <FormatButton editor={editor} markType="link" />
       </div>
 
       <div className={styles.content}>

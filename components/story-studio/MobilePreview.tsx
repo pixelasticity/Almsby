@@ -1,5 +1,6 @@
 import React from "react";
 import styles from "./story-studio.module.css";
+import { renderMark } from "@/lib/story/markUtils";
 
 interface MobilePreviewProps {
   content: Record<string, unknown> | null;
@@ -59,28 +60,20 @@ function renderNode(node: TipTapNode, key: number): React.ReactNode {
   }
 }
 
-/** Renders a text node's marks (bold, italic, strike, link) as React elements. */
+/**
+ * Renders a text node's marks (bold, italic, strike, link) as React elements.
+ * Uses the shared renderMark() from lib/story/markUtils.tsx so the preview and
+ * the public renderer never drift. Marks compose left-to-right; keys are the
+ * stable mark index (the marks array is static per text node), unlike the old
+ * Math.random() keys which forced remounts on every render.
+ */
 function renderMarks(node: TipTapNode): React.ReactNode {
   if (!node.text) return null;
   if (!node.marks || node.marks.length === 0) return node.text;
 
-  // Apply marks left to right.
   return node.marks.reduce<React.ReactNode>(
-    (acc, mark) => {
-      if (mark.type === "bold") return <strong key={Math.random()}>{acc}</strong>;
-      if (mark.type === "italic") return <em key={Math.random()}>{acc}</em>;
-      if (mark.type === "strike") return <del key={Math.random()}>{acc}</del>;
-      if (mark.type === "link") {
-        const href = (mark.attrs?.href as string) ?? "#";
-        return (
-          <a key={Math.random()} href={href} target="_blank" rel="noopener noreferrer">
-            {acc}
-          </a>
-        );
-      }
-      return acc;
-    },
-    <>{node.text}</>
+    (acc, mark) => renderMark(mark.type, acc, mark.attrs),
+    node.text
   );
 }
 
