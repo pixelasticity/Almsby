@@ -3,9 +3,12 @@ id: product-constitution
 type: product_truth
 authority: highest
 status: active
+mutable_by: human
 audience:
-  - all_agents
-  - humans
+  - product
+  - design
+  - engineering
+  - ai
 updated: 2026-09-08
 ---
 
