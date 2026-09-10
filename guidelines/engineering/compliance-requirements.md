@@ -1,3 +1,10 @@
+---
+id: compliance-requirements
+type: hard_constraint
+authority: engineering
+status: active
+---
+
 # Almsby — Compliance Requirements Mapping
 *What Sunrise 2027 and Digital Product Passport rules actually require, and what that means for the product.*
 
