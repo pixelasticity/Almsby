@@ -1,3 +1,10 @@
+---
+id: domain-business
+type: domain_definition
+authority: product
+status: active
+---
+
 # Business
 
 ## Definition
@@ -8,12 +15,12 @@ A Business is the organization, maker, or product owner using Almsby to manage o
 
 A Business may:
 
-* Create and manage Products
-* Associate identifiers with Products
-* Create product Stories
-* Maintain product information
-* Manage compliance-related information
-* Publish digital product experiences
+- Create and manage Products
+- Associate identifiers with Products
+- Create product Stories
+- Maintain product information
+- Manage compliance-related information
+- Publish digital product experiences
 
 ## Relationship to Product
 
