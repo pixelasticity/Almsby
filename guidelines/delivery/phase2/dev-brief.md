@@ -1,3 +1,11 @@
+---
+id: phase2-dev-brief
+type: delivery_plan
+authority: implementation
+status: active
+phase: phase2
+---
+
 # Almsby — Phase 2 Developer Brief
 *Story pages — the growth engine. Turns a scanned barcode into a live, human story.*
 

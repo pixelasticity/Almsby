@@ -1,3 +1,11 @@
+---
+id: phase0-dev-brief
+type: delivery_plan
+authority: implementation
+status: historical
+phase: phase0
+---
+
 # Almsby — Phase 0 Developer Brief
 *Everything needed to set up the foundation correctly, once, so nothing has to be redone later.*
 

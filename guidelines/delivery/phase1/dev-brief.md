@@ -1,3 +1,11 @@
+---
+id: phase1-dev-brief
+type: delivery_plan
+authority: implementation
+status: historical
+phase: phase1
+---
+
 # Almsby — Phase 1 Developer Brief
 *GTIN & barcode core — the product's technical spine. Zero room for error here.*
 
