@@ -3,6 +3,11 @@ id: compliance-requirements
 type: hard_constraint
 authority: engineering
 status: active
+review_frequency: quarterly
+last_verified: 2026-08-31
+source_authority:
+  - European Commission
+  - GS1
 ---
 
 # Almsby — Compliance Requirements Mapping

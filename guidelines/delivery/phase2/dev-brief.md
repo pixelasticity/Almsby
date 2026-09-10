@@ -4,6 +4,10 @@ type: delivery_plan
 authority: implementation
 status: active
 phase: phase2
+supersedes: null
+depends_on:
+  - product/mvp-scope
+  - engineering/technical-architecture
 ---
 
 # Almsby — Phase 2 Developer Brief
