@@ -1,3 +1,13 @@
+---
+id: product-constitution
+type: product_truth
+authority: highest
+status: active
+audience:
+  - all_agents
+  - humans
+updated: 2026-09-08
+---
 
 # Product Constitution
 
