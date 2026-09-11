@@ -1,87 +1,11 @@
-import React from "react";
 import styles from "./story-studio.module.css";
-import { renderMark } from "@/lib/story/markUtils";
+import TipTapRenderer, {
+  type TipTapNode,
+} from "@/components/story-page/TipTapRenderer";
 
 interface MobilePreviewProps {
   content: Record<string, unknown> | null;
   isPublished: boolean;
-}
-
-type TipTapNode = {
-  type: string;
-  attrs?: Record<string, unknown>;
-  content?: TipTapNode[];
-  text?: string;
-  marks?: { type: string; attrs?: Record<string, unknown> }[];
-};
-
-/**
- * Renders TipTap JSON for the mobile preview. Because the editor uses a
- * CONSTRAINED schema (paragraph, heading h2/h3, bold, italic, strike, link only), this renderer
- * only needs to handle those node/mark types — no arbitrary HTML, no images,
- * no tables. Unknown node types render as their text content (safe fallback).
- *
- * This is NOT dangerouslySetInnerHTML — every node is mapped to a React
- * element, and the bounded schema guarantees only whitelisted nodes exist.
- */
-function renderNode(node: TipTapNode, key: number): React.ReactNode {
-  switch (node.type) {
-    case "heading": {
-      const level = Math.min(Math.max((node.attrs?.level as number) ?? 2, 2), 6);
-      const children = node.content?.map((child, i) => renderNode(child, i));
-      const Heading = `h${level}` as "h2";
-      const headingClass =
-        level <= 3
-          ? level === 2
-            ? styles.previewHeading2
-            : styles.previewHeading3
-          : styles.previewHeading4;
-      return (
-        <Heading key={key} className={`${styles.previewHeading} ${headingClass}`}>
-          {children ?? "Untitled Heading"}
-        </Heading>
-      );
-    }
-    case "paragraph": {
-      const children = node.content?.map((child, i) => renderNode(child, i));
-      return (
-        <p key={key} className={styles.previewParagraph}>
-          {children ?? "Paragraph content goes here..."}
-        </p>
-      );
-    }
-    case "text":
-      return renderMarks(node);
-    case "doc":
-      return node.content?.map((child, i) => renderNode(child, i)) ?? null;
-    default:
-      // Safe fallback for any unhandled node — render its text, never raw HTML.
-      return <React.Fragment key={key}>{extractText(node)}</React.Fragment>;
-  }
-}
-
-/**
- * Renders a text node's marks (bold, italic, strike, link) as React elements.
- * Uses the shared renderMark() from lib/story/markUtils.tsx so the preview and
- * the public renderer never drift. Marks compose left-to-right; keys are the
- * stable mark index (the marks array is static per text node), unlike the old
- * Math.random() keys which forced remounts on every render.
- */
-function renderMarks(node: TipTapNode): React.ReactNode {
-  if (!node.text) return null;
-  if (!node.marks || node.marks.length === 0) return node.text;
-
-  return node.marks.reduce<React.ReactNode>(
-    (acc, mark) => renderMark(mark.type, acc, mark.attrs),
-    node.text
-  );
-}
-
-/** Extracts all text content from a node tree (for fallbacks). */
-function extractText(node: TipTapNode): string {
-  if (node.text) return node.text;
-  if (node.content) return node.content.map(extractText).join("");
-  return "";
 }
 
 export default function MobilePreview({ content, isPublished }: MobilePreviewProps) {
@@ -112,13 +36,13 @@ export default function MobilePreview({ content, isPublished }: MobilePreviewPro
           </div>
         )}
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+        <div className={styles.storyContent}>
           {nodes.length === 0 ? (
             <div className={styles.blocksEmpty}>
               <p>Start adding blocks to see the story unfold...</p>
             </div>
           ) : (
-            nodes.map((node, i) => renderNode(node as TipTapNode, i))
+            <TipTapRenderer content={nodes} />
           )}
         </div>
       </div>

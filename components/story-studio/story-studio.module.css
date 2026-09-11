@@ -240,16 +240,6 @@
   font-style: italic;
 }
 
-.previewHeading {
-  font-family: var(--font-display);
-  font-weight: 700;
-  color: var(--primary-600);
-  line-height: 1.2;
-}
-
-.previewHeading1 {
-  font-size: 1.875rem;
-}
 /* PassportSummary */
 .passport {
   background: var(--primary-100);
@@ -302,19 +292,41 @@
 }
 
 
-.previewHeading2 {
+/* Shared TipTapRenderer output — the renderer emits BARE semantic elements,
+   so style them via descendant selectors scoped to the story content wrapper. */
+.storyContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.storyContent h2 {
+  font-family: var(--font-display);
   font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--primary-600);
+  line-height: 1.2;
 }
 
-.previewHeading3 {
+.storyContent h3 {
+  font-family: var(--font-display);
   font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--primary-600);
+  line-height: 1.2;
 }
 
-.previewHeading4 {
+.storyContent h4,
+.storyContent h5,
+.storyContent h6 {
+  font-family: var(--font-display);
   font-size: 1rem;
+  font-weight: 700;
+  color: var(--primary-600);
+  line-height: 1.2;
 }
 
-.previewParagraph {
+.storyContent p {
   font-size: 0.875rem;
   line-height: 1.6;
   color: var(--neutral-700);
