@@ -116,33 +116,35 @@ export default async function ProductDetailPage({
 
 /**
  * Entry point for the Story Studio: shows the story publish status and
- * links to /products/[id]/studio. A missing StoryPage row means the maker
- * has not started a story yet — the link still shows (studio handles the
- * empty state). Failures log loud but degrade to a hidden card.
+ * links to /products/[id]/studio. Renders the entry link ALWAYS — a missing
+ * StoryPage row means the maker has not started a story yet, but the link
+ * still shows (the studio handles the empty state). The publish status is
+ * shown only once a story row exists. Failures log loud but degrade to a
+ * card with no status line (never hides the entry point).
  */
 async function StoryEntry({ productId }: { productId: string }) {
   const t = await getTranslations("story");
 
-  let story: { exists: true; published: boolean } | null = null;
+  let published: boolean | undefined;
   try {
     const db = getDb();
     const storyPage = await db.storyPage.findUnique({
       where: { productId },
       select: { published: true },
     });
-    if (storyPage) story = { exists: true, published: storyPage.published };
+    published = storyPage?.published;
   } catch (error) {
     console.error("StoryEntry: failed to load story status", productId, error);
   }
 
-  if (!story) return null;
-
   return (
     <section className={storyStyles.card} aria-label={t("title")}>
       <h2 className={styles.cardTitle}>{t("title")}</h2>
-      <p className={storyStyles.status}>
-        {story.published ? t("statusPublished") : t("statusDraft")}
-      </p>
+      {published !== undefined && (
+        <p className={storyStyles.status}>
+          {published ? t("statusPublished") : t("statusDraft")}
+        </p>
+      )}
       <Link href={`/products/${productId}/studio`} className={storyStyles.link}>
         {t("edit")}
       </Link>
