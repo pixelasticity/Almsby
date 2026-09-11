@@ -1,4 +1,35 @@
-# Phase 1 — Physical multi-scanner test protocol
+# Physical Scan Verification
+
+## Purpose
+
+Establish that a generated barcode works on real scanning hardware, not merely in software.
+
+## Procedure
+
+1. Generate the barcode through the production-equivalent rendering path.
+2. Print/reproduce it at the intended physical size.
+3. Confirm quiet zones and surrounding label content do not interfere.
+4. Scan with each applicable physical scanner/device.
+5. Repeat enough times to distinguish reliable behavior from a one-off success.
+6. Confirm the decoded payload is exactly the intended Digital Link.
+7. Follow the destination and verify expected application behavior.
+8. Separate scan failures from resolver/application failures.
+9. Record failures; do not weaken acceptance criteria to obtain a pass.
+
+## Pass criteria
+
+- reliable physical scanning on tested hardware;
+- correct decoded payload;
+- expected resolver/destination behavior;
+- no observed rendering, quiet-zone, or physical-size defect.
+
+## Evidence
+
+Record test ID, barcode payload/version, physical dimensions, scanner/device, attempts/outcomes, decoded value, destination/result, useful photographs, and failures/remediation.
+
+The existing phase-one `scan-protocol.md` remains the detailed operational test matrix. This protocol defines the durable quality rule for when and why physical scanning is required.
+
+## Physical multi-scanner test protocol
 
 Executes brief §10.3. Prerequisite: barcode generation merged (#35) — labels
 print from `/products/{id}/label`. **Do not trust any symbol until the
