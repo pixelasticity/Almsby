@@ -1,0 +1,9 @@
+dimension: ""
+status: passed | failed | blocked | skipped | unknown
+check: ""
+method: ""
+environment: ""
+artifact: ""
+reviewer: ""
+timestamp: ""
+notes: ""
