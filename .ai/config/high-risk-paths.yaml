@@ -1,0 +1,70 @@
+# Machine-readable mirror of AGENTS.md's "HIGH-RISK zones" section.
+#
+# Source of truth is /AGENTS.md — if this file and AGENTS.md ever disagree,
+# AGENTS.md wins and this file is out of date. Update this file in the same
+# PR as any AGENTS.md change to the HIGH-RISK list.
+#
+# `action` values:
+#   propose-only        — agent may draft a diff, must not apply it without
+#                          explicit human confirmation
+#   edit-with-parity-check — agent may edit, but must satisfy a specific
+#                          companion invariant before treating the task done
+#   edit-freely         — normal code, standard review discipline applies
+
+version: 1
+
+rules:
+  - paths:
+      - "lib/gs1/**"
+      - "app/01/[gtin]/route.ts"
+      - "tests/gs1/barcode-decode.test.ts"
+      - "tests/gs1/legacy-barcode.test.ts"
+    action: propose-only
+    reason: >
+      Compliance-critical: GS1 barcode generation, Digital Link URI
+      construction, GTIN validation/allocation, and the resolver a real
+      scanner hits. A change here can make a printed barcode unscannable.
+      See AGENTS.md rule #2.
+
+  - paths:
+      - "lib/gs1/verify.ts"
+    action: propose-only
+    reason: >
+      The decode-verification gate. Never bypass, weaken, or "temporarily"
+      disable this — a barcode must pass automated decode verification
+      before a user can download it. See AGENTS.md rule #5.
+
+  - paths:
+      - "lib/env.ts"
+      - "instrumentation.ts"
+    action: propose-only
+    reason: >
+      The only module allowed to read process.env directly. Owns the
+      resolver placeholder guard (#17 / DoD §10.6) and the localhost-deploy
+      guard. A loosened check here can silently ship a barcode encoding a
+      placeholder domain.
+
+  - paths:
+      - "messages/en.json"
+      - "messages/es.json"
+    action: edit-with-parity-check
+    reason: >
+      Every message key must exist in both locales — scripts/lint-i18n.mjs
+      enforces this in CI (AGENTS.md rule #4). A key added to one file
+      without the other fails the pipeline; run `npm run lint:i18n` before
+      calling this done.
+
+  - paths:
+      - "prisma/schema.prisma"
+      - "prisma/migrations/**"
+    action: propose-only
+    reason: >
+      Migration files and the code that depends on them must ship in the
+      same commit (guidelines/almsby-database-workflow.md). Never hand-edit
+      a migration file that has already been merged/applied anywhere.
+
+defaults:
+  action: edit-freely
+  reason: >
+    Anything not listed above is ordinary application code. Standard review
+    discipline applies — no special confirmation gate.
