@@ -1,4 +1,54 @@
-# Design system
+# Design System
+
+The design system defines reusable visual and interface foundations for Almsby.
+
+It should make the product coherent without forcing every screen into the same visual shape.
+
+## Scope
+
+This directory is for:
+
+- typography;
+- color roles;
+- spacing;
+- sizing;
+- elevation/borders;
+- layout primitives;
+- interaction states;
+- component foundations;
+- motion principles;
+- responsive foundations;
+- accessibility-related visual requirements.
+
+It is not the place for page-specific art direction.
+
+## Principles
+
+### Coherent, not generic
+
+Reuse should create a recognizable Almsby language, not a generic SaaS appearance.
+
+### Hierarchy before decoration
+
+Visual choices should clarify importance, state, and action before adding ornament.
+
+### Product context matters
+
+Dashboard/compliance experiences and public maker story pages can have different densities while still belonging to the same product.
+
+### Accessibility is foundational
+
+Contrast, focus, readable typography, target sizing, and state visibility are part of the design system rather than optional polish.
+
+### System before exception
+
+Prefer reusable tokens and primitives. Introduce an exception only when the product experience has a clear reason to need it.
+
+## Current technical source
+
+The existing technical architecture document contains design-system material that should be migrated here as the UX structure is adopted.
+
+Engineering should consume the design system; it should not be the authoritative home for visual policy.
 
 Locked decisions for fonts and color — apply consistently across the dashboard, story pages, and any future marketing surfaces built inside the Next.js app.
 
