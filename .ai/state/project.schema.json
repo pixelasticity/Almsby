@@ -15,7 +15,8 @@
       "properties": {
         "manifestVersion": {"type": "string"},
         "pinned": {"type": "object", "additionalProperties": {"type": "string"}},
-        "applicability": {"type": "object", "additionalProperties": {"enum": ["required", "not_applicable", "unknown"]}}
+        "applicability": {"type": "object", "additionalProperties": {"enum": ["required", "not_applicable", "unknown"]}},
+        "hashes": {"type": "object", "additionalProperties": {"type": "string", "pattern": "^[a-f0-9]{64}$"}}
       }
     },
     "impact": {
