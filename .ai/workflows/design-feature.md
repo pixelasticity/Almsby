@@ -21,8 +21,13 @@ PM then:
 Do not delegate substantive work until preflight is complete.
 
 ## Phase 1 — PM planning
+## Phase 0 — deterministic contract preflight
 
 PM creates `brief.md`, identifies relevant product truth, and creates bounded specialist tasks with objective, inputs, expected artifact, acceptance criteria, tools, and escalation condition.
+The runtime validates the manifest, mappings, contract presence, declared versions, and content hashes, then creates the run state and PM context bundle.
+
+It deliberately does **not** make semantic applicability or impact decisions.
+
 
 ## Phase 2 — specialist discovery
 
