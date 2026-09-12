@@ -6,7 +6,7 @@ contract — that's `/AGENTS.md`. If you're unsure where something belongs:
 
 | Question | Lives in |
 |---|---|
-| "What are we building, and why?" | `/guidelines/*.md` |
+| "What are we building, and why?" | `/guidelines/` (has its own authority hierarchy — see `guidelines/README.md`) |
 | "How must an agent behave in this repo?" | `/AGENTS.md` |
 | "What's the step-by-step for a recurring task?" | `.ai/workflows/` |
 | "How do we test that an agent actually follows the rules above?" | `.ai/evaluations/` |
