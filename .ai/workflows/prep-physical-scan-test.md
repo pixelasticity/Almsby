@@ -1,8 +1,15 @@
 # Workflow: prepping for the physical multi-scanner test
 
-Source of truth: `guidelines/phase1-scan-protocol.md`. **The test itself is a
-physical, human task — an agent cannot perform it.** This workflow covers only
-the parts an agent can legitimately help with beforehand.
+Source of truth: `guidelines/quality/protocols/physical-scan.md`. **The test
+itself is a physical, human task — an agent cannot perform it.** This
+workflow covers only the parts an agent can legitimately help with
+beforehand.
+
+Note: that file currently bundles the generic, reusable protocol together
+with the phase-1-specific operational instance (label prep, scanner matrix,
+results log) in a single document. If it's since been split into a generic
+protocol plus a separate evidence/instance file, follow whichever file
+actually contains the label-prep and scanner-matrix steps referenced below.
 
 ## What an agent CAN do
 
@@ -30,7 +37,7 @@ the parts an agent can legitimately help with beforehand.
   Structural correctness and decode-round-trip correctness are necessary but
   explicitly **not sufficient** per the protocol doc — only the physical test
   proves it.
-- Mark `guidelines/phase1-dod-status.md` item §10.3 (or any DoD item gated on
-  a manual/physical step) as done based on code changes alone. Code-done and
-  phase-done are different claims (`AGENTS.md`, "What NOT to do without
-  asking").
+- Mark `guidelines/delivery/phase1/dod-status.md` item §10.3 (or any DoD item
+  gated on a manual/physical step) as done based on code changes alone.
+  Code-done and phase-done are different claims (`AGENTS.md`, "What NOT to do
+  without asking").
