@@ -19,3 +19,15 @@ approval:
   status: pending
 lastMeaningfulProgressAt: null
 attempts: {}
+
+# Step 13 watchdog fields
+createdAt: ""
+lastHeartbeatAt: ""
+lastMeaningfulProgressAt: ""
+applicability:
+  ui_or_ux_changes: unknown
+  code_changes: unknown
+  physical_scan: unknown
+  i18n: unknown
+  compliance: unknown
+evidence: []
