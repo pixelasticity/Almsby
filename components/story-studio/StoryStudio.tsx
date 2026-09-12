@@ -67,6 +67,14 @@ export default function StoryStudio({ product }: { product: StudioProduct }) {
 
   const handlePublish = () => {
     if (isPublishing) return;
+
+    // Unpublishing takes a live, customer-facing page offline — confirm first.
+    // Native confirm() is used here (consistent with the existing window.prompt()
+    // link flow) and is accessible by default. Flag as a future ConfirmDialog.
+    if (isPublished && !window.confirm("Unpublish this story? It will no longer be visible to shoppers.")) {
+      return;
+    }
+
     setError(null);
     startPublishing(async () => {
       const published = !isPublished;

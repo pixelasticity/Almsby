@@ -3,6 +3,7 @@
 import { useEditor, EditorContent } from "@tiptap/react";
 import { normalizeTipTapContent } from "@/lib/story/tiptap";
 import StarterKit from "@tiptap/starter-kit";
+import Placeholder from "@tiptap/extension-placeholder";
 import type { Level } from "@tiptap/extension-heading";
 import { useEffect } from "react";
 import FormatButton from "./FormatButton";
@@ -35,6 +36,9 @@ export default function TipTapEditor({ content, onChange, ariaLabelledBy }: TipT
     // active-state highlighting) goes stale when the cursor moves (#72 UX).
     shouldRerenderOnTransaction: true,
     extensions: [
+      Placeholder.configure({
+        placeholder: "Write your story…",
+      }),
       StarterKit.configure({
         // Disable everything we don't want; keep only the constrained set.
         heading: { levels: [2,3,4,5,6] },
