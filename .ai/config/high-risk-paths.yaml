@@ -60,8 +60,19 @@ rules:
     action: propose-only
     reason: >
       Migration files and the code that depends on them must ship in the
-      same commit (guidelines/almsby-database-workflow.md). Never hand-edit
-      a migration file that has already been merged/applied anywhere.
+      same commit (guidelines/engineering/database-workflow.md). Never
+      hand-edit a migration file that has already been merged/applied
+      anywhere.
+
+  - paths:
+      - "components/story-page/**"
+    action: edit-with-parity-check
+    reason: >
+      Story content rendering must stay inside the bounded Tiptap schema
+      (paragraph, heading, bold/italic/strike/link only — see
+      guidelines/delivery/phase2/dev-brief.md §4/§9) and must never use
+      dangerouslySetInnerHTML. Path is a placeholder — update to the real
+      component paths once Phase 2 rendering code lands.
 
 defaults:
   action: edit-freely
