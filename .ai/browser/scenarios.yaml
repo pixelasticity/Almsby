@@ -1,0 +1,34 @@
+schema_version: "1.0"
+status: active
+
+scenario_catalog:
+  render:
+    purpose: Prove the target route renders successfully.
+    evidence: [navigation, screenshot]
+  primary-interaction:
+    purpose: Prove the primary user action works.
+    evidence: [interaction_assertion]
+  accessibility:
+    purpose: Prove the tested accessibility structure and named assertions.
+    evidence: [accessibility_snapshot, accessibility_assertions]
+  responsive-mobile:
+    purpose: Prove the experience at the mobile contract viewport.
+    evidence: [navigation, screenshot]
+  responsive-desktop:
+    purpose: Prove the experience at the desktop contract viewport.
+    evidence: [navigation, screenshot]
+  error-state:
+    purpose: Prove the relevant error state is understandable and functional.
+    evidence: [state_assertions, screenshot]
+  empty-state:
+    purpose: Prove the relevant empty/draft state is understandable and functional.
+    evidence: [state_assertions, screenshot]
+  i18n:
+    purpose: Prove required locale behavior and visible translation parity.
+    evidence: [locale, screenshot, assertions]
+
+rules:
+  required_scenarios_are_pm_selected: true
+  required_scenarios_must_be_explicit: true
+  unspecified_scenarios_do_not_count_as_satisfied: true
+  scenario_ids_must_be_catalogued: true
