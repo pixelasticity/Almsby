@@ -1,0 +1,51 @@
+schema_version: "1.0"
+artifact_map:
+  planning:
+    required:
+      - project.yaml
+      - brief.md
+      - contract-preflight.md
+      - impact-assessment.md
+  design:
+    required_when_ui_or_ux_changes:
+      - ux-brief.md
+      - visual-direction.md
+      - design-plan.md
+    conditional:
+      - product-review.md
+      - decisions.md
+  implementation:
+    required_when_code_changes:
+      - implementation-report.md
+  verification:
+    required_for_ui_work:
+      - browser-evidence.yaml
+      - accessibility-evidence.yaml
+      - screenshots/
+    conditional:
+      - responsive-evidence.yaml
+      - physical-scan-evidence.yaml
+      - i18n-evidence.yaml
+      - compliance-evidence.yaml
+  review:
+    required:
+      - critique.md
+      - final-review.yaml
+  completion:
+    required:
+      - project.yaml
+      - final-review.yaml
+
+artifact_status_values:
+  - planned
+  - in_progress
+  - present
+  - verified
+  - failed
+  - blocked
+  - unknown
+
+rules:
+  missing_required_artifact: "fail"
+  unknown_required_artifact: "fail"
+  failed_required_artifact: "fail"
