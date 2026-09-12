@@ -11,6 +11,8 @@ import styles from "./tiptap-editor.module.css";
 type TipTapEditorProps = {
   content: Record<string, unknown> | null;
   onChange: (json: Record<string, unknown>) => void;
+  /** id of the element that labels the editor content (accessibility). */
+  ariaLabelledBy?: string;
 };
 
 /**
@@ -20,7 +22,7 @@ type TipTapEditorProps = {
  * set is what makes the "no dangerouslySetInnerHTML" safety guarantee real —
  * only nodes we explicitly allow can ever be produced.
  */
-export default function TipTapEditor({ content, onChange }: TipTapEditorProps) {
+export default function TipTapEditor({ content, onChange, ariaLabelledBy }: TipTapEditorProps) {
   // Never let a malformed/legacy content value reach TipTap's parser: a legacy
   // BlockComposer array or other shape crashes EditorState.create with
   // "config.doc.type is undefined". Normalize at the boundary; non-doc values
@@ -111,7 +113,11 @@ export default function TipTapEditor({ content, onChange }: TipTapEditorProps) {
       </div>
 
       <div className={styles.content}>
-        <EditorContent editor={editor} />
+        <EditorContent
+          editor={editor}
+          aria-label="Story editor content"
+          aria-labelledby={ariaLabelledBy}
+        />
       </div>
     </div>
   );

@@ -91,6 +91,8 @@ export default function StoryStudio({ product }: { product: StudioProduct }) {
         <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
           <span
             className={`${styles.status} ${isPublished ? styles.statusLive : styles.statusDraft}`}
+            role="status"
+            aria-label={isPublished ? "Story status: Live" : "Story status: Draft"}
           >
             {isPublished ? "● Live" : "○ Draft"}
           </span>
@@ -123,7 +125,10 @@ export default function StoryStudio({ product }: { product: StudioProduct }) {
       </header>
 
       {error && (
-        <div style={{ padding: "0.5rem 1.5rem", background: "var(--danger-100)", color: "var(--danger-700)" }}>
+        <div
+          role="alert"
+          style={{ padding: "0.5rem 1.5rem", background: "var(--danger-100)", color: "var(--danger-700)" }}
+        >
           {error}
         </div>
       )}
@@ -135,7 +140,9 @@ export default function StoryStudio({ product }: { product: StudioProduct }) {
         >
           <div className={styles.editInner}>
                         <section>
-              <h2 className={styles.sectionTitle}>Story Content</h2>
+              <h2 className={styles.sectionTitle} id="story-content-heading">
+                Story Content
+              </h2>
               <EditorErrorBoundary
                 fallback={
                   <div
@@ -152,7 +159,11 @@ export default function StoryStudio({ product }: { product: StudioProduct }) {
                   </div>
                 }
               >
-                <TipTapEditor content={content} onChange={setContent} />
+                <TipTapEditor
+                  content={content}
+                  onChange={setContent}
+                  ariaLabelledBy="story-content-heading"
+                />
               </EditorErrorBoundary>
             </section>
             <section style={{ paddingTop: "2rem", borderTop: "1px solid var(--border)" }}>
@@ -171,9 +182,11 @@ export default function StoryStudio({ product }: { product: StudioProduct }) {
         </div>
       </main>
 
-      <div className={styles.mobileTabs}>
+      <div className={styles.mobileTabs} role="tablist">
         <button
           type="button"
+          role="tab"
+          aria-selected={activeTab === "edit"}
           onClick={() => setActiveTab("edit")}
           className={`${styles.mobileTab} ${activeTab === "edit" ? styles.mobileTabActive : ""}`}
         >
@@ -181,6 +194,8 @@ export default function StoryStudio({ product }: { product: StudioProduct }) {
         </button>
         <button
           type="button"
+          role="tab"
+          aria-selected={activeTab === "preview"}
           onClick={() => setActiveTab("preview")}
           className={`${styles.mobileTab} ${activeTab === "preview" ? styles.mobileTabActive : ""}`}
         >
