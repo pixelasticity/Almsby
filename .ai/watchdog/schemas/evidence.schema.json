@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Almsby Watchdog Evidence Record",
+  "type": "object",
+  "required": ["id", "kind", "status", "createdAt", "producer", "method", "result", "requirement"],
+  "properties": {
+    "id": {"type": "string", "minLength": 1},
+    "kind": {"type": "string", "minLength": 1},
+    "status": {"enum": ["passed", "failed", "unknown", "blocked"]},
+    "createdAt": {"type": "string", "format": "date-time"},
+    "producer": {"type": "string", "minLength": 1},
+    "method": {"type": "string", "minLength": 1},
+    "result": {"type": "string", "minLength": 1},
+    "requirement": {"type": "string", "minLength": 1},
+    "path": {"type": "string"},
+    "externalRef": {"type": "string"},
+    "route": {"type": "string"},
+    "viewport": {"type": "string"},
+    "interactionPath": {"type": "string"}
+  },
+  "additionalProperties": true
+}
