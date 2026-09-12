@@ -1,0 +1,18 @@
+schema_version: "1.0"
+clock_skew_seconds: 120
+heartbeat_timeout_seconds: 900
+progress_timeout_seconds: 1800
+completion_evidence_max_age_seconds: 86400
+artifact_evidence_max_age_seconds: 2592000
+warn_after_seconds: 600
+
+# The watchdog never infers semantic applicability. The PM records these flags in project.yaml.
+applicability_fields:
+  ui_or_ux_changes: "applicability.ui_or_ux_changes"
+  code_changes: "applicability.code_changes"
+  physical_scan: "applicability.physical_scan"
+  i18n: "applicability.i18n"
+  compliance: "applicability.compliance"
+
+# Evidence may reference only the current run by default.
+external_evidence_allowed: false
