@@ -123,3 +123,8 @@ Before delegating work and before readiness:
 8. keep human approval separate from agent readiness.
 
 The PM may interpret a watchdog failure and choose a corrective action, but it may not override the deterministic result by assertion.
+
+
+## Browser verification planning
+
+For every browser-visible change, declare `browserVerification.requiredScenarios` before implementation delegation. Select the smallest scenario set that covers the feature's actual risk: rendering, primary interaction, accessibility, responsive behavior, relevant error/empty states, and i18n as applicable. Record why each omitted catalog scenario is not applicable when that omission could be ambiguous. Never mark browser verification passed from an agent report; the deterministic validator owns that fact.
