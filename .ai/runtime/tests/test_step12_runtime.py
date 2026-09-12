@@ -13,7 +13,15 @@ class Step12RuntimeTests(unittest.TestCase):
     def make_fixture(self):
         td = Path(tempfile.mkdtemp(prefix='almsby-step12-'))
         shutil.copytree(REPO_ROOT / '.ai', td / '.ai')
-        shutil.copytree(REPO_ROOT / 'guidelines' / 'contracts', td / 'guidelines' / 'contracts')
+        contracts = td / 'guidelines' / 'contracts'
+        contracts.mkdir(parents=True)
+        manifest = (td / '.ai/contracts/manifest.yaml').read_text()
+        import re
+        entries = re.findall(r'^  ([a-z0-9_]+):\n    file: \"([^\"]+)\"\n    version_source: \"([^\"]+)\"', manifest, re.M)
+        for _, rel, source in entries:
+            out = td / rel; out.parent.mkdir(parents=True, exist_ok=True)
+            key = source.replace('_',' ')
+            out.write_text(f'**{key.title()}:** 1.0\n\nFixture contract for runtime testing.\n')
         return td
 
     def test_preflight_generates_pm_bundle_and_pins(self):
