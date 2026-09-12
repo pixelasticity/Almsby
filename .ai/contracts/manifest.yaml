@@ -1,0 +1,42 @@
+schema_version: "1.0"
+contract_set: "almsby-execution-contracts"
+source_root: "guidelines/contracts"
+
+contracts:
+  design_brief:
+    file: "guidelines/contracts/design-brief.md"
+    version_source: "contract_version"
+    consumers: [project_manager, ux_designer, visual_designer, design_director, implementation]
+    required_at: [planning, design]
+  definition_of_done:
+    file: "guidelines/contracts/definition-of-done.yaml"
+    version_source: "schema_version"
+    consumers: [project_manager, implementation, critic, watchdog]
+    required_at: [planning, verification, completion]
+  review_rubric:
+    file: "guidelines/contracts/review-rubric.md"
+    version_source: "contract_version"
+    consumers: [critic, design_director, project_manager]
+    required_at: [design, critique, completion]
+  agent_capability_matrix:
+    file: "guidelines/contracts/agent-capability-matrix.yaml"
+    version_source: "schema_version"
+    consumers: [project_manager, all_agents, watchdog]
+    required_at: [delegation, execution]
+  change_impact_protocol:
+    file: "guidelines/contracts/change-impact-protocol.md"
+    version_source: "protocol_version"
+    consumers: [project_manager, all_agents, watchdog]
+    required_at: [planning, change_detected]
+  contract_versioning:
+    file: "guidelines/contracts/contract-versioning.md"
+    version_source: "contract_versioning_version"
+    consumers: [project_manager, watchdog]
+    required_at: [preflight]
+
+rules:
+  authoritative_contracts_live_in: "guidelines/contracts"
+  .ai_may_duplicate_contract_definitions: false
+  unsupported_contract_version_behavior: "block_and_escalate"
+  missing_contract_behavior: "block_and_escalate"
+  unknown_applicability_behavior: "record_and_escalate"
