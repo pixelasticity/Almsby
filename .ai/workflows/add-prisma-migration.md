@@ -1,6 +1,6 @@
 # Workflow: add a Prisma migration
 
-Source of truth: `guidelines/almsby-database-workflow.md`. This is that
+Source of truth: `guidelines/engineering/database-workflow.md`. This is that
 document compressed into an executable checklist — if the two ever conflict,
 the guideline doc wins.
 
