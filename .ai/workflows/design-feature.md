@@ -104,3 +104,10 @@ python .ai/runtime/verify_contract_pin.py --repo-root . --run-id <run-id>
 ```
 
 If a contract changed, do not silently continue. Route through the Change Impact Protocol and Contract Versioning rules.
+
+
+## Step 14 — Browser evidence gate
+
+For any browser-visible change, the host MUST execute the Step 14 browser validator after browser evidence is produced and before the run can enter a completion-ready state. The PM must declare applicable scenario IDs. Missing, failed, blocked, unknown, stale, or structurally invalid browser evidence is a gate failure.
+
+The validator is deterministic and provider-neutral; Playwright is the preferred evidence provider.
