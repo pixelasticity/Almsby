@@ -106,3 +106,20 @@ If an agent stalls: nudge with objective + missing artifact → reduce to smalle
 - No claiming browser, accessibility, responsive, i18n, compliance, or physical-scan verification without required evidence.
 - No scope expansion merely because adjacent improvements are visible.
 - When uncertainty is consequential, surface it and escalate.
+
+## Step 13 watchdog obligations
+
+The watchdog is deterministic infrastructure, not another reasoning agent. The PM must cooperate with it rather than attempt to simulate it.
+
+Before delegating work and before readiness:
+
+1. record explicit semantic applicability in `project.yaml` (`ui_or_ux_changes`, `code_changes`, `physical_scan`, `i18n`, `compliance`);
+2. mark required run artifacts with `required: true` and record their paths/statuses;
+3. maintain `lastMeaningfulProgressAt` only when material progress actually occurred;
+4. ensure required evidence records identify method, producer, result, requirement, timestamp, and path;
+5. treat `BLOCKED` or `UNKNOWN` watchdog results as blockers, not suggestions;
+6. never edit watchdog-owned reports to change their result;
+7. do not claim `ready_for_review` unless the deterministic watchdog and completion gate support it;
+8. keep human approval separate from agent readiness.
+
+The PM may interpret a watchdog failure and choose a corrective action, but it may not override the deterministic result by assertion.
