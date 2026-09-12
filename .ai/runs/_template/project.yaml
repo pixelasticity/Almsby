@@ -1,0 +1,21 @@
+schemaVersion: "1.0"
+id: "<run-id>"
+objective: "<task objective>"
+status: planning
+phase: preflight
+contracts:
+  manifestVersion: "1.0"
+  pinned: {}
+  applicability: {}
+impact:
+  level: null
+  rationale: ""
+  changed_surfaces: []
+tasks: []
+artifacts: {}
+decisions: []
+approval:
+  required: true
+  status: pending
+lastMeaningfulProgressAt: null
+attempts: {}
