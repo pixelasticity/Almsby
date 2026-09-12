@@ -1,0 +1,13 @@
+schema_version: "1.0"
+status: active
+freshness:
+  max_age_seconds: 86400
+  require_current_run: true
+paths:
+  evidence_root: evidence/browser
+  screenshots_root: evidence/browser/screenshots
+  accessibility_root: evidence/browser/accessibility
+required_artifact_min_bytes: 1
+providers:
+  playwright:
+    enabled: true
