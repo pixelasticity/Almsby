@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Almsby Watchdog Report",
+  "type": "object",
+  "required": ["schemaVersion", "runId", "checkedAt", "overall", "checks"],
+  "properties": {
+    "schemaVersion": {"type": "string"},
+    "runId": {"type": "string"},
+    "checkedAt": {"type": "string", "format": "date-time"},
+    "overall": {"enum": ["PASS", "WARN", "BLOCKED", "UNKNOWN"]},
+    "checks": {"type": "array", "items": {"type": "object"}},
+    "escalation": {"type": "object"}
+  }
+}
