@@ -16,17 +16,31 @@ contract_preflight PASS
 PM context + pinned state generated
     ↓
 launch PM
+    ↓
+watchdog init
+    ↓
+PM records applicability / required artifacts
+    ↓
+watchdog check before phase transitions
+    ↓
+agent work + evidence
+    ↓
+watchdog check
+    ↓
+completion gate
+    ↓
+watchdog PASS
+    ↓
+human review
 ```
 
-If preflight exits non-zero, **the PM must not be launched**.
-
-The PM receives `.ai/runs/<run-id>/pm-context.md` and `.ai/runs/<run-id>/project.yaml` as initial run context, then reads the authoritative sources referenced there.
+A watchdog exit code `2` is a hard stop for the current autonomous phase.
 
 ## Phase 0 — deterministic contract preflight
 
 The runtime validates the manifest, mappings, contract presence, declared versions, and content hashes, then creates the run state and PM context bundle.
 
-It deliberately does **not** make semantic applicability or impact decisions.
+If preflight exits non-zero, the PM must not be launched.
 
 ## Phase 1 — PM semantic planning
 
@@ -38,7 +52,8 @@ The PM:
 4. derives required artifacts/evidence;
 5. validates delegation authority;
 6. records decisions in state;
-7. creates bounded specialist tasks.
+7. creates bounded specialist tasks;
+8. records explicit applicability flags and required artifact records for watchdog enforcement.
 
 ## Phase 2 — specialist discovery
 
@@ -64,9 +79,17 @@ For UI work, verify the real running application with Playwright and capture req
 
 Critic evaluates against the Review Rubric, product truth, persona, design plan, implementation evidence, and browser evidence.
 
-## Phase 7 — completion gate
+## Phase 7 — deterministic watchdog + completion gate
 
-PM evaluates the authoritative Definition of Done plus `.ai/evaluations/completion-gate.md`.
+The host runs:
+
+```text
+python .ai/watchdog/watchdog.py check --repo-root . --run-id <run-id>
+```
+
+Then evaluates the authoritative Definition of Done and `.ai/evaluations/completion-gate.md`.
+
+The run cannot be accepted as ready when the watchdog returns `BLOCKED` or `UNKNOWN`.
 
 ## Phase 8 — human review
 
