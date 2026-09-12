@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useTransition } from "react";
+import React, { useEffect, useState, useTransition } from "react";
 import Button from "@/components/ui/Button";
 import TipTapEditor from "./TipTapEditor";
 import EditorErrorBoundary from "./EditorErrorBoundary";
@@ -26,26 +26,57 @@ export default function StoryStudio({ product }: { product: StudioProduct }) {
   );
   const [isPublished, setIsPublished] = useState(product.storyPage?.published ?? false);
   const [activeTab, setActiveTab] = useState<"edit" | "preview">("edit");
-  const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
+  // Independent pending flags so Save and Publish each give their own feedback
+  // (previously they shared one flag, so a save would gray out Publish too).
+  const [isSaving, startSaving] = useTransition();
+  const [isPublishing, startPublishing] = useTransition();
+
+  // Snapshot of the last successfully-persisted content, used for dirty tracking.
+  const [savedContent, setSavedContent] = useState<Record<string, unknown> | null>(content);
+  // "idle" (nothing to report) | "saved" (brief confirmation) — errors go to the banner.
+  const [saveStatus, setSaveStatus] = useState<"idle" | "saved">("idle");
+
+  // Dirty = current editor content differs from what's been persisted.
+  const hasUnsavedChanges =
+    JSON.stringify(content) !== JSON.stringify(savedContent);
+
+  // Auto-clear the "Saved" confirmation after a moment so it never lingers stale.
+  useEffect(() => {
+    if (saveStatus !== "saved") return;
+    const timer = setTimeout(() => setSaveStatus("idle"), 3000);
+    return () => clearTimeout(timer);
+  }, [saveStatus]);
+
   const handleSave = () => {
+    if (isSaving) return;
     setError(null);
-    startTransition(async () => {
+    setSaveStatus("idle");
+    startSaving(async () => {
       const result = await saveStoryAction(product.id, content);
-      if (result?.error) setError(result.error);
+      if (result?.error) {
+        setError(result.error);
+        return;
+      }
+      // Only mark saved on success so a failed save stays "dirty".
+      setSavedContent(content);
+      setSaveStatus("saved");
     });
   };
 
   const handlePublish = () => {
+    if (isPublishing) return;
     setError(null);
-    startTransition(async () => {
+    startPublishing(async () => {
       const published = !isPublished;
       const result = await publishStoryAction(product.id, content, published);
       if (result?.error) {
         setError(result.error);
       } else {
         setIsPublished(published);
+        // Publish also persists content, so clear the dirty state on success.
+        setSavedContent(content);
       }
     });
   };
@@ -63,18 +94,27 @@ export default function StoryStudio({ product }: { product: StudioProduct }) {
           >
             {isPublished ? "● Live" : "○ Draft"}
           </span>
+          {hasUnsavedChanges && (
+            <span className={`${styles.status} ${styles.unsaved}`} aria-hidden="true">
+              • Unsaved
+            </span>
+          )}
           <Button
             variant="secondary"
             type="button"
-            pending={isPending}
+            pending={isSaving}
+            pendingLabel="Saving…"
             onClick={handleSave}
           >
             Save
           </Button>
+          {saveStatus === "saved" && (
+            <span className={`${styles.status} ${styles.statusLive}`}>Saved ✓</span>
+          )}
           <Button
             variant={isPublished ? "secondary" : "primary"}
             type="button"
-            pending={isPending}
+            pending={isPublishing}
             onClick={handlePublish}
           >
             {isPublished ? "Unpublish" : "Publish Story"}

@@ -43,6 +43,11 @@
   color: var(--neutral-500);
 }
 
+/* Dirty/unsaved-changes indicator — amber to signal attention, not error. */
+.unsaved {
+  color: var(--gold-600);
+}
+
 .publishBtn {
   margin-left: 1rem;
 }
