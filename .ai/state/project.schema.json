@@ -5,6 +5,9 @@
   "required": ["schemaVersion", "id", "objective", "status", "phase", "contracts", "tasks", "artifacts", "decisions"],
   "properties": {
     "schemaVersion": {"type": "string"},
+    "createdAt": {"type": "string", "format": "date-time"},
+    "lastHeartbeatAt": {"type": "string", "format": "date-time"},
+    "lastMeaningfulProgressAt": {"type": "string", "format": "date-time"},
     "id": {"type": "string"},
     "objective": {"type": "string"},
     "status": {"enum": ["planning", "in_progress", "ready_for_review", "approved", "blocked", "cancelled"]},
@@ -28,6 +31,17 @@
       }
     },
     "tasks": {"type": "array", "items": {"type": "object"}},
+    "applicability": {
+      "type": "object",
+      "properties": {
+        "ui_or_ux_changes": {"type": ["boolean", "string"]},
+        "code_changes": {"type": ["boolean", "string"]},
+        "physical_scan": {"type": ["boolean", "string"]},
+        "i18n": {"type": ["boolean", "string"]},
+        "compliance": {"type": ["boolean", "string"]}
+      },
+      "additionalProperties": {"type": ["boolean", "string"]}
+    },
     "artifacts": {
       "type": "object",
       "additionalProperties": {
@@ -35,6 +49,7 @@
         "required": ["status"],
         "properties": {
           "status": {"enum": ["planned", "in_progress", "present", "verified", "failed", "blocked", "unknown"]},
+          "required": {"type": "boolean"},
           "path": {"type": "string"},
           "evidence": {"type": "array", "items": {"type": "string"}},
           "owner": {"type": "string"}
@@ -52,6 +67,7 @@
       }
     },
     "lastMeaningfulProgressAt": {"type": "string", "format": "date-time"},
-    "attempts": {"type": "object", "additionalProperties": {"type": "integer", "minimum": 0}}
+    "attempts": {"type": "object", "additionalProperties": {"type": "integer", "minimum": 0}},
+    "evidence": {"type": "array", "items": {"type": "object"}}
   }
 }
