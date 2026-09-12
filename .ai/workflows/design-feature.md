@@ -4,30 +4,41 @@
 
 `/design-feature "<task>"`
 
-## Phase 0 — Contract preflight
+## Host boundary — mandatory Step 12 behavior
 
-PM creates the run directory and `project.yaml` from `.ai/runs/_template/project.yaml`.
+The host/orchestrator must invoke `.ai/runtime/prepare_pm_context.py` before launching the Project Manager.
 
-PM then:
+```text
+prepare_pm_context
+    ↓
+contract_preflight PASS
+    ↓
+PM context + pinned state generated
+    ↓
+launch PM
+```
 
-1. reads `.ai/contracts/manifest.yaml`;
-2. reads the applicable files in `guidelines/contracts/`;
-3. records pinned versions/schema versions;
-4. determines applicability;
-5. runs the Change Impact Protocol;
-6. records `contract-preflight.md` and `impact-assessment.md`;
-7. validates delegation against the Agent Capability Matrix.
+If preflight exits non-zero, **the PM must not be launched**.
 
-Do not delegate substantive work until preflight is complete.
+The PM receives `.ai/runs/<run-id>/pm-context.md` and `.ai/runs/<run-id>/project.yaml` as initial run context, then reads the authoritative sources referenced there.
 
-## Phase 1 — PM planning
 ## Phase 0 — deterministic contract preflight
 
-PM creates `brief.md`, identifies relevant product truth, and creates bounded specialist tasks with objective, inputs, expected artifact, acceptance criteria, tools, and escalation condition.
 The runtime validates the manifest, mappings, contract presence, declared versions, and content hashes, then creates the run state and PM context bundle.
 
 It deliberately does **not** make semantic applicability or impact decisions.
 
+## Phase 1 — PM semantic planning
+
+The PM:
+
+1. resolves applicability;
+2. applies the Change Impact Protocol;
+3. identifies authoritative product/UX/engineering sources;
+4. derives required artifacts/evidence;
+5. validates delegation authority;
+6. records decisions in state;
+7. creates bounded specialist tasks.
 
 ## Phase 2 — specialist discovery
 
@@ -37,58 +48,36 @@ Run independent work in parallel where safe:
 - Visual Designer → `visual-direction.md`
 - product/constitution review → `product-review.md`
 
-Each specialist must consume the applicable contracts for its role.
-
 ## Phase 3 — synthesis
 
-Director consumes the specialist artifacts plus authoritative product/UX guidance and produces `design-plan.md`.
-
-PM verifies required design artifacts before implementation.
+Director consumes specialist artifacts plus authoritative product/UX guidance and produces `design-plan.md`.
 
 ## Phase 4 — implementation
 
-Implementation agent reads `AGENTS.md`, the design plan, applicable contracts, and repository patterns. It implements only the approved scope.
-
-Implementation produces `implementation-report.md`.
+Implementation reads `AGENTS.md`, the approved design plan, applicable contracts, and repository patterns. It implements only approved scope.
 
 ## Phase 5 — verification
 
-For UI work, verify the real running application with Playwright.
-
-Capture, as applicable:
-
-- browser interaction evidence;
-- accessibility evidence;
-- screenshots;
-- responsive evidence;
-- i18n evidence;
-- physical scan evidence;
-- compliance evidence.
-
-Do not claim verification from source inspection alone when the contract requires runtime evidence.
+For UI work, verify the real running application with Playwright and capture required evidence.
 
 ## Phase 6 — critique
 
-Critic evaluates against the Review Rubric, product truth, persona, design plan, implementation evidence, and browser evidence. Produce `critique.md`.
+Critic evaluates against the Review Rubric, product truth, persona, design plan, implementation evidence, and browser evidence.
 
 ## Phase 7 — completion gate
 
-PM evaluates `.ai/evaluations/completion-gate.md` against `guidelines/contracts/definition-of-done.yaml`.
-
-- failing P0/P1 or missing required evidence → bounded iteration or blocked;
-- unresolved authority decision → escalate;
-- all applicable gates pass → `READY_FOR_REVIEW`.
-
-Produce `final-review.yaml`.
+PM evaluates the authoritative Definition of Done plus `.ai/evaluations/completion-gate.md`.
 
 ## Phase 8 — human review
 
-Present:
+Human approval remains separate from agent readiness.
 
-- what changed;
-- why;
-- evidence;
-- uncertainty and risks;
-- proposed next action.
+## Contract drift
 
-Human approval is recorded separately from agent readiness.
+Before phase transitions that depend on contract integrity, the host should run:
+
+```text
+python .ai/runtime/verify_contract_pin.py --repo-root . --run-id <run-id>
+```
+
+If a contract changed, do not silently continue. Route through the Change Impact Protocol and Contract Versioning rules.
