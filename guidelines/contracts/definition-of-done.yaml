@@ -1,0 +1,176 @@
+schema_version: "1.0"
+
+contract:
+  id: definition-of-done
+  purpose: "Machine-readable completion contract for Almsby work."
+  principle: "A change is complete only when applicable implementation, verification, validation, review, and evidence requirements are satisfied."
+
+status_semantics:
+  implemented: "The declared implementation exists."
+  verified: "A specified technical or behavioral check passed."
+  validated: "Evidence supports the intended product/user outcome."
+  complete: "All applicable completion gates are satisfied."
+  blocked: "A required gate cannot proceed because of a known dependency."
+  unknown: "There is insufficient evidence to establish the result."
+
+requirements:
+
+  implementation:
+    category: implementation
+    applicability: always
+    gate: required
+    evidence:
+      - implementation_report
+      - scope_check
+    acceptance:
+      - "Implementation exists within declared scope."
+      - "No known unauthorized scope expansion exists."
+
+  automated_checks:
+    category: verification
+    applicability: always
+    gate: required
+    evidence:
+      - test_output
+      - lint_output
+      - typecheck_output
+      - build_output
+    acceptance:
+      - "All checks applicable to the changed surface pass."
+      - "Known flaky failures are investigated rather than ignored."
+
+  browser:
+    category: verification
+    applicability: "ui_or_public_experience"
+    gate: required
+    evidence:
+      - accessibility_snapshot
+      - interaction_record
+      - console_or_runtime_observation
+    acceptance:
+      - "Primary flow was exercised in a real browser."
+      - "Important states were inspected."
+      - "No blocking runtime/browser error was observed."
+
+  accessibility:
+    category: validation
+    applicability: "ui_or_public_experience"
+    gate: required
+    evidence:
+      - accessibility_snapshot
+      - keyboard_review
+      - human_accessibility_note
+    acceptance:
+      - "Semantic structure and names are appropriate."
+      - "Primary interaction is operable."
+      - "Important information is not communicated by color alone."
+      - "Known critical accessibility defects are resolved or explicitly blocked."
+
+  responsive:
+    category: validation
+    applicability: "ui_or_public_experience"
+    gate: required
+    evidence:
+      - viewport_results
+      - screenshots_when_useful
+    acceptance:
+      - "Supported representative viewport sizes were checked."
+      - "No critical clipping, overflow, or broken interaction hierarchy exists."
+
+  ux_product:
+    category: validation
+    applicability: "user_facing_change"
+    gate: required
+    evidence:
+      - ux_review
+      - constitution_check
+      - product_decision_check
+    acceptance:
+      - "The primary user outcome is preserved."
+      - "The next step is sufficiently obvious."
+      - "Complexity is handled appropriately."
+      - "User understanding and control are preserved."
+
+  visual:
+    category: validation
+    applicability: "visual_change"
+    gate: required
+    evidence:
+      - visual_review
+      - screenshots
+    acceptance:
+      - "Hierarchy and composition are intentional."
+      - "Design-system foundations are respected or justified."
+      - "Blocking visual defects are resolved."
+
+  physical_scan:
+    category: validation
+    applicability: "barcode_or_physical_output"
+    gate: required
+    evidence:
+      - physical_scan_record
+    acceptance:
+      - "The physical symbol scans reliably on tested hardware."
+      - "Decoded payload is correct."
+      - "Resolver/destination behavior is correct."
+
+  i18n:
+    category: validation
+    applicability: "localized_surface"
+    gate: required
+    evidence:
+      - locale_comparison
+      - translation_review_when_required
+    acceptance:
+      - "Supported locales retain the essential task."
+      - "Translation does not materially change product/compliance meaning."
+
+  compliance:
+    category: validation
+    applicability: "compliance_surface"
+    gate: required
+    evidence:
+      - compliance_review
+      - source_or_requirement_reference
+    acceptance:
+      - "Applicable hard requirements are satisfied."
+      - "No unsupported compliance claim is introduced."
+
+  risk_review:
+    category: review
+    applicability: always
+    gate: required
+    evidence:
+      - final_review
+    acceptance:
+      - "Known risks are recorded."
+      - "Unknowns and blocked gates are not represented as passes."
+      - "No unresolved critical risk remains."
+
+state_machine:
+  allowed:
+    - [planned, in_progress]
+    - [in_progress, review]
+    - [review, in_progress]
+    - [review, blocked]
+    - [review, complete]
+    - [blocked, in_progress]
+  forbidden:
+    - "Any transition to complete when an applicable required gate is not passed."
+    - "Any transition from unknown directly to passed without evidence."
+    - "Any agent-created approval where a human gate is required."
+
+completion_gate:
+  all_applicable_requirements_passed: true
+  no_unresolved_critical_risk: true
+  evidence_records_present: true
+  scope_check_passed: true
+  required_human_gates_satisfied: true
+
+shortcuts_forbidden:
+  - "Implementation existence is not completion."
+  - "A passing test cannot substitute for required physical evidence."
+  - "A screenshot cannot substitute for functional verification."
+  - "Visual polish cannot compensate for broken product behavior."
+  - "Unknown is never equivalent to passed."
+  - "Skipped requires an applicability reason."
