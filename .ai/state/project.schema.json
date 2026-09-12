@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Almsby AI Run State",
+  "type": "object",
+  "required": ["schemaVersion", "id", "objective", "status", "phase", "contracts", "tasks", "artifacts", "decisions"],
+  "properties": {
+    "schemaVersion": {"type": "string"},
+    "id": {"type": "string"},
+    "objective": {"type": "string"},
+    "status": {"enum": ["planning", "in_progress", "ready_for_review", "approved", "blocked", "cancelled"]},
+    "phase": {"enum": ["preflight", "planning", "designing", "implementing", "verifying", "critiquing", "recovering", "human_review"]},
+    "contracts": {
+      "type": "object",
+      "required": ["manifestVersion", "pinned", "applicability"],
+      "properties": {
+        "manifestVersion": {"type": "string"},
+        "pinned": {"type": "object", "additionalProperties": {"type": "string"}},
+        "applicability": {"type": "object", "additionalProperties": {"enum": ["required", "not_applicable", "unknown"]}}
+      }
+    },
+    "impact": {
+      "type": "object",
+      "properties": {
+        "level": {"enum": [0, 1, 2, 3]},
+        "rationale": {"type": "string"},
+        "changed_surfaces": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "tasks": {"type": "array", "items": {"type": "object"}},
+    "artifacts": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["status"],
+        "properties": {
+          "status": {"enum": ["planned", "in_progress", "present", "verified", "failed", "blocked", "unknown"]},
+          "path": {"type": "string"},
+          "evidence": {"type": "array", "items": {"type": "string"}},
+          "owner": {"type": "string"}
+        }
+      }
+    },
+    "decisions": {"type": "array", "items": {"type": "object"}},
+    "approval": {
+      "type": "object",
+      "properties": {
+        "required": {"type": "boolean"},
+        "status": {"enum": ["not_required", "pending", "approved", "rejected"]},
+        "approvedBy": {"type": "string"},
+        "approvedAt": {"type": "string", "format": "date-time"}
+      }
+    },
+    "lastMeaningfulProgressAt": {"type": "string", "format": "date-time"},
+    "attempts": {"type": "object", "additionalProperties": {"type": "integer", "minimum": 0}}
+  }
+}
