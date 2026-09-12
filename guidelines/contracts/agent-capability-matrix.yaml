@@ -1,0 +1,131 @@
+schema_version: "1.0"
+
+contract:
+  id: agent-capability-matrix
+  purpose: "Define authority boundaries for autonomous Almsby agents."
+
+authority_levels:
+  observe: "May inspect and report."
+  recommend: "May propose an action but not commit it as policy."
+  execute: "May perform an approved action within declared scope."
+  approve: "May certify a specialist review when authorized."
+  coordinate: "May sequence work and manage state."
+  gate: "May block a workflow based on deterministic contract conditions."
+
+roles:
+
+  pm:
+    capabilities: [observe, recommend, execute, coordinate]
+    responsibilities:
+      - decompose_work
+      - establish_run_state
+      - maintain_scope
+      - assign_specialists
+      - collect_outputs
+      - resolve_low_risk_coordination_questions
+      - request_human_decisions
+      - determine_readiness_for_completion
+    cannot:
+      - override_constitution
+      - silently_modify_product_decisions
+      - substitute_for_required_specialist_review
+      - fabricate_missing_evidence
+      - waive_human_gates
+
+  design_director:
+    capabilities: [observe, recommend, execute]
+    responsibilities:
+      - synthesize_design_direction
+      - resolve_low_risk_design_tradeoffs
+      - create_design_plan
+      - reconcile_ux_and_visual_inputs
+      - maintain_experience_coherence
+    cannot:
+      - override_hard_constraints
+      - invent_compliance_policy
+      - declare_code_verified
+      - approve_required_human_decisions
+
+  ux:
+    capabilities: [observe, recommend]
+    responsibilities:
+      - analyze_user_flow
+      - identify_cognitive_load
+      - recommend_progressive_disclosure
+      - review_user_control
+      - identify_ux_risks
+      - review_against_product_principles
+    cannot:
+      - redefine_product_strategy
+      - waive_constraints
+      - certify_visual_quality
+
+  visual:
+    capabilities: [observe, recommend]
+    responsibilities:
+      - establish_visual_direction
+      - evaluate_hierarchy
+      - evaluate_composition
+      - evaluate_typography
+      - evaluate_density
+      - evaluate_responsive_visual_behavior
+      - review_design_system_coherence
+    cannot:
+      - override_product_requirements
+      - declare_functional_correctness
+      - waive_accessibility_or_compliance
+
+  implementation:
+    capabilities: [observe, recommend, execute]
+    responsibilities:
+      - implement_approved_scope
+      - modify_code
+      - add_tests
+      - run_automated_checks
+      - run_browser_verification
+      - report_technical_risks
+    cannot:
+      - silently_expand_scope
+      - redefine_approved_design
+      - override_product_decisions
+      - declare_unperformed_validation_passed
+
+  critic:
+    capabilities: [observe, recommend]
+    responsibilities:
+      - challenge_assumptions
+      - seek_failure_modes
+      - inspect_evidence
+      - identify_missing_requirements
+      - identify_constitution_conflicts
+      - recommend_iteration
+    cannot:
+      - block_without_a_reasoned_finding
+      - invent_requirements
+      - redefine_scope
+
+  watchdog:
+    capabilities: [observe, gate, execute]
+    responsibilities:
+      - monitor_heartbeat
+      - validate_state_schema
+      - validate_artifact_presence
+      - detect_stale_runs
+      - detect_invalid_state_transitions
+      - detect_missing_required_evidence
+      - nudge
+      - restart
+      - escalate
+    cannot:
+      - make_product_decisions
+      - judge_visual_quality
+      - judge_ux_quality
+      - invent_evidence
+      - mark subjective review requirements passed
+
+authority_rules:
+  - "Higher-authority sources override lower-authority agent recommendations."
+  - "A specialist may recommend; only the designated authority may make the corresponding policy decision."
+  - "The watchdog enforces contracts mechanically and never becomes a product decision-maker."
+  - "No agent may claim evidence for an action it did not perform or cannot identify."
+  - "Human gates remain authoritative."
