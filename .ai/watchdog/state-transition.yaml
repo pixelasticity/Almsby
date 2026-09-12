@@ -1,0 +1,28 @@
+schema_version: "1.0"
+transitions:
+  planning: [in_progress, blocked, cancelled]
+  in_progress: [ready_for_review, blocked, cancelled]
+  ready_for_review: [approved, in_progress, blocked, cancelled]
+  approved: [cancelled]
+  blocked: [in_progress, cancelled]
+  cancelled: []
+
+phase_order:
+  - preflight
+  - planning
+  - designing
+  - implementing
+  - verifying
+  - critiquing
+  - recovering
+  - human_review
+
+phase_status_compatibility:
+  preflight: [planning, blocked, cancelled]
+  planning: [planning, in_progress, blocked, cancelled]
+  designing: [in_progress, blocked, cancelled]
+  implementing: [in_progress, blocked, cancelled]
+  verifying: [in_progress, blocked, cancelled]
+  critiquing: [in_progress, ready_for_review, blocked, cancelled]
+  recovering: [in_progress, blocked, cancelled]
+  human_review: [ready_for_review, approved, blocked, cancelled]
