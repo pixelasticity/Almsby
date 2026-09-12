@@ -31,3 +31,9 @@ applicability:
   i18n: unknown
   compliance: unknown
 evidence: []
+
+
+browserVerification:
+  requiredScenarios: []
+  status: not_required
+  lastValidationReport: null
