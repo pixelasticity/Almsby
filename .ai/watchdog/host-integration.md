@@ -62,3 +62,8 @@ On exit code `2`:
 - re-run the watchdog after correction.
 
 The watchdog never edits `project.yaml` to force recovery or completion.
+
+
+## Browser gate integration
+
+Before the watchdog can return a completion-ready result for a UI change, the host must run `.ai/browser/validate_browser_evidence.py` against the current run using the PM-declared required scenario IDs. The watchdog consumes the resulting report; it does not infer browser success from agent messages.
