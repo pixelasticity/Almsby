@@ -2,72 +2,272 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Almsby AI Run State",
   "type": "object",
-  "required": ["schemaVersion", "id", "objective", "status", "phase", "contracts", "tasks", "artifacts", "decisions"],
+  "required": [
+    "schemaVersion",
+    "id",
+    "objective",
+    "status",
+    "phase",
+    "contracts",
+    "tasks",
+    "artifacts",
+    "decisions"
+  ],
   "properties": {
-    "schemaVersion": {"type": "string"},
-    "createdAt": {"type": "string", "format": "date-time"},
-    "lastHeartbeatAt": {"type": "string", "format": "date-time"},
-    "lastMeaningfulProgressAt": {"type": "string", "format": "date-time"},
-    "id": {"type": "string"},
-    "objective": {"type": "string"},
-    "status": {"enum": ["planning", "in_progress", "ready_for_review", "approved", "blocked", "cancelled"]},
-    "phase": {"enum": ["preflight", "planning", "designing", "implementing", "verifying", "critiquing", "recovering", "human_review"]},
+    "schemaVersion": {
+      "type": "string"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "lastHeartbeatAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "lastMeaningfulProgressAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "id": {
+      "type": "string"
+    },
+    "objective": {
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "planning",
+        "in_progress",
+        "ready_for_review",
+        "approved",
+        "blocked",
+        "cancelled"
+      ]
+    },
+    "phase": {
+      "enum": [
+        "preflight",
+        "planning",
+        "designing",
+        "implementing",
+        "verifying",
+        "critiquing",
+        "recovering",
+        "human_review"
+      ]
+    },
     "contracts": {
       "type": "object",
-      "required": ["manifestVersion", "pinned", "applicability"],
+      "required": [
+        "manifestVersion",
+        "pinned",
+        "applicability"
+      ],
       "properties": {
-        "manifestVersion": {"type": "string"},
-        "pinned": {"type": "object", "additionalProperties": {"type": "string"}},
-        "applicability": {"type": "object", "additionalProperties": {"enum": ["required", "not_applicable", "unknown"]}},
-        "hashes": {"type": "object", "additionalProperties": {"type": "string", "pattern": "^[a-f0-9]{64}$"}}
+        "manifestVersion": {
+          "type": "string"
+        },
+        "pinned": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "applicability": {
+          "type": "object",
+          "additionalProperties": {
+            "enum": [
+              "required",
+              "not_applicable",
+              "unknown"
+            ]
+          }
+        },
+        "hashes": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        }
       }
     },
     "impact": {
       "type": "object",
       "properties": {
-        "level": {"enum": [0, 1, 2, 3]},
-        "rationale": {"type": "string"},
-        "changed_surfaces": {"type": "array", "items": {"type": "string"}}
+        "level": {
+          "enum": [
+            0,
+            1,
+            2,
+            3
+          ]
+        },
+        "rationale": {
+          "type": "string"
+        },
+        "changed_surfaces": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
       }
     },
-    "tasks": {"type": "array", "items": {"type": "object"}},
+    "tasks": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
     "applicability": {
       "type": "object",
       "properties": {
-        "ui_or_ux_changes": {"type": ["boolean", "string"]},
-        "code_changes": {"type": ["boolean", "string"]},
-        "physical_scan": {"type": ["boolean", "string"]},
-        "i18n": {"type": ["boolean", "string"]},
-        "compliance": {"type": ["boolean", "string"]}
+        "ui_or_ux_changes": {
+          "type": [
+            "boolean",
+            "string"
+          ]
+        },
+        "code_changes": {
+          "type": [
+            "boolean",
+            "string"
+          ]
+        },
+        "physical_scan": {
+          "type": [
+            "boolean",
+            "string"
+          ]
+        },
+        "i18n": {
+          "type": [
+            "boolean",
+            "string"
+          ]
+        },
+        "compliance": {
+          "type": [
+            "boolean",
+            "string"
+          ]
+        }
       },
-      "additionalProperties": {"type": ["boolean", "string"]}
+      "additionalProperties": {
+        "type": [
+          "boolean",
+          "string"
+        ]
+      }
     },
     "artifacts": {
       "type": "object",
       "additionalProperties": {
         "type": "object",
-        "required": ["status"],
+        "required": [
+          "status"
+        ],
         "properties": {
-          "status": {"enum": ["planned", "in_progress", "present", "verified", "failed", "blocked", "unknown"]},
-          "required": {"type": "boolean"},
-          "path": {"type": "string"},
-          "evidence": {"type": "array", "items": {"type": "string"}},
-          "owner": {"type": "string"}
+          "status": {
+            "enum": [
+              "planned",
+              "in_progress",
+              "present",
+              "verified",
+              "failed",
+              "blocked",
+              "unknown"
+            ]
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "path": {
+            "type": "string"
+          },
+          "evidence": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "owner": {
+            "type": "string"
+          }
         }
       }
     },
-    "decisions": {"type": "array", "items": {"type": "object"}},
+    "decisions": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
     "approval": {
       "type": "object",
       "properties": {
-        "required": {"type": "boolean"},
-        "status": {"enum": ["not_required", "pending", "approved", "rejected"]},
-        "approvedBy": {"type": "string"},
-        "approvedAt": {"type": "string", "format": "date-time"}
+        "required": {
+          "type": "boolean"
+        },
+        "status": {
+          "enum": [
+            "not_required",
+            "pending",
+            "approved",
+            "rejected"
+          ]
+        },
+        "approvedBy": {
+          "type": "string"
+        },
+        "approvedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
       }
     },
-    "lastMeaningfulProgressAt": {"type": "string", "format": "date-time"},
-    "attempts": {"type": "object", "additionalProperties": {"type": "integer", "minimum": 0}},
-    "evidence": {"type": "array", "items": {"type": "object"}}
+    "attempts": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "integer",
+        "minimum": 0
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "browserVerification": {
+      "type": "object",
+      "required": [
+        "requiredScenarios",
+        "status"
+      ],
+      "properties": {
+        "requiredScenarios": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "status": {
+          "enum": [
+            "not_required",
+            "pending",
+            "passed",
+            "blocked",
+            "unknown"
+          ]
+        },
+        "lastValidationReport": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
   }
 }
