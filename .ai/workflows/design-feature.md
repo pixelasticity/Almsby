@@ -6,7 +6,7 @@
 
 ## Host boundary — Step 12 + Step 13
 
-The host/orchestrator must invoke `.ai/runtime/prepare_pm_context.py` before launching the Project Manager.
+The host/orchestrator must invoke `.ai/runtime/prepare_pm_context.py` before launching the Project Manager and enforce both deterministic boundaries:
 
 ```text
 prepare_pm_context
