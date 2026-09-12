@@ -14,8 +14,13 @@ per `.ai/config/high-risk-paths.yaml` — editing one without the other is not
 3. Compliance-critical fields (country of origin, material composition, any
    DPP-required data) get flagged for human translation review, not shipped
    on an AI-drafted translation alone — see `AGENTS.md` rule #4 and
-   `guidelines/almsby-technical-architecture.md` §8 ("Dashboard vs. story-page
-   translation"). UI chrome strings don't need this extra step.
+   `guidelines/ux/localization.md` ("Dashboard vs. story-page translation").
+   UI chrome strings don't need this extra step.
+   Note: i18n guidance is currently duplicated across
+   `guidelines/engineering/technical-architecture.md` §8,
+   `guidelines/ux/localization.md`, and `guidelines/ux/design-system/i18n.md`
+   — flagged for dedup. Until that's resolved, `ux/localization.md` is the
+   most current version; treat the others as possibly stale.
 4. Run `npm run lint:i18n` (wraps `scripts/lint-i18n.mjs`) — it fails on any
    key present in one locale and missing in the other. This must pass before
    the task is done, not just before commit.
