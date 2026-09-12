@@ -1,0 +1,26 @@
+# Model assignment is intentionally model-agnostic.
+# Ollama is a runtime, not a model identity.
+# Physical concurrency should be controlled by the local scheduler.
+
+runtime:
+  provider: ollama
+  max_gpu_resident_models: 1
+  allow_cpu_offload: true
+
+roles:
+  project_manager:
+    model: "<local-model>"
+  director:
+    model: "<local-model>"
+  ux_designer:
+    model: "<local-model>"
+  visual_designer:
+    model: "<local-model>"
+  implementation:
+    model: "<local-model>"
+  critic:
+    model: "<local-model>"
+
+notes:
+  - "Choose models by measured task performance, not by role name or vendor preference."
+  - "Do not assume all specialists can run concurrently on a 12 GB VRAM GPU."
