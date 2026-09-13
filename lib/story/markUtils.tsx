@@ -2,9 +2,10 @@ import type { CSSProperties, ReactNode } from "react";
 
 /**
  * Shared mark configuration for the Story Studio editor.
- * Centralizes the 4 mark types (bold, italic, strike, link) so they can be
- * reused across the editor, preview, and any future places that need mark formatting.
- * Kept as a .tsx because the renderers return JSX nodes.
+ * Centralizes the pure-toggle mark types (bold, italic, strike) so they can be
+ * reused across the toolbar and any future places that need mark formatting.
+ * Links are handled by LinkButton (inline input), not a toolbar action map.
+ * Kept as a .tsx because the renderMark helpers return JSX nodes.
  */
 
 export type MarkAction = {
@@ -27,10 +28,6 @@ export const markActions: Record<string, MarkAction> = {
   strike: {
     label: "S",
     style: { textDecoration: "line-through" },
-  },
-  link: {
-    label: "Link",
-    style: {},
   },
 };
 

@@ -3,7 +3,6 @@
 .editor {
   border: 1px solid var(--border);
   border-radius: 0.5rem;
-  overflow: hidden;
   background: var(--card);
 }
 
@@ -13,6 +12,7 @@
   padding: 0.5rem;
   border-bottom: 1px solid var(--border);
   background: var(--primary-100);
+  border-radius: 0.5rem 0.5rem 0 0;
 }
 
 .toolbarSelect {
@@ -40,6 +40,57 @@
   margin: 0 0.5rem;
 }
 
+/* LinkButton — inline URL input that opens below the toolbar when active.
+   Matches the editor card + border tokens; positioned so the dropdown flow
+   doesn't overlap the content below. */
+.linkControl {
+  position: relative;
+}
+
+.linkForm {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 10;
+  margin-top: 0.5rem;
+  min-width: 300px;
+  padding: 0.625rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.linkInput {
+  padding: 0.375rem 0.625rem;
+  border: 1px solid var(--border);
+  border-radius: 0.375rem;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: inherit;
+  font-size: 0.875rem;
+  outline: none;
+}
+
+.linkInput:focus {
+  border-color: var(--primary-500);
+  box-shadow: 0 0 0 2px var(--primary-100);
+}
+
+.linkError {
+  font-size: 0.75rem;
+  color: var(--danger-700);
+}
+
+.linkActions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
 .toolbarSelect:focus {
   outline: none;
   border-color: var(--primary-500);
@@ -51,6 +102,8 @@
   min-height: 200px;
   font-family: var(--font-body);
   color: var(--foreground);
+  /* Bottom radius to match the removed overflow:hidden on .editor. */
+  border-radius: 0 0 0.5rem 0.5rem;
 }
 
 /* TipTap's editable area — remove the default outline, style the cursor ring. */

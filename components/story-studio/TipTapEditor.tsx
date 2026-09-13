@@ -7,6 +7,7 @@ import Placeholder from "@tiptap/extension-placeholder";
 import type { Level } from "@tiptap/extension-heading";
 import { useEffect } from "react";
 import FormatButton from "./FormatButton";
+import LinkButton from "./LinkButton";
 import styles from "./tiptap-editor.module.css";
 
 type TipTapEditorProps = {
@@ -115,7 +116,7 @@ export default function TipTapEditor({ content, onChange, ariaLabelledBy }: TipT
         <FormatButton editor={editor} markType="bold" />
         <FormatButton editor={editor} markType="italic" />
         <FormatButton editor={editor} markType="strike" />
-        <FormatButton editor={editor} markType="link" />
+        <LinkButton editor={editor} />
       </div>
 
       <div className={styles.content}>

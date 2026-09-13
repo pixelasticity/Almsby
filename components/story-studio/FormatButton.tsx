@@ -12,6 +12,8 @@ export default function FormatButton({ editor, markType, label }: FormatButtonPr
   const { style } = markActions[markType];
   const isActive = editor.isActive(markType);
   const handleClick = () => {
+    // Link is handled by LinkButton (inline input + edit/remove); only the
+    // pure toggles (bold/italic/strike) route through here.
     switch (markType) {
       case "bold":
         editor.chain().focus().toggleBold().run();
@@ -22,11 +24,6 @@ export default function FormatButton({ editor, markType, label }: FormatButtonPr
       case "strike":
         editor.chain().focus().toggleStrike().run();
         break;
-      case "link": {
-        const url = window.prompt("Link URL:");
-        if (url) editor.chain().focus().setLink({ href: url }).run();
-        break;
-      }
       default:
         break;
     }
