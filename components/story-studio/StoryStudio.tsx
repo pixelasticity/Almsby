@@ -59,6 +59,19 @@ export default function StoryStudio({ product }: { product: StudioProduct }) {
     return () => clearTimeout(timer);
   }, [saveStatus]);
 
+  // Warn before navigating away / closing with unsaved changes (browser's native
+  // prompt). Hidden from JS when consumed (e.g. a form submit we control) by the
+  // browser heuristics; kept lean and torn down on save/unmount.
+  useEffect(() => {
+    if (!hasUnsavedChanges) return;
+    const warn = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = "";
+    };
+    window.addEventListener("beforeunload", warn);
+    return () => window.removeEventListener("beforeunload", warn);
+  }, [hasUnsavedChanges]);
+
   const handleSave = () => {
     if (isSaving) return;
     setError(null);

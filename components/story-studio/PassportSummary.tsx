@@ -19,7 +19,15 @@ export default function PassportSummary({ product }: { product: PassportProduct 
         <PassportItem label="GTIN-14" value={product.gtin?.gtinValue || "—"} />
         <PassportItem label="Origin" value={product.countryOfOrigin || "Not set"} />
         <PassportItem label="Material" value={product.materialComposition || "Not set"} />
-        <PassportItem label="Recyclable" value={product.recyclable ? "Yes" : "No"} />
+        {/* recyclable is nullable (Boolean?): "not yet specified" (null) must
+            not be conflated with an explicit "No". Dash until the maker states
+            it — compliance-field accuracy matters. */}
+        <PassportItem
+          label="Recyclable"
+          value={product.recyclable === null || product.recyclable === undefined
+            ? "—"
+            : product.recyclable ? "Yes" : "No"}
+        />
       </div>
     </div>
   );
