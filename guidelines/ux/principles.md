@@ -1,20 +1,17 @@
 ---
-
 id: ux-principles
 type: ux_guideline
 authority: ux
 status: active
 audience:
-
-* product
-* design
-* engineering
-* all_agents
-  derived_from:
-* product-constitution
-  review:
+  - product
+  - design
+  - engineering
+  - all_agents
+derived_from:
+  - product-constitution
+review:
   required: true
-
 ---
 
 # Almsby UX Principles
