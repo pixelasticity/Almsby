@@ -31,6 +31,15 @@
   cursor: pointer;
 }
 
+.toolbarDivider {
+  /* Visual grouping: separates the paragraph-style dropdown from the mark
+     buttons (B/I/S/Link). Decorative, so hidden from assistive tech. */
+  width: 1px;
+  align-self: stretch;
+  background: var(--border);
+  margin: 0 0.5rem;
+}
+
 .toolbarSelect:focus {
   outline: none;
   border-color: var(--primary-500);

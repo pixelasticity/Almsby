@@ -110,6 +110,8 @@ export default function TipTapEditor({ content, onChange, ariaLabelledBy }: TipT
           <option value="6">H6</option>
         </select>
 
+        <span className={styles.toolbarDivider} aria-hidden="true" />
+
         <FormatButton editor={editor} markType="bold" />
         <FormatButton editor={editor} markType="italic" />
         <FormatButton editor={editor} markType="strike" />

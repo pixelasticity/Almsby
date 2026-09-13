@@ -2,10 +2,12 @@
 
 import React, { useEffect, useState, useTransition } from "react";
 import Button from "@/components/ui/Button";
+import Link from "next/link";
 import TipTapEditor from "./TipTapEditor";
 import EditorErrorBoundary from "./EditorErrorBoundary";
 import MobilePreview from "./MobilePreview";
 import PassportSummary from "./PassportSummary";
+import { toGtin14 } from "@/lib/gs1/gtin";
 import { saveStoryAction, publishStoryAction } from "@/app/(dashboard)/products/[id]/studio/actions";
 import styles from "./story-studio.module.css";
 
@@ -41,6 +43,14 @@ export default function StoryStudio({ product }: { product: StudioProduct }) {
   // Dirty = current editor content differs from what's been persisted.
   const hasUnsavedChanges =
     JSON.stringify(content) !== JSON.stringify(savedContent);
+
+  // The public story page is served at `/s/{gtin14}` (see app/(public)/s/[gtin])
+  // — the same path the resolver redirects a scanned barcode to. Relative link,
+  // domain-agnostic: works on whatever host this dashboard is served from.
+  const liveUrl =
+    isPublished && product.gtin?.gtinValue
+      ? `/s/${toGtin14(product.gtin.gtinValue) ?? product.gtin.gtinValue}`
+      : null;
 
   // Auto-clear the "Saved" confirmation after a moment so it never lingers stale.
   useEffect(() => {
@@ -185,6 +195,11 @@ export default function StoryStudio({ product }: { product: StudioProduct }) {
           style={{ display: activeTab === "edit" ? "none" : "block" }}
         >
           <div className={styles.previewInner}>
+            {liveUrl && (
+              <Link href={liveUrl} target="_blank" rel="noopener noreferrer" className={styles.viewLive}>
+                View live story ↗
+              </Link>
+            )}
             <MobilePreview content={content} isPublished={isPublished} />
           </div>
         </div>
