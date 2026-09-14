@@ -311,7 +311,7 @@
 }
 
 .passportItemLabel {
-  font-size: 0.625rem;
+  font-size: 0.875rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.075em;
@@ -319,7 +319,7 @@
 }
 
 .passportItemValue {
-  font-size: 0.875rem;
+  font-size: 1rem;
   font-weight: 600;
   color: var(--foreground);
 }
