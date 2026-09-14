@@ -77,7 +77,16 @@ export default function StoryStudio({ product }: { product: StudioProduct }) {
     setError(null);
     setSaveStatus("idle");
     startSaving(async () => {
-      const result = await saveStoryAction(product.id, content);
+      // Deep-clone to plain JSON before the Server Action. TipTap docs with
+      // headings nest deeper (doc → content[i] → attrs → level) and trip React
+      // 19's Server Action serializer, which flags nested objects as "temporary
+      // client references" and throws "Cannot access toStringTag on the server."
+      // Re-parsing strips the markers — null stays null, valid docs round-trip.
+      const plainContent =
+        content == null
+          ? null
+          : (JSON.parse(JSON.stringify(content)) as Record<string, unknown> | null);
+      const result = await saveStoryAction(product.id, plainContent);
       if (result?.error) {
         setError(result.error);
         return;
