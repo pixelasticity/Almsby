@@ -35,7 +35,7 @@ export default function PassportSummary({ product }: { product: PassportProduct 
 
 function PassportItem({ label, value }: { label: string; value: string }) {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+    <div className={styles.passportItem}>
       <span className={styles.passportItemLabel}>{label}</span>
       <span className={styles.passportItemValue}>{value}</span>
     </div>

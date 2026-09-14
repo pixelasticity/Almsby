@@ -95,8 +95,12 @@
 
 .sectionTitle {
   font-size: 0.75rem;
-  font-weight: 700;
+  font-weight: 600;
   text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--neutral-700);
+}
+
 /* BlockComposer */
 .composer {
   display: flex;
@@ -307,17 +311,23 @@
 }
 
 .passportItemLabel {
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-size: 0.625rem;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--neutral-700);
+  letter-spacing: 0.075em;
+  color: var(--neutral-600);
 }
 
 .passportItemValue {
   font-size: 0.875rem;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--foreground);
+}
+
+.passportItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
 
@@ -409,11 +419,6 @@
   justify-content: center;
   gap: 0.75rem;
   padding-top: 1rem;
-}
-
-  letter-spacing: 0.05em;
-  color: var(--neutral-500);
-  margin-bottom: 1rem;
 }
 
 .previewPanel {
