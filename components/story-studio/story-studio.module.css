@@ -308,8 +308,7 @@
 .passportGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap-y: 1rem;
-  gap-x: 2rem;
+  gap: 1rem 2rem;
 }
 
 .passportItemLabel {
