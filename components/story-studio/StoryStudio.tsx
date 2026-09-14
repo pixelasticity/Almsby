@@ -9,6 +9,7 @@ import MobilePreview from "./MobilePreview";
 import PassportSummary from "./PassportSummary";
 import { toGtin14 } from "@/lib/gs1/gtin";
 import { saveStoryAction, publishStoryAction } from "@/app/(dashboard)/products/[id]/studio/actions";
+import { toPlainJson } from "@/lib/story/plainJson";
 import styles from "./story-studio.module.css";
 
 type StudioProduct = {
@@ -77,16 +78,11 @@ export default function StoryStudio({ product }: { product: StudioProduct }) {
     setError(null);
     setSaveStatus("idle");
     startSaving(async () => {
-      // Deep-clone to plain JSON before the Server Action. TipTap docs with
-      // headings nest deeper (doc → content[i] → attrs → level) and trip React
-      // 19's Server Action serializer, which flags nested objects as "temporary
-      // client references" and throws "Cannot access toStringTag on the server."
-      // Re-parsing strips the markers — null stays null, valid docs round-trip.
-      const plainContent =
-        content == null
-          ? null
-          : (JSON.parse(JSON.stringify(content)) as Record<string, unknown> | null);
-      const result = await saveStoryAction(product.id, plainContent);
+      // Deep-clone to plain JSON before the Server Action. React 19's Server
+      // Action serializer flags deeply nested TipTap docs (headings) as
+      // "temporary client references" and throws "Cannot access toStringTag on
+      // the server" server-side. toPlainJson strips the markers (see lib).
+      const result = await saveStoryAction(product.id, toPlainJson(content));
       if (result?.error) {
         setError(result.error);
         return;
@@ -110,7 +106,8 @@ export default function StoryStudio({ product }: { product: StudioProduct }) {
     setError(null);
     startPublishing(async () => {
       const published = !isPublished;
-      const result = await publishStoryAction(product.id, content, published);
+      // Same marker-stripping as handleSave — publish also persists content.
+      const result = await publishStoryAction(product.id, toPlainJson(content), published);
       if (result?.error) {
         setError(result.error);
       } else {
