@@ -206,16 +206,13 @@ export default function StoryStudio({ product }: { product: StudioProduct }) {
                       </div>
         </div>
 
-        {/* Passport data — shown alongside the editor on wide screens,
+                {/* Passport data — shown alongside the editor on wide screens,
             full-width below the editor on mobile. Shares the edit tab's visibility. */}
         <div
           className={styles.passportPanel}
           style={{ display: activeTab === "preview" ? "none" : "block" }}
         >
-          <section style={{ paddingBottom: "2rem", borderBottom: "1px solid var(--border)" }}>
-            <h2 className={styles.sectionTitle}>Product Passport Data</h2>
-            <PassportSummary product={product} />
-          </section>
+          <PassportSummary product={product} />
         </div>
 
         <div

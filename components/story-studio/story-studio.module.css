@@ -307,11 +307,11 @@
 }
 
 .passportItemLabel {
-  font-size: 10px;
-  font-weight: 700;
+  font-size: 0.75rem;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--neutral-500);
+  color: var(--neutral-700);
 }
 
 .passportItemValue {
