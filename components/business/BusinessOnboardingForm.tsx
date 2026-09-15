@@ -82,7 +82,7 @@ export default function BusinessOnboardingForm() {
         <select
           id="industryCategory"
           name="industryCategory"
-          className={styles.input}
+          className={styles.select}
           value={values.industryCategory}
           onChange={(e) => set("industryCategory", e.target.value)}
         >
@@ -110,7 +110,7 @@ export default function BusinessOnboardingForm() {
             <select
               id="operatingCountry"
               name="operatingCountry"
-              className={styles.input}
+              className={styles.select}
               value={values.operatingCountry}
               onChange={(e) => set("operatingCountry", e.target.value)}
             >
@@ -132,7 +132,7 @@ export default function BusinessOnboardingForm() {
             <select
               id="currency"
               name="currency"
-              className={styles.input}
+              className={styles.select}
               value={values.currency}
               onChange={(e) => set("currency", e.target.value)}
             >

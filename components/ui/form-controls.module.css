@@ -43,9 +43,26 @@
   resize: vertical;
 }
 
-/* Keep the native select affordance (arrow) — just frame it like the rest. */
+/* Keep the native select semantics (keyboard/AT behavior), but strip the
+   native widget so the frame matches inputs, and draw our own chevron.
+   Forced-colors mode restores the native widget — the SVG chevron doesn't
+   survive system contrast themes. */
 .select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%23b5aba7' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  padding-right: 2.25rem;
   cursor: pointer;
+}
+
+@media (forced-colors: active) {
+  .select {
+    appearance: auto;
+    -webkit-appearance: auto;
+    background-image: none;
+  }
 }
 
 .input:hover:not(:focus):not(:disabled),

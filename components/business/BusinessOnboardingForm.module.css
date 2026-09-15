@@ -59,16 +59,10 @@
   font-weight: 700;
 }
 .input {
-  padding: 10px 12px;
-  border: 1px solid var(--neutral-300);
-  border-radius: 10px;
-  background: #fff;
-  font: inherit;
-  font-size: 14px;
+  composes: input from "../ui/form-controls.module.css";
 }
-.input:focus {
-  outline: 2px solid var(--blue-300);
-  border-color: var(--blue-400);
+.select {
+  composes: select from "../ui/form-controls.module.css";
 }
 .helper {
   composes: helper from "../ui/form-controls.module.css";

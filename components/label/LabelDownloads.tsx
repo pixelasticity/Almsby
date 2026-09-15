@@ -62,6 +62,7 @@ export default function LabelDownloads({
         </label>
         <select
           id="x-dim-preset"
+          className={styles.presetSelect}
           value={presetId}
           onChange={(e) => setPresetId(e.target.value)}
           disabled={!enabled}

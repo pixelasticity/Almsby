@@ -21,6 +21,11 @@
 .presetLabel {
   font-weight: 600;
 }
+/* Shared select frame; auto width since it sits in a flex row. */
+.presetSelect {
+  composes: select from "../ui/form-controls.module.css";
+  width: auto;
+}
 .presetNote {
   font-size: 12px;
   color: var(--neutral-500);
