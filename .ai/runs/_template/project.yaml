@@ -1,37 +1,40 @@
-schemaVersion: "1.0"
+schemaVersion: "1.2"
 id: "<run-id>"
 objective: "<task objective>"
 status: planning
 phase: preflight
+createdAt: "<created-at>"
+lastHeartbeatAt: "<last-heartbeat-at>"
+lastMeaningfulProgressAt: "<last-progress-at>"
+
 contracts:
   manifestVersion: "1.0"
   pinned: {}
+  hashes: {}
   applicability: {}
+
 impact:
   level: null
   rationale: ""
   changed_surfaces: []
-tasks: []
-artifacts: {}
-decisions: []
-approval:
-  required: true
-  status: pending
-lastMeaningfulProgressAt: null
-attempts: {}
 
-# Step 13 watchdog fields
-createdAt: ""
-lastHeartbeatAt: ""
-lastMeaningfulProgressAt: ""
 applicability:
   ui_or_ux_changes: unknown
   code_changes: unknown
   physical_scan: unknown
   i18n: unknown
   compliance: unknown
+
+tasks: []
+artifacts: {}
+decisions: []
 evidence: []
 
+approval:
+  required: true
+  status: pending
+
+attempts: {}
 
 browserVerification:
   requiredScenarios: []
