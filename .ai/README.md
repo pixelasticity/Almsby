@@ -1,39 +1,85 @@
-# `.ai/` — agent-operational tooling
+# `.ai/` — agent-operational system
 
-This folder holds things an AI agent *does* while working in this repo.
-It is not a spec source — that's `/guidelines/`. It is not the behavioral
-contract — that's `/AGENTS.md`. If you're unsure where something belongs:
+`.ai/` is Almsby's execution and enforcement layer. It tells agents and host
+automation **how work is run and verified**; it is not a second product
+specification.
 
-| Question | Lives in |
+## Source-of-truth boundaries
+
+| Question | Source |
 |---|---|
-| "What are we building, and why?" | `/guidelines/` (has its own authority hierarchy — see `guidelines/README.md`) |
-| "How must an agent behave in this repo?" | `/AGENTS.md` |
-| "What's the step-by-step for a recurring task?" | `.ai/workflows/` |
-| "How do we test that an agent actually follows the rules above?" | `.ai/evaluations/` |
-| "What's machine-readable enough for tooling to enforce automatically?" | `.ai/config/` |
+| What are we building and why? | `/guidelines/` |
+| What are the product decisions and domain truths? | `/guidelines/product/` |
+| What are the authoritative execution contracts? | `/guidelines/contracts/` |
+| How must an agent behave in this repository? | `/AGENTS.md` |
+| How is a run orchestrated? | `.ai/workflows/` |
+| What roles may do what? | `.ai/agents/` + authoritative capability matrix |
+| What is machine-enforced? | `.ai/config/`, `.ai/runtime/`, `.ai/watchdog/`, `.ai/browser/` |
+| What evidence/review gates apply? | `.ai/evaluations/` + authoritative DoD |
+| What happened during one run? | `.ai/runs/<run-id>/` |
 
-## What's deliberately *not* here
+If `.ai/` conflicts with `/AGENTS.md` or an authoritative `/guidelines/`
+document, the higher-authority source wins. `.ai/` must not silently invent
+product policy.
 
-`agents/`, `runs/`, and `state/` were considered and left out on purpose:
+## Directory responsibilities
 
-- **`agents/`** — this repo is worked by one general-purpose coding agent, not
-  several distinct personas. A persona-file folder would be ceremony with no
-  payoff right now. Revisit only if that changes (e.g. a dedicated
-  compliance-auditor agent gets introduced).
-- **`runs/`** — agent execution logs are ephemeral and can get large. Committing
-  them to git puts prompt/output history in permanent blame history in a
-  *compliance-critical* codebase — exactly where that's least desirable. If an
-  audit trail is ever needed, it belongs in CI artifacts or an external log
-  store, not version control.
-- **`state/`** — cross-session tracking should stay deliberate and minimal, in
-  the style of `guidelines/phase1-dod-status.md` — a single owned file someone
-  updates on purpose, not an open folder agents write into freely.
+- `agents/` — role instructions for the PM, design, implementation, and
+  critique agents. These are operational role boundaries, not product personas.
+- `browser/` — provider-neutral browser evidence contract, scenario catalog,
+  Playwright adapter guidance, and deterministic evidence validation.
+- `config/` — machine-readable execution configuration and high-risk path
+  declarations.
+- `contracts/` — execution-layer wiring and consumption contracts. The actual
+  authoritative contract definitions remain in `/guidelines/contracts/`.
+- `evaluations/` — deterministic completion/high-risk evaluation gates.
+- `runtime/` — startup/preflight and host integration utilities.
+- `runs/` — ephemeral per-run state, artifacts, evidence, and reports. Do not
+  commit generated run data.
+- `state/` — machine-readable schema for run state; the schema itself is
+  versioned source-controlled infrastructure.
+- `watchdog/` — deterministic run/state/evidence integrity enforcement.
+- `workflows/` — repeatable orchestration workflows.
 
-If a real need for any of these shows up, add the specific file that need
-requires — not the folder speculatively.
+## Core operating principle
 
-## Source-of-truth precedence
+> **Agents reason about meaning. Deterministic infrastructure verifies facts.**
 
-If anything in `.ai/` ever conflicts with `AGENTS.md` or `/guidelines/`, those
-two win. Files here should always point back to the source doc rather than
-restate it, so there's exactly one place each rule actually lives.
+The PM may decide applicability, impact, delegation, and recovery actions.
+The watchdog and browser validators verify only claims that can be established
+from machine-observable state/evidence.
+
+## Run data and repository hygiene
+
+Generated run directories under `.ai/runs/` are execution data, not source
+code. They should remain local/CI artifacts unless a specific audit policy
+requires retention. `.ai/runs/_template/` is intentionally committed.
+
+Do not commit Python `__pycache__`, `.pyc`, macOS metadata, browser screenshots,
+or generated watchdog reports as part of the `.ai/` source package.
+
+## Enforcement chain
+
+```text
+authoritative guidelines
+        ↓
+contract preflight + pins
+        ↓
+PM semantic planning
+        ↓
+specialist work / implementation
+        ↓
+browser + other verification evidence
+        ↓
+deterministic validators
+        ↓
+watchdog
+        ↓
+completion gate
+        ↓
+human approval
+```
+
+No deterministic preflight → no PM launch.
+No required evidence → no readiness claim.
+No human approval is synthesized by agents.
