@@ -138,5 +138,66 @@ class WatchdogTests(unittest.TestCase):
         self.assertIn('contract drift detected', p.stdout)
 
 
+    def test_ui_completion_requires_passing_browser_validation(self):
+        import yaml
+        state = yaml.safe_load((self.run / 'project.yaml').read_text())
+        state['applicability']['ui_or_ux_changes'] = True
+        state['applicability']['code_changes'] = True
+        state['browserVerification'] = {
+            'requiredScenarios': ['render'],
+            'status': 'pending',
+            'lastValidationReport': None,
+        }
+        # Add the baseline UI artifacts expected by the authoritative artifact map.
+        for name in ['ux-brief.md', 'visual-direction.md', 'design-plan.md', 'implementation-report.md', 'browser-evidence', 'browser-validation-report.json']:
+            path = self.run / name
+            if name == 'browser-evidence':
+                path.mkdir()
+            else:
+                path.write_text('# fixture\n', encoding='utf-8')
+            state['artifacts'][name] = {'required': True, 'status': 'present', 'path': name}
+        state['artifacts']['project.yaml'] = {'required': True, 'status': 'present', 'path': 'project.yaml'}
+        (self.run / 'project.yaml').write_text(yaml.safe_dump(state, sort_keys=False), encoding='utf-8')
+        subprocess.run(['python', str(WATCHDOG), 'init', '--repo-root', str(self.tmp), '--run-id', 'test-run'], capture_output=True)
+        p = self.run_watchdog()
+        self.assertEqual(p.returncode, 2)
+        self.assertIn('browser.validation', p.stdout)
+
+    def test_ui_completion_accepts_passing_browser_validation(self):
+        import yaml
+        state = yaml.safe_load((self.run / 'project.yaml').read_text())
+        state['applicability']['ui_or_ux_changes'] = True
+        state['applicability']['code_changes'] = True
+        state['browserVerification'] = {
+            'requiredScenarios': ['render'],
+            'status': 'passed',
+            'lastValidationReport': 'browser-validation-report.json',
+        }
+        for name in ['ux-brief.md', 'visual-direction.md', 'design-plan.md', 'implementation-report.md']:
+            (self.run / name).write_text('# fixture\n', encoding='utf-8')
+            state['artifacts'][name] = {'required': True, 'status': 'present', 'path': name}
+        browser_dir = self.run / 'browser-evidence'
+        browser_dir.mkdir()
+        (browser_dir / 'render.json').write_text('{}', encoding='utf-8')
+        state['artifacts']['browser-evidence'] = {'required': True, 'status': 'present', 'path': 'browser-evidence'}
+        state['artifacts']['browser-validation-report.json'] = {'required': True, 'status': 'verified', 'path': 'browser-validation-report.json', 'evidence': ['browser-validation']}
+        report = {
+            'schema_version': '1.0', 'run_id': 'test-run', 'status': 'PASS',
+            'required_scenarios': ['render'], 'scenarios': [{'id': 'render', 'status': 'passed'}],
+            'errors': [], 'warnings': []
+        }
+        (self.run / 'browser-validation-report.json').write_text(json.dumps(report), encoding='utf-8')
+        state['evidence'].append({
+            'id': 'browser-validation', 'kind': 'browser', 'status': 'passed',
+            'createdAt': utc_now(), 'producer': 'host', 'method': 'deterministic browser validator',
+            'result': 'PASS', 'requirement': 'browser completion gate', 'path': 'browser-validation-report.json'
+        })
+        state['artifacts']['project.yaml'] = {'required': True, 'status': 'present', 'path': 'project.yaml'}
+        (self.run / 'project.yaml').write_text(yaml.safe_dump(state, sort_keys=False), encoding='utf-8')
+        subprocess.run(['python', str(WATCHDOG), 'init', '--repo-root', str(self.tmp), '--run-id', 'test-run'], capture_output=True)
+        p = self.run_watchdog()
+        self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
+        self.assertIn('WATCHDOG_RESULT=PASS', p.stdout)
+
 if __name__ == '__main__':
     unittest.main(verbosity=2)
