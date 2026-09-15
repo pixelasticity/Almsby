@@ -192,7 +192,10 @@
     "placeholder": "Phase 0 placeholder. Full story-page rendering lands in Phase 2. Requested GTIN: {gtin}.",
     "edit": "Edit story",
     "statusDraft": "Draft — not visible to shoppers yet",
-    "statusPublished": "Published"
+    "statusPublished": "Published",
+    "headlineLabel": "Headline",
+    "headlinePlaceholder": "Give your story a title…",
+    "headlineHelper": "Shows at the top of your public story page."
   },
   "business": {
     "creation": {

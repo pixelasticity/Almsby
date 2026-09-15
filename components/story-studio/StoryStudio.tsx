@@ -1,7 +1,9 @@
 "use client";
 
 import React, { useEffect, useState, useTransition } from "react";
+import { useTranslations } from "next-intl";
 import Button from "@/components/ui/Button";
+import FormField from "@/components/ui/FormField";
 import Link from "next/link";
 import TipTapEditor from "./TipTapEditor";
 import EditorErrorBoundary from "./EditorErrorBoundary";
@@ -10,6 +12,7 @@ import PassportSummary from "./PassportSummary";
 import { toGtin14 } from "@/lib/gs1/gtin";
 import { saveStoryAction, publishStoryAction } from "@/app/(dashboard)/products/[id]/studio/actions";
 import { toPlainJson } from "@/lib/story/plainJson";
+import { optionalInput } from "@/lib/input";
 import styles from "./story-studio.module.css";
 
 type StudioProduct = {
@@ -19,14 +22,24 @@ type StudioProduct = {
   countryOfOrigin?: string | null;
   materialComposition?: string | null;
   recyclable?: boolean | null;
-  storyPage?: { id: string; published: boolean; bodyContent: unknown } | null;
+  storyPage?: {
+    id: string;
+    published: boolean;
+    bodyContent: unknown;
+    headline: string | null;
+  } | null;
 };
 
 export default function StoryStudio({ product }: { product: StudioProduct }) {
+  const t = useTranslations("story");
   // TipTap JSON content — stored directly in StoryPage.bodyContent.
   const [content, setContent] = useState<Record<string, unknown> | null>(
     (product.storyPage?.bodyContent as Record<string, unknown>) ?? null
   );
+  // Headline — a dedicated StoryPage column, edited OUTSIDE the Tiptap doc so
+  // the bounded rich-text schema (paragraph/heading/bold/italic/strike/link
+  // only) stays intact per the Phase 2 brief.
+  const [headline, setHeadline] = useState(product.storyPage?.headline ?? "");
   const [isPublished, setIsPublished] = useState(product.storyPage?.published ?? false);
   const [activeTab, setActiveTab] = useState<"edit" | "preview">("edit");
   const [error, setError] = useState<string | null>(null);
@@ -38,12 +51,14 @@ export default function StoryStudio({ product }: { product: StudioProduct }) {
 
   // Snapshot of the last successfully-persisted content, used for dirty tracking.
   const [savedContent, setSavedContent] = useState<Record<string, unknown> | null>(content);
+  const [savedHeadline, setSavedHeadline] = useState(product.storyPage?.headline ?? "");
   // "idle" (nothing to report) | "saved" (brief confirmation) — errors go to the banner.
   const [saveStatus, setSaveStatus] = useState<"idle" | "saved">("idle");
 
-  // Dirty = current editor content differs from what's been persisted.
+  // Dirty = current editor content OR headline differs from what's been persisted.
   const hasUnsavedChanges =
-    JSON.stringify(content) !== JSON.stringify(savedContent);
+    JSON.stringify(content) !== JSON.stringify(savedContent) ||
+    headline !== savedHeadline;
 
   // The public story page is served at `/s/{gtin14}` (see app/(public)/s/[gtin])
   // — the same path the resolver redirects a scanned barcode to. Relative link,
@@ -82,13 +97,18 @@ export default function StoryStudio({ product }: { product: StudioProduct }) {
       // Action serializer flags deeply nested TipTap docs (headings) as
       // "temporary client references" and throws "Cannot access toStringTag on
       // the server" server-side. toPlainJson strips the markers (see lib).
-      const result = await saveStoryAction(product.id, toPlainJson(content));
+      const result = await saveStoryAction(
+        product.id,
+        toPlainJson(content),
+        optionalInput(headline)
+      );
       if (result?.error) {
         setError(result.error);
         return;
       }
       // Only mark saved on success so a failed save stays "dirty".
       setSavedContent(content);
+      setSavedHeadline(headline);
       setSaveStatus("saved");
     });
   };
@@ -106,14 +126,21 @@ export default function StoryStudio({ product }: { product: StudioProduct }) {
     setError(null);
     startPublishing(async () => {
       const published = !isPublished;
-      // Same marker-stripping as handleSave — publish also persists content.
-      const result = await publishStoryAction(product.id, toPlainJson(content), published);
+      // Same marker-stripping as handleSave — publish also persists content
+      // and headline.
+      const result = await publishStoryAction(
+        product.id,
+        toPlainJson(content),
+        optionalInput(headline),
+        published
+      );
       if (result?.error) {
         setError(result.error);
       } else {
         setIsPublished(published);
         // Publish also persists content, so clear the dirty state on success.
         setSavedContent(content);
+        setSavedHeadline(headline);
       }
     });
   };
@@ -176,7 +203,26 @@ export default function StoryStudio({ product }: { product: StudioProduct }) {
           style={{ display: activeTab === "preview" ? "none" : "block" }}
         >
           <div className={styles.editInner}>
-                        <section>
+            {/* Headline — shared FormField primitive, styled via this module's
+                .field/.label/.helper/.headlineInput classes. */}
+            <FormField
+              styles={styles}
+              htmlFor="story-headline"
+              label={t("headlineLabel")}
+              helper={t("headlineHelper")}
+            >
+              <input
+                id="story-headline"
+                type="text"
+                value={headline}
+                onChange={(e) => setHeadline(e.target.value)}
+                placeholder={t("headlinePlaceholder")}
+                className={styles.headlineInput}
+                aria-describedby="story-headline-helper"
+              />
+            </FormField>
+
+            <section>
               <h2 className={styles.sectionTitle} id="story-content-heading">
                 Story Content
               </h2>
@@ -225,7 +271,7 @@ export default function StoryStudio({ product }: { product: StudioProduct }) {
                 View live story ↗
               </Link>
             )}
-            <MobilePreview content={content} isPublished={isPublished} />
+            <MobilePreview content={content} headline={headline} isPublished={isPublished} />
           </div>
         </div>
       </main>

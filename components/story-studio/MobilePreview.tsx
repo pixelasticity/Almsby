@@ -5,10 +5,17 @@ import TipTapRenderer, {
 
 interface MobilePreviewProps {
   content: Record<string, unknown> | null;
+  /** StoryPage.headline — rendered above the body, same slot the public
+      /s/[gtin] page must use so preview and public output can't drift. */
+  headline: string | null;
   isPublished: boolean;
 }
 
-export default function MobilePreview({ content, isPublished }: MobilePreviewProps) {
+export default function MobilePreview({
+  content,
+  headline,
+  isPublished,
+}: MobilePreviewProps) {
   const nodes = (content as TipTapNode | null)?.content ?? [];
 
   return (
@@ -37,6 +44,7 @@ export default function MobilePreview({ content, isPublished }: MobilePreviewPro
         )}
 
         <div className={styles.storyContent}>
+          {headline ? <h1 className={styles.previewHeadline}>{headline}</h1> : null}
           {nodes.length === 0 ? (
             <div className={styles.blocksEmpty}>
               <p>Start adding blocks to see the story unfold...</p>

@@ -3,6 +3,7 @@
 import { Prisma } from "@prisma/client";
 import { getCurrentUser } from "@/lib/auth/server";
 import { getDb } from "@/lib/db";
+import { optionalInput } from "@/lib/input";
 import { getOwnedProduct } from "@/lib/products/queries";
 import { normalizeTipTapContent } from "@/lib/story/tiptap";
 
@@ -22,7 +23,8 @@ async function getOwnedStoryPage(productId: string, userId: string) {
  */
 export async function saveStoryAction(
   productId: string,
-  content: Record<string, unknown> | null
+  content: Record<string, unknown> | null,
+  headline: string | null
 ): Promise<StudioActionState> {
   const user = await getCurrentUser();
   if (!user) return { error: "You must be signed in to edit a story." };
@@ -40,15 +42,23 @@ export async function saveStoryAction(
     return { error: "Story content could not be read. Please refresh and try again." };
   }
 
+  // Headline is trimmed and empty-collapsed to null server-side too — the
+  // client's normalization is a convenience, never a trust boundary.
+  const normalizedHeadline = optionalInput(headline);
+
   try {
     const db = getDb();
     await db.storyPage.upsert({
       where: { productId },
       create: {
         productId,
+        headline: normalizedHeadline,
         bodyContent: doc as unknown as Prisma.InputJsonValue,
       },
-      update: { bodyContent: doc as unknown as Prisma.InputJsonValue },
+      update: {
+        headline: normalizedHeadline,
+        bodyContent: doc as unknown as Prisma.InputJsonValue,
+      },
     });
   } catch (error) {
     console.error(`saveStoryAction failed for product ${productId}:`, error);
@@ -65,6 +75,7 @@ export async function saveStoryAction(
 export async function publishStoryAction(
   productId: string,
   content: Record<string, unknown> | null,
+  headline: string | null,
   published: boolean
 ): Promise<StudioActionState> {
   const user = await getCurrentUser();
@@ -80,16 +91,24 @@ export async function publishStoryAction(
     return { error: "Story content could not be read. Please refresh and try again." };
   }
 
+  // Same server-side normalization as saveStoryAction.
+  const normalizedHeadline = optionalInput(headline);
+
   try {
     const db = getDb();
     await db.storyPage.upsert({
       where: { productId },
       create: {
         productId,
+        headline: normalizedHeadline,
         bodyContent: doc as unknown as Prisma.InputJsonValue,
         published,
       },
-      update: { bodyContent: doc as unknown as Prisma.InputJsonValue, published },
+      update: {
+        headline: normalizedHeadline,
+        bodyContent: doc as unknown as Prisma.InputJsonValue,
+        published,
+      },
     });
   } catch (error) {
     console.error(`publishStoryAction failed for product ${productId}:`, error);

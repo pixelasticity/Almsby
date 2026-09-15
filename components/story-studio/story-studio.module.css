@@ -77,6 +77,47 @@
   margin: 0 auto;
 }
 
+/* Headline field — uses the shared FormField primitive, which expects
+   .field/.label/.helper class names in the caller's module. The helper
+   composes the shared form-controls styles per repo convention. */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 1.5rem;
+}
+
+.label {
+  composes: sectionTitle;
+}
+
+.helper {
+  composes: helper from "../ui/form-controls.module.css";
+}
+
+.headlineInput {
+  padding: 0.625rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 0.375rem;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 700;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.headlineInput:focus {
+  border-color: var(--blue-400);
+  box-shadow: 0 0 0 2px var(--blue-100, rgba(59, 130, 246, 0.1));
+}
+
+.headlineInput::placeholder {
+  color: var(--neutral-300);
+  font-weight: 500;
+}
+
 /* Passport data panel — beside the editor on wide screens, full-width
    below the editor on mobile. Shares the edit tab's visibility lifecycle. */
 .passportPanel {
@@ -337,6 +378,16 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+}
+
+/* Story headline — same slot + styling the public /s/[gtin] page must use
+   so the studio preview and the scanned result can't drift. */
+.previewHeadline {
+  font-family: var(--font-display);
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: var(--primary-600);
+  line-height: 1.2;
 }
 
 .storyContent h2 {

@@ -19,7 +19,7 @@ export default async function StoryStudioPage({
     where: { id: productId, business: { ownerId: user.id } },
     include: {
       gtin: { select: { gtinValue: true } },
-      storyPage: { select: { id: true, published: true, bodyContent: true } },
+      storyPage: { select: { id: true, published: true, bodyContent: true, headline: true } },
     },
   });
 
@@ -42,7 +42,12 @@ export default async function StoryStudioPage({
         materialComposition: product.materialComposition,
         recyclable: product.recyclable,
         storyPage: product.storyPage
-          ? { id: product.storyPage.id, published: product.storyPage.published, bodyContent }
+          ? {
+              id: product.storyPage.id,
+              published: product.storyPage.published,
+              bodyContent,
+              headline: product.storyPage.headline,
+            }
           : null,
       }}
     />
