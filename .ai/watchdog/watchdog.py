@@ -103,6 +103,10 @@ def load_watchdog_config(repo: Path, run: Path) -> dict[str, Any]:
         write_yaml(local, cfg)
     if not isinstance(cfg, dict) or cfg.get("schema_version") != SCHEMA_VERSION:
         raise ValueError("unsupported watchdog config schema")
+    for key in ("heartbeat_timeout_seconds", "progress_timeout_seconds", "clock_skew_seconds"):
+        value = cfg.get(key)
+        if not isinstance(value, (int, float)) or isinstance(value, bool) or value < 0:
+            raise ValueError(f"watchdog config {key} must be a non-negative number")
     return cfg
 
 
@@ -153,6 +157,11 @@ def check_state_shape(state: dict[str, Any], run_id: str, config: dict[str, Any]
         "required state fields present" if not missing else f"missing fields: {', '.join(missing)}")
     if missing:
         return checks
+
+    if state.get("schemaVersion") != "1.2":
+        add("state.schema_version", "BLOCKED", f"unsupported state schema: {state.get('schemaVersion')!r}; expected 1.2")
+    else:
+        add("state.schema_version", "PASS", "state schema version is supported")
 
     if state.get("id") != run_id:
         add("state.run_id", "BLOCKED", f"state id {state.get('id')!r} does not match run {run_id!r}")
@@ -218,6 +227,18 @@ def check_state_shape(state: dict[str, Any], run_id: str, config: dict[str, Any]
         add("state.attempts", "BLOCKED", "attempt counters must be non-negative integers")
     else:
         add("state.attempts", "PASS", "attempt counters are valid")
+
+    approval = state.get("approval")
+    if not isinstance(approval, dict):
+        add("state.approval", "BLOCKED" if state.get("status") == "approved" else "PASS", "approval record is not required until approval is claimed")
+    elif state.get("status") == "approved":
+        missing_approval = [k for k in ("approvedBy", "approvedAt") if not approval.get(k)]
+        if approval.get("status") != "approved" or missing_approval or not parse_time(approval.get("approvedAt")):
+            add("state.approval", "BLOCKED", "approved run lacks a valid human approval record")
+        else:
+            add("state.approval", "PASS", "approved run has explicit approval metadata")
+    else:
+        add("state.approval", "PASS", f"approval status={approval.get('status', 'unspecified')}")
 
     return checks
 
@@ -329,6 +350,8 @@ def check_artifacts(repo: Path, run: Path, state: dict[str, Any], artifact_map: 
             checks.append({"id": f"artifact.{name}.path", "status": "BLOCKED", "message": "artifact path escapes the run directory"})
         elif record.get("path") and not path.exists():
             checks.append({"id": f"artifact.{name}.exists", "status": "BLOCKED" if record.get("required") else "WARN", "message": "declared artifact path does not exist"})
+        elif record.get("path") and path.is_dir() and record.get("required") and not any(path.iterdir()):
+            checks.append({"id": f"artifact.{name}.empty", "status": "BLOCKED", "message": "required artifact directory is empty"})
         elif record.get("status") in status_bad:
             checks.append({"id": f"artifact.{name}.status", "status": "BLOCKED" if record.get("required") else "WARN", "message": f"artifact status={record.get('status')}"})
         elif record.get("status") == "verified" and not record.get("evidence") and record.get("required"):
@@ -385,6 +408,66 @@ def check_evidence(run: Path, state: dict[str, Any], config: dict[str, Any]) -> 
                     continue
         checks.append({"id": cid, "status": "PASS" if rec["status"] == "passed" else "WARN", "message": f"evidence status={rec['status']}"})
     return checks
+
+
+def check_browser_verification(run: Path, state: dict[str, Any]) -> dict[str, Any]:
+    """Consume, but never generate, the deterministic Step 14 browser result."""
+    ui_change = (state.get("applicability") or {}).get("ui_or_ux_changes")
+    bv = state.get("browserVerification")
+    completion_like = state.get("status") in {"ready_for_review", "approved"} or state.get("phase") in {"critiquing", "human_review"}
+
+    if ui_change is not True:
+        if isinstance(bv, dict) and bv.get("status") not in {None, "not_required"}:
+            report_raw = bv.get("validationReport")
+            if report_raw:
+                report = safe_path(run, report_raw)
+                if report is None or not report.is_file():
+                    return {"id": "browser.report.path", "status": "BLOCKED", "message": "browser validation report is missing or outside the run"}
+        return {"id": "browser.verification", "status": "PASS", "message": "browser verification not applicable"}
+
+    if not isinstance(bv, dict):
+        return {"id": "browser.verification", "status": "BLOCKED" if completion_like else "UNKNOWN",
+                "message": "browserVerification state is missing for a UI/UX change"}
+
+    required = bv.get("requiredScenarios")
+    if not isinstance(required, list) or any(not isinstance(x, str) or not x for x in required):
+        return {"id": "browser.scenarios", "status": "BLOCKED", "message": "required browser scenarios are malformed"}
+    if not required:
+        return {"id": "browser.scenarios", "status": "BLOCKED" if completion_like else "UNKNOWN",
+                "message": "no browser scenarios declared for a UI/UX change"}
+
+    status = bv.get("status")
+    report_raw = bv.get("lastValidationReport")
+    if not report_raw:
+        return {"id": "browser.validation", "status": "BLOCKED" if completion_like else "UNKNOWN",
+                "message": "browser validation report has not been recorded"}
+
+    report_path = safe_path(run, report_raw)
+    if report_path is None or not report_path.is_file():
+        return {"id": "browser.validation", "status": "BLOCKED",
+                "message": "browser validation report is missing or outside the run"}
+
+    try:
+        report = load_yaml(report_path) if report_path.suffix in {".yaml", ".yml"} else json.loads(report_path.read_text(encoding="utf-8"))
+    except Exception as exc:
+        return {"id": "browser.validation", "status": "BLOCKED", "message": f"browser validation report is unreadable: {exc}"}
+
+    if not isinstance(report, dict):
+        return {"id": "browser.validation", "status": "BLOCKED", "message": "browser validation report must be an object"}
+    if report.get("run_id") != run.name:
+        return {"id": "browser.validation.run_id", "status": "BLOCKED", "message": "browser validation report run_id mismatch"}
+    if report.get("status") != "PASS":
+        return {"id": "browser.validation", "status": "BLOCKED" if completion_like else "WARN",
+                "message": f"browser validator status={report.get('status')!r}"}
+    reported_required = report.get("required_scenarios")
+    if reported_required is not None and set(reported_required) != set(required):
+        return {"id": "browser.validation.scenarios", "status": "BLOCKED",
+                "message": "browser validation report scenario set does not match PM state"}
+
+    if status != "passed":
+        return {"id": "browser.state", "status": "BLOCKED" if completion_like else "WARN",
+                "message": f"browserVerification.status={status!r}, expected 'passed'"}
+    return {"id": "browser.verification", "status": "PASS", "message": "browser validation PASS is recorded for all PM-required scenarios"}
 
 
 def check_contracts(repo: Path, run: Path) -> dict[str, Any]:
@@ -448,6 +531,7 @@ def check(repo: Path, run_id: str) -> int:
     checks.extend(check_activity(state, events, cfg))
     checks.extend(check_artifacts(repo, run, state, artifact_map, cfg))
     checks.extend(check_evidence(run, state, cfg))
+    checks.append(check_browser_verification(run, state))
     checks.append(check_contracts(repo, run))
 
     result = overall(checks)
