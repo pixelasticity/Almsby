@@ -10,22 +10,12 @@
   gap: 6px;
 }
 .label {
-  font-size: 13px;
-  font-weight: 700;
+  composes: label from "../ui/form-controls.module.css";
 }
 .input {
-  padding: 10px 12px;
-  border: 1px solid var(--neutral-300);
-  border-radius: 10px;
-  background: #fff;
-  font: inherit;
-  font-size: 14px;
+  composes: input from "../ui/form-controls.module.css";
   letter-spacing: 0.02em;
   font-variant-numeric: tabular-nums;
-}
-.input:focus {
-  outline: 2px solid var(--blue-300);
-  border-color: var(--blue-400);
 }
 .helper {
   composes: helper from "../ui/form-controls.module.css";

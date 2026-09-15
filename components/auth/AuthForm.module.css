@@ -18,18 +18,13 @@
 }
 
 .input {
-  width: 100%;
-  box-sizing: border-box;
-  padding: 10px 12px;
-  border-radius: 10px;
-  border: 1px solid #d1d5db;
+  composes: input from "../ui/form-controls.module.css";
   font-size: 15px;
-  font-family: var(--font-sans);
 }
 
 .message {
   font-size: 13px;
-  color: #374151;
+  color: var(--neutral-700);
 }
 
 .error {
@@ -57,7 +52,7 @@
 }
 
 .toggleLink {
-  color: #2563eb;
+  color: var(--blue-600);
   text-decoration: underline;
   margin-left: 4px;
 }

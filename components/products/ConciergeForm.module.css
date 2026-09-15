@@ -39,30 +39,15 @@
   font-weight: 700;
 }
 .input {
-  padding: 10px 12px;
-  border: 1px solid var(--neutral-300);
-  border-radius: 10px;
-  background: #fff;
-  font: inherit;
-  font-size: 14px;
+  composes: input from "../ui/form-controls.module.css";
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.02em;
 }
-.input:focus {
-  outline: 2px solid var(--blue-300);
-  border-color: var(--blue-400);
-}
 .helper {
-  margin: 0;
-  font-size: 12px;
-  line-height: 1.5;
-  color: var(--neutral-500);
+  composes: helper from "../ui/form-controls.module.css";
 }
 .error {
-  margin: 0;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--danger-600);
+  composes: error from "../ui/form-controls.module.css";
 }
 .saved {
   margin: 0;

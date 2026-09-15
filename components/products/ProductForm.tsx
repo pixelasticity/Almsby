@@ -30,6 +30,7 @@ export default function ProductForm() {
           required
           placeholder={t("nameHelper")}
           className={styles.input}
+          aria-invalid={state?.error ? true : undefined}
           aria-describedby="name-helper"
         />
       </FormField>
@@ -47,6 +48,7 @@ export default function ProductForm() {
           type="text"
           placeholder={t("brandHelper")}
           className={styles.input}
+          aria-invalid={state?.error ? true : undefined}
           aria-describedby="brand-helper"
         />
       </FormField>
@@ -64,6 +66,7 @@ export default function ProductForm() {
           type="text"
           placeholder={t("netContentHelper")}
           className={styles.input}
+          aria-invalid={state?.error ? true : undefined}
           aria-describedby="netContent-helper"
         />
       </FormField>
@@ -81,6 +84,7 @@ export default function ProductForm() {
           type="text"
           placeholder={t("countryHelper")}
           className={styles.input}
+          aria-invalid={state?.error ? true : undefined}
           aria-describedby="countryOfOrigin-helper"
         />
       </FormField>
@@ -98,6 +102,7 @@ export default function ProductForm() {
           type="text"
           placeholder={t("materialHelper")}
           className={styles.input}
+          aria-invalid={state?.error ? true : undefined}
           aria-describedby="materialComposition-helper"
         />
       </FormField>
@@ -111,8 +116,9 @@ export default function ProductForm() {
         <select
           id="status"
           name="status"
-          className={styles.input}
+          className={styles.select}
           defaultValue="draft"
+          aria-invalid={state?.error ? true : undefined}
           aria-describedby="status-helper"
         >
           <option value="draft">{t("statusDraft")}</option>

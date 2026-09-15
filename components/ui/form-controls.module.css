@@ -2,7 +2,101 @@
    modules via `composes` — so call sites keep their own class names and no
    TSX changes are needed. Only declarations that are byte-identical across
    the adopting forms live here; deliberate per-form variation (AuthForm's
-   compact field/label, the wizard's spacing) intentionally stays local. */
+   compact field/label, the wizard's spacing, GTIN inputs' tabular numerals)
+   intentionally stays local.
+
+   One control aesthetic, taken from the TipTap editor card: card background,
+   1px border token, 8px radius. Brand-blue focus ring. Full state coverage
+   (hover / focus / disabled / readonly / invalid / placeholder) so every
+   field behaves identically. Invalid styling keys off [aria-invalid="true"],
+   which forms must set alongside their error text. */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.input,
+.textarea,
+.select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border: 1px solid var(--neutral-300);
+  border-radius: 8px;
+  background: var(--card);
+  color: var(--foreground);
+  font: inherit;
+  font-size: 14px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.textarea {
+  min-height: 96px;
+  resize: vertical;
+}
+
+/* Keep the native select affordance (arrow) — just frame it like the rest. */
+.select {
+  cursor: pointer;
+}
+
+.input:hover:not(:focus):not(:disabled),
+.textarea:hover:not(:focus):not(:disabled),
+.select:hover:not(:focus):not(:disabled) {
+  border-color: var(--neutral-400);
+}
+
+.input:focus,
+.textarea:focus,
+.select:focus {
+  outline: none;
+  border-color: var(--blue-400);
+  box-shadow: 0 0 0 3px var(--blue-200);
+}
+
+.input:disabled,
+.textarea:disabled,
+.select:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: var(--neutral-100);
+}
+
+.input[readonly],
+.textarea[readonly] {
+  border-color: var(--neutral-200);
+  background: var(--neutral-100);
+  cursor: default;
+}
+
+/* Invalid — pairs with the form's error text; set aria-invalid="true" in TSX
+   when an error is shown so style and announcement happen together. */
+.input[aria-invalid="true"],
+.textarea[aria-invalid="true"],
+.select[aria-invalid="true"] {
+  border-color: var(--danger-500);
+}
+
+.input[aria-invalid="true"]:focus,
+.textarea[aria-invalid="true"]:focus,
+.select[aria-invalid="true"]:focus {
+  box-shadow: 0 0 0 3px var(--danger-100);
+}
+
+.input::placeholder,
+.textarea::placeholder,
+.select::placeholder {
+  color: var(--neutral-400);
+  opacity: 1;
+}
 
 .helper {
   margin: 0;
