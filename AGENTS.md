@@ -123,6 +123,21 @@ reproducing in isolation before writing it off. Log what you found either way.
 - Full suite (`tsc`, `eslint`, `lint:i18n`, `vitest`, `build`) must be green
   before merge.
 
+### Build cache gotcha — 404 on a route that exists in source
+
+The Next.js dev server (`npm run dev`) caches compiled output in `.next`. After
+adding, moving, or renaming route files (or their server actions), that cache can
+go stale: you'll get a **404 on a route that clearly exists in source**, or
+behavior that doesn't match the code on disk. It looks like a missing route or a
+code bug. It isn't.
+
+**Symptom:** 404 (or stale behavior) on a route/action that exists in source,
+especially right after adding or renaming files.
+
+**Fix:** clear the cache and restart the dev server:
+```bash
+rm -rf .next && npm run dev
+
 ---
 
 ## Codebase conventions (accumulate here as they're established)
