@@ -1,0 +1,12 @@
+# Generated execution data
+/runs/*/
+!/runs/_template/
+!/runs/_template/**
+
+# Python caches
+__pycache__/
+*.py[cod]
+
+# OS metadata
+.DS_Store
+__MACOSX/
