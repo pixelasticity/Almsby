@@ -6,12 +6,12 @@
 .primary,
 .secondary {
   display: inline-block;
-  padding: 10px 18px;
+  padding: var(--space-4) var(--space-8);
   border: none;
-  border-radius: 6px;
-  font-size: 14px;
+  border-radius: var(--radius-sm);
+  font-size: var(--text-lg);
   font-weight: 600;
-  line-height: 1.2;
+  line-height: var(--leading-tight);
   cursor: pointer;
   text-align: center;
 }
@@ -46,13 +46,13 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 2px 6px;
+  padding: 2px var(--space-2);
   border: none;
-  border-radius: 4px;
+  border-radius: var(--radius-xs);
   background: transparent;
   color: inherit;
   font: inherit;
-  line-height: 1;
+  line-height: var(--leading-none);
   cursor: pointer;
 }
 

@@ -2,17 +2,17 @@
 .form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--space-7);
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 24px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  border-radius: var(--radius-3xl);
+  padding: var(--space-10);
+  box-shadow: var(--shadow-card);
 }
 .title {
   margin: 0;
   font-family: var(--font-display);
-  font-size: 20px;
+  font-size: var(--text-4xl);
   font-weight: 700;
 }
 .field {
@@ -22,8 +22,8 @@
   composes: label from "../ui/form-controls.module.css";
 }
 .badge {
-  margin-left: 6px;
-  font-size: 12px;
+  margin-left: var(--space-2);
+  font-size: var(--text-sm);
   font-weight: 500;
   color: var(--neutral-500);
 }

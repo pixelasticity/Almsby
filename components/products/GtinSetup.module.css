@@ -2,20 +2,20 @@
 .fork {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: var(--space-6);
 }
 .tabs {
   display: flex;
-  gap: 8px;
+  gap: var(--space-3);
 }
 .tab {
-  padding: 8px 14px;
+  padding: var(--space-3) var(--space-6);
   border: 1px solid var(--neutral-300);
-  border-radius: 999px;
+  border-radius: var(--radius-full);
   background: transparent;
   color: var(--neutral-600);
   font: inherit;
-  font-size: 13px;
+  font-size: var(--text-md);
   font-weight: 600;
   cursor: pointer;
 }
@@ -31,11 +31,11 @@
 .savedBlock {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--space-5);
 }
 .saved {
   margin: 0;
-  font-size: 14px;
+  font-size: var(--text-lg);
   font-weight: 600;
   color: var(--green-700);
 }

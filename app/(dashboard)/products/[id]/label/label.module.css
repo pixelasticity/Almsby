@@ -1,46 +1,46 @@
 /* Print label page — the symbol prints at 1:1; app chrome is print-hidden. */
 .page {
-  padding: 24px;
+  padding: var(--space-10);
 }
 .noPrint {
-  margin-bottom: 24px;
+  margin-bottom: var(--space-10);
 }
 .noPrint a {
   color: var(--blue-500);
   text-decoration: none;
 }
 .hint {
-  margin: 8px 0 0;
-  font-size: 12px;
+  margin: var(--space-3) 0 0;
+  font-size: var(--text-sm);
   color: var(--neutral-500);
 }
 .verifiedBadge,
 .failedBadge {
   display: inline-block;
-  margin: 10px 0 0;
-  padding: 6px 10px;
-  border-radius: 4px;
-  font-size: 12px;
+  margin: var(--space-4) 0 0;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-xs);
+  font-size: var(--text-sm);
   font-weight: 600;
 }
 .verifiedBadge {
-  color: #11631d;
-  background: #e6f4ea;
+  color: var(--green-800);
+  background: var(--green-100);
 }
 .failedBadge {
-  color: #9f1c1c;
-  background: #fdeaea;
+  color: var(--danger-700);
+  background: var(--danger-100);
 }
 .label {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--space-5);
   max-width: 420px;
 }
 .name {
   margin: 0;
   font-family: var(--font-display);
-  font-size: 16px;
+  font-size: var(--text-2xl);
   font-weight: 700;
 }
 @media print {

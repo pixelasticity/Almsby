@@ -1,22 +1,22 @@
 /* #9 downloads — gated section under the label. */
 .downloads {
-  margin-top: 20px;
-  padding-top: 16px;
-  border-top: 1px solid var(--neutral-200, #e5e5e5);
-  max-width: 480px;
+  margin-top: var(--space-9);
+  padding-top: var(--space-7);
+  border-top: 1px solid var(--neutral-200);
+  max-width: var(--container-md);
 }
 .title {
-  margin: 0 0 10px;
-  font-size: 14px;
+  margin: 0 0 var(--space-4);
+  font-size: var(--text-lg);
   font-weight: 700;
 }
 .presetRow {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-3);
   flex-wrap: wrap;
-  margin-bottom: 12px;
-  font-size: 13px;
+  margin-bottom: var(--space-5);
+  font-size: var(--text-md);
 }
 .presetLabel {
   font-weight: 600;
@@ -27,29 +27,30 @@
   width: auto;
 }
 .presetNote {
-  font-size: 12px;
+  font-size: var(--text-sm);
   color: var(--neutral-500);
 }
 .buttonRow {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: var(--space-3);
 }
 .button,
 .buttonDisabled {
   display: inline-block;
-  padding: 7px 12px;
-  border-radius: 6px;
-  border: 1px solid var(--neutral-300, #d4d4d4);
-  background: var(--neutral-50, #fafafa);
+  /* 7px vertical is the one padding value with no space-scale stop. */
+  padding: 7px var(--space-5);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--neutral-300);
+  background: var(--neutral-050);
   color: var(--neutral-900);
-  font-size: 13px;
+  font-size: var(--text-md);
   font-weight: 600;
   text-decoration: none;
   cursor: pointer;
 }
 .button:hover:not(:disabled) {
-  background: var(--neutral-100, #f0f0f0);
+  background: var(--neutral-100);
 }
 .buttonDisabled {
   opacity: 0.45;
@@ -59,7 +60,7 @@ button.buttonDisabled {
   cursor: not-allowed;
 }
 .disabledNote {
-  margin: 10px 0 0;
-  font-size: 12px;
-  color: #9f1c1c;
+  margin: var(--space-4) 0 0;
+  font-size: var(--text-sm);
+  color: var(--danger-700);
 }

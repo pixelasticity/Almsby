@@ -2,28 +2,28 @@
 .form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  max-width: 30rem;
+  gap: var(--space-9);
+  max-width: var(--container-md);
   margin: 0 auto;
-  padding: 28px;
+  padding: var(--space-11);
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: 16px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  border-radius: var(--radius-3xl);
+  box-shadow: var(--shadow-card);
 }
 .steps {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-3);
 }
 .step {
-  width: 24px;
-  height: 24px;
-  border-radius: 999px;
+  width: var(--space-10);
+  height: var(--space-10);
+  border-radius: var(--radius-full);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  font-size: var(--text-sm);
   font-weight: 700;
   color: var(--neutral-500);
   background: var(--neutral-200);
@@ -34,28 +34,28 @@
 }
 .stepLabel {
   margin-left: auto;
-  font-size: 12px;
+  font-size: var(--text-sm);
   color: var(--neutral-500);
 }
 .field {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-3);
 }
 .title {
   margin: 0;
   font-family: var(--font-display);
-  font-size: 22px;
+  font-size: var(--text-5xl);
   font-weight: 700;
 }
 .subtitle {
-  margin: 0 0 8px;
-  font-size: 14px;
-  line-height: 1.5;
+  margin: 0 0 var(--space-3);
+  font-size: var(--text-lg);
+  line-height: var(--leading-normal);
   color: var(--neutral-600);
 }
 .label {
-  font-size: 13px;
+  font-size: var(--text-md);
   font-weight: 700;
 }
 .input {
@@ -70,32 +70,32 @@
 .row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  gap: var(--space-5);
 }
 .col {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--space-2);
 }
 .error {
   composes: error from "../ui/form-controls.module.css";
 }
 .actions {
   display: flex;
-  gap: 10px;
+  gap: var(--space-4);
   justify-content: flex-end;
 }
 .primary {
   composes: pill from "../ui/form-controls.module.css";
 }
 .secondary {
-  padding: 10px 20px;
+  padding: var(--space-4) var(--space-9);
   border: 1px solid var(--neutral-300);
-  border-radius: 999px;
+  border-radius: var(--radius-full);
   background: transparent;
   color: var(--neutral-700);
   font: inherit;
-  font-size: 14px;
+  font-size: var(--text-lg);
   font-weight: 600;
   cursor: pointer;
 }

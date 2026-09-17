@@ -4,7 +4,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 24px;
+  padding: var(--space-10);
   background: var(--background);
 }
 
@@ -12,9 +12,9 @@
   position: relative;
   z-index: 1;
   background: var(--card);
-  border-radius: 14px;
-  padding: 32px;
+  border-radius: var(--radius-2xl);
+  padding: var(--space-12);
   width: 100%;
-  max-width: 384px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  max-width: var(--container-xs);
+  box-shadow: var(--shadow-card-strong);
 }

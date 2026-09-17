@@ -1,45 +1,45 @@
 .form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--space-7);
 }
 
 .field {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--space-1);
 }
 
 .label {
-  font-size: 13px;
+  font-size: var(--text-md);
   font-weight: 600;
   display: block;
-  margin-bottom: 6px;
+  margin-bottom: var(--space-2);
 }
 
 .input {
   composes: input from "../ui/form-controls.module.css";
-  font-size: 15px;
+  font-size: var(--text-xl);
 }
 
 .message {
-  font-size: 13px;
+  font-size: var(--text-md);
   color: var(--neutral-700);
 }
 
 .error {
-  font-size: 13px;
+  font-size: var(--text-md);
   color: var(--danger-500);
 }
 
 .submit {
-  padding: 10px 14px;
-  border-radius: 10px;
-  border: 1px solid #d1d5db;
+  padding: var(--space-4) var(--space-6);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--neutral-300);
   background: var(--primary-500);
   color: var(--neutral-050);
-  font-size: 15px;
-  font-family: var(--font-sans);
+  font-size: var(--text-xl);
+  font-family: var(--font-body);
   cursor: pointer;
 }
 
@@ -48,11 +48,11 @@
 }
 
 .toggleRow {
-  font-size: 13px;
+  font-size: var(--text-md);
 }
 
 .toggleLink {
   color: var(--blue-600);
   text-decoration: underline;
-  margin-left: 4px;
+  margin-left: var(--space-1);
 }
