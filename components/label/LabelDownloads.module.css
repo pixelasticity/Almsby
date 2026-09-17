@@ -7,7 +7,7 @@
 }
 .title {
   margin: 0 0 var(--space-4);
-  font-size: var(--text-lg);
+  font-size: var(--text-md);
   font-weight: 700;
 }
 .presetRow {
@@ -16,7 +16,7 @@
   gap: var(--space-3);
   flex-wrap: wrap;
   margin-bottom: var(--space-5);
-  font-size: var(--text-md);
+  font-size: var(--text-sm);
 }
 .presetLabel {
   font-weight: 600;
@@ -44,7 +44,7 @@
   border: 1px solid var(--neutral-300);
   background: var(--neutral-050);
   color: var(--neutral-900);
-  font-size: var(--text-md);
+  font-size: var(--text-sm);
   font-weight: 600;
   text-decoration: none;
   cursor: pointer;

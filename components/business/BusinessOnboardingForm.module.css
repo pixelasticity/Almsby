@@ -45,17 +45,17 @@
 .title {
   margin: 0;
   font-family: var(--font-display);
-  font-size: var(--text-5xl);
+  font-size: var(--text-lg);
   font-weight: 700;
 }
 .subtitle {
   margin: 0 0 var(--space-3);
-  font-size: var(--text-lg);
+  font-size: var(--text-md);
   line-height: var(--leading-normal);
   color: var(--neutral-600);
 }
 .label {
-  font-size: var(--text-md);
+  font-size: var(--text-sm);
   font-weight: 700;
 }
 .input {
@@ -95,7 +95,7 @@
   background: transparent;
   color: var(--neutral-700);
   font: inherit;
-  font-size: var(--text-lg);
+  font-size: var(--text-md);
   font-weight: 600;
   cursor: pointer;
 }

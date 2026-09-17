@@ -18,7 +18,7 @@
 }
 
 .label {
-  font-size: var(--text-md);
+  font-size: var(--text-sm);
   font-weight: 700;
   line-height: var(--leading-snug);
 }
@@ -34,7 +34,7 @@
   background: var(--card);
   color: var(--foreground);
   font: inherit;
-  font-size: var(--text-lg);
+  font-size: var(--text-md);
   transition:
     border-color var(--duration-fast),
     box-shadow var(--duration-fast);
@@ -126,7 +126,7 @@
 
 .error {
   margin: 0;
-  font-size: var(--text-md);
+  font-size: var(--text-sm);
   font-weight: 600;
   color: var(--danger-600);
 }
@@ -139,7 +139,7 @@
   background: var(--green-600);
   color: #fff;
   font: inherit;
-  font-size: var(--text-lg);
+  font-size: var(--text-md);
   font-weight: 700;
   cursor: pointer;
 }

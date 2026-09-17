@@ -25,7 +25,7 @@
   background: var(--card);
   color: var(--foreground);
   font-family: inherit;
-  font-size: var(--text-lg);
+  font-size: var(--text-md);
   font-weight: 600;
   line-height: var(--leading-tight);
   cursor: pointer;
@@ -67,7 +67,7 @@
 .linkInput {
   composes: input from "../ui/form-controls.module.css";
   padding: var(--space-2) var(--space-4);
-  font-size: var(--text-lg);
+  font-size: var(--text-md);
 }
 
 .linkError {
@@ -104,7 +104,7 @@
 /* Constrained schema elements — only these can ever render. */
 .content h2 {
   font-family: var(--font-display);
-  font-size: var(--text-6xl);
+  font-size: var(--text-xl);
   font-weight: 700;
   margin: 1em 0 0.5em;
   color: var(--primary-600);
@@ -112,7 +112,7 @@
 
 .content h3 {
   font-family: var(--font-display);
-  font-size: var(--text-4xl);
+  font-size: var(--text-lg);
   font-weight: 700;
   margin: 1em 0 0.5em;
   color: var(--primary-600);
@@ -120,7 +120,7 @@
 
 .content h4 {
   font-family: var(--font-display);
-  font-size: var(--text-3xl);
+  font-size: var(--text-lg);
   font-weight: 700;
   margin: 1em 0 0.5em;
   color: var(--primary-600);
@@ -128,7 +128,7 @@
 
 .content h5 {
   font-family: var(--font-display);
-  font-size: var(--text-2xl);
+  font-size: var(--text-md);
   font-weight: 700;
   margin: 1em 0 0.5em;
   color: var(--primary-600);
@@ -136,7 +136,7 @@
 
 .content h6 {
   font-family: var(--font-display);
-  font-size: var(--text-lg);
+  font-size: var(--text-md);
   font-weight: 700;
   margin: 1em 0 0.5em;
   color: var(--primary-600);

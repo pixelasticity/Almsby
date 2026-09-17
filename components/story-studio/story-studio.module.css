@@ -21,12 +21,12 @@
 
 .headerTitle {
   font-family: var(--font-display);
-  font-size: var(--text-4xl);
+  font-size: var(--text-lg);
   font-weight: 700;
 }
 
 .headerSubtitle {
-  font-size: var(--text-lg);
+  font-size: var(--text-md);
   color: var(--neutral-700);
 }
 
@@ -97,7 +97,7 @@
 .headlineInput {
   composes: input from "../ui/form-controls.module.css";
   font-family: var(--font-display);
-  font-size: var(--text-3xl);
+  font-size: var(--text-lg);
   font-weight: 700;
 }
 
@@ -185,13 +185,13 @@
 
 .blockHeadingInput {
   font-family: var(--font-display);
-  font-size: var(--text-3xl);
+  font-size: var(--text-lg);
   font-weight: 700;
 }
 
 .blockParagraphInput {
   font-family: var(--font-body);
-  font-size: var(--text-lg);
+  font-size: var(--text-md);
   resize: none;
 }
 
@@ -229,7 +229,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 0 var(--space-10);
-  font-size: var(--text-2xs);
+  font-size: var(--text-xs);
   font-weight: 700;
   color: rgba(0, 0, 0, 0.4);
 }
@@ -278,7 +278,7 @@
 
 .comingSoonTitle {
   font-family: var(--font-display);
-  font-size: var(--text-3xl);
+  font-size: var(--text-lg);
   font-weight: 700;
   color: var(--primary-600);
   margin-bottom: var(--space-3);
@@ -294,7 +294,7 @@
   padding: 5rem 0; /* deliberately tall empty-state well — no scale stop */
   text-align: center;
   opacity: 0.3;
-  font-size: var(--text-lg);
+  font-size: var(--text-md);
   font-style: italic;
 }
 
@@ -335,7 +335,7 @@
 }
 
 .passportItemLabel {
-  font-size: var(--text-lg);
+  font-size: var(--text-md);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.075em;
@@ -343,7 +343,7 @@
 }
 
 .passportItemValue {
-  font-size: var(--text-2xl);
+  font-size: var(--text-md);
   font-weight: 600;
   color: var(--foreground);
 }
@@ -367,7 +367,7 @@
    so the studio preview and the scanned result can't drift. */
 .previewHeadline {
   font-family: var(--font-display);
-  font-size: var(--text-5xl);
+  font-size: var(--text-lg);
   font-weight: 700;
   color: var(--primary-600);
   line-height: var(--leading-tight);
@@ -375,7 +375,7 @@
 
 .storyContent h2 {
   font-family: var(--font-display);
-  font-size: var(--text-4xl);
+  font-size: var(--text-lg);
   font-weight: 700;
   color: var(--primary-600);
   line-height: var(--leading-tight);
@@ -383,7 +383,7 @@
 
 .storyContent h3 {
   font-family: var(--font-display);
-  font-size: var(--text-3xl);
+  font-size: var(--text-lg);
   font-weight: 700;
   color: var(--primary-600);
   line-height: var(--leading-tight);
@@ -393,14 +393,14 @@
 .storyContent h5,
 .storyContent h6 {
   font-family: var(--font-display);
-  font-size: var(--text-2xl);
+  font-size: var(--text-md);
   font-weight: 700;
   color: var(--primary-600);
   line-height: var(--leading-tight);
 }
 
 .storyContent p {
-  font-size: var(--text-lg);
+  font-size: var(--text-md);
   line-height: var(--leading-relaxed);
   color: var(--neutral-700);
 }
@@ -419,7 +419,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: var(--text-2xs);
+  font-size: var(--text-xs);
   color: var(--neutral-500);
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -433,7 +433,7 @@
 }
 
 .previewCaption {
-  font-size: var(--text-2xs);
+  font-size: var(--text-xs);
   text-align: center;
   font-style: italic;
   color: var(--neutral-500);
@@ -482,7 +482,7 @@
   top: var(--space-5);
   right: var(--space-7);
   z-index: 5;
-  font-size: var(--text-md);
+  font-size: var(--text-sm);
   font-weight: 600;
   color: var(--green-700);
   text-decoration: none;
@@ -506,7 +506,7 @@
 .mobileTab {
   flex: 1;
   padding: var(--space-7);
-  font-size: var(--text-lg);
+  font-size: var(--text-md);
   font-weight: 700;
   background: none;
   border: none;

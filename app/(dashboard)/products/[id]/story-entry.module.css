@@ -11,13 +11,13 @@
 }
 
 .status {
-  font-size: var(--text-lg);
+  font-size: var(--text-md);
   color: var(--neutral-500);
 }
 
 .link {
   align-self: flex-start;
-  font-size: var(--text-lg);
+  font-size: var(--text-md);
   font-weight: 600;
   color: var(--green-700);
   text-decoration: none;

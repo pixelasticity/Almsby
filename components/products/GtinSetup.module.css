@@ -15,7 +15,7 @@
   background: transparent;
   color: var(--neutral-600);
   font: inherit;
-  font-size: var(--text-md);
+  font-size: var(--text-sm);
   font-weight: 600;
   cursor: pointer;
 }
@@ -35,7 +35,7 @@
 }
 .saved {
   margin: 0;
-  font-size: var(--text-lg);
+  font-size: var(--text-md);
   font-weight: 600;
   color: var(--green-700);
 }

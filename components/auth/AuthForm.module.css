@@ -11,7 +11,7 @@
 }
 
 .label {
-  font-size: var(--text-md);
+  font-size: var(--text-sm);
   font-weight: 600;
   display: block;
   margin-bottom: var(--space-2);
@@ -19,16 +19,16 @@
 
 .input {
   composes: input from "../ui/form-controls.module.css";
-  font-size: var(--text-xl);
+  font-size: var(--text-md);
 }
 
 .message {
-  font-size: var(--text-md);
+  font-size: var(--text-sm);
   color: var(--neutral-700);
 }
 
 .error {
-  font-size: var(--text-md);
+  font-size: var(--text-sm);
   color: var(--danger-500);
 }
 
@@ -38,7 +38,7 @@
   border: 1px solid var(--neutral-300);
   background: var(--primary-500);
   color: var(--neutral-050);
-  font-size: var(--text-xl);
+  font-size: var(--text-md);
   font-family: var(--font-body);
   cursor: pointer;
 }
@@ -48,7 +48,7 @@
 }
 
 .toggleRow {
-  font-size: var(--text-md);
+  font-size: var(--text-sm);
 }
 
 .toggleLink {
