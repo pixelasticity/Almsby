@@ -133,6 +133,8 @@
   --text-lg: 1.25rem; /* 20px = base * 1.25   */
   --text-xl: 1.5625rem; /* 25px = base * 1.25^2 */
   --text-2xl: 1.9375rem; /* 31px = base * 1.25^3 */
+  --text-3xl: 2.4375rem; /* 39px = base * 1.25^4 */
+  --text-4xl: 3.0625rem; /* 49px = base * 1.25^5 */
 
   /* Line height. */
   --leading-none: 1;
@@ -160,6 +162,33 @@
 
   /* Motion. */
   --duration-fast: 0.15s;
+}
+
+/* ==========================================
+   CORNER SHAPING (progressive enhancement)
+
+   Soft, squircle-ward corners on every rounded box. The spec's keyword
+   anchors bracket our value: `round` is superellipse(1) and `squircle` is
+   superellipse(2), so superellipse(1.5) sits between them — rounder than a
+   squircle, squarer than a circle.
+
+   Guarded on the exact declaration we use (property *and* function) so
+   browsers without support keep plain border-radius corners, untouched. The
+   spec is explicit that with no border-radius the corner area is zero-sized
+   and corner-shape has no effect, so a universal selector only reshapes
+   corners that already exist.
+
+   Included here rather than per-module because it is a global aesthetic, and
+   a universal selector is the only way to reach CSS-module hashed classes.
+   True circles opt out locally with `corner-shape: round` (class specificity
+   beats the universal selector, so order doesn't matter).
+   ========================================== */
+@supports (corner-shape: superellipse(1.5)) {
+  *,
+  *::before,
+  *::after {
+    corner-shape: superellipse(1.5);
+  }
 }
 
 * {

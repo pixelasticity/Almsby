@@ -20,6 +20,9 @@
   width: var(--space-10);
   height: var(--space-10);
   border-radius: var(--radius-full);
+  /* Square box + full radius = a true circle; opt out of the global
+     corner-shape so the step badges stay circles. */
+  corner-shape: round;
   display: flex;
   align-items: center;
   justify-content: center;

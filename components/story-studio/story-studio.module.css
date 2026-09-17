@@ -239,6 +239,7 @@
   height: var(--space-5);
   background: rgba(0, 0, 0, 0.2);
   border-radius: var(--radius-full);
+  corner-shape: round; /* true circle — see globals.css corner shaping */
 }
 
 .phoneContent {
@@ -269,6 +270,7 @@
   height: var(--space-13);
   background: var(--primary-100);
   border-radius: var(--radius-full);
+  corner-shape: round; /* true circle — see globals.css corner shaping */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -318,6 +320,7 @@
   height: var(--space-3);
   background: var(--blue-500);
   border-radius: var(--radius-full);
+  corner-shape: round; /* true circle — see globals.css corner shaping */
 }
 
 .passportTitle {
@@ -335,7 +338,7 @@
 }
 
 .passportItemLabel {
-  font-size: var(--text-md);
+  font-size: var(--text-sm);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.075em;

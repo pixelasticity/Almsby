@@ -48,7 +48,7 @@
 @media (min-width: 768px) {
   .launchNote { display: flex; }
 }
-.pulseDot { width: 8px; height: 8px; border-radius: 999px; background: var(--blue-500); animation: pulse 2s ease-in-out infinite; }
+.pulseDot { width: 8px; height: 8px; border-radius: 999px; corner-shape: round; background: var(--blue-500); animation: pulse 2s ease-in-out infinite; }
 
 /* Hero */
 .hero { position: relative; z-index: 10; max-width: 80rem; margin: 0 auto; padding: 40px 24px 64px; }
@@ -201,7 +201,7 @@
 .passportFooter { margin-top: 16px; padding-top: 12px; border-top: 1px solid rgba(0, 0, 0, 0.06); display: flex; align-items: center; justify-content: space-between; }
 .passportGtin { font-size: 9px; color: var(--neutral-600); font-family: ui-monospace, monospace; letter-spacing: -0.02em; }
 .verifiedTag { display: flex; align-items: center; gap: 4px; font-size: 9px; color: var(--green-600); font-weight: 600; }
-.verifiedDot { width: 6px; height: 6px; border-radius: 999px; background: #22c55e; animation: pulse 2s ease-in-out infinite; }
+.verifiedDot { width: 6px; height: 6px; border-radius: 999px; corner-shape: round; background: #22c55e; animation: pulse 2s ease-in-out infinite; }
 
 /* Floating badges */
 .floatBadge {
@@ -217,7 +217,7 @@
 }
 .floatTop { top: -20px; right: -20px; animation: bobA 3.5s ease-in-out infinite; }
 .floatBottom { bottom: -20px; left: -24px; gap: 8px; animation: bobB 4.2s ease-in-out infinite; }
-.badgeGreenCheck { width: 20px; height: 20px; border-radius: 999px; background: var(--green-500); color: #ffffff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.badgeGreenCheck { width: 20px; height: 20px; border-radius: 999px; corner-shape: round; background: var(--green-500); color: #ffffff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .badgeLabel { font-size: 12px; font-weight: 700; color: #1f2937; white-space: nowrap; }
 .badgeEmoji { font-size: 18px; line-height: 1; }
 .badgeMetaLabel { font-size: 9px; color: var(--neutral-600); line-height: 1; margin-bottom: 2px; white-space: nowrap; }
