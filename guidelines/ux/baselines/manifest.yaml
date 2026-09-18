@@ -1,0 +1,14 @@
+schema_version: "1.0"
+
+baselines: []
+
+# Example:
+# - id: story-page-desktop
+#   route: /s/<gtin>
+#   viewport: {width: 1440, height: 1000}
+#   locale: en
+#   state: published
+#   status: approved
+#   captured_at: "2026-09-17"
+#   artifact: .ai/design/baselines/story-page-desktop.png
+#   rationale: Canonical public story presentation.
