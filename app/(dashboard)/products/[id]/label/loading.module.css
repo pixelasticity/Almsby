@@ -1,0 +1,54 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-8);
+  padding: var(--space-13) var(--space-10);
+}
+
+.row {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-9);
+}
+
+/* Symbol slots mirror the real label's shape mix (QR / DataMatrix / EAN-13)
+   so the layout doesn't jump when the verified SVGs stream in. */
+.blockQr,
+.blockDm,
+.blockLegacy {
+  border-radius: var(--radius-md);
+  background: var(--neutral-200);
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+.blockQr {
+  width: 8rem;
+  height: 8rem;
+}
+
+.blockDm {
+  width: 5.5rem;
+  height: 5.5rem;
+}
+
+.blockLegacy {
+  width: 9rem;
+  height: 3.5rem;
+}
+
+.note {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--neutral-600);
+}
+
+/* Honors the global reduced-motion contract. */
+@media (prefers-reduced-motion: reduce) {
+  .blockQr,
+  .blockDm,
+  .blockLegacy {
+    animation: none;
+    opacity: 0.7;
+  }
+}

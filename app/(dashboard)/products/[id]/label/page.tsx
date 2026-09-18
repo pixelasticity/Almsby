@@ -16,6 +16,7 @@ import {
   warmBarcodeVerifier,
 } from "@/lib/gs1/verify";
 import DualMarkLabel from "@/components/label/DualMarkLabel";
+import ErrorBoundary from "@/components/ui/ErrorBoundary";
 import LabelDownloads from "@/components/label/LabelDownloads";
 import styles from "./label.module.css";
 export default async function ProductLabelPage({
@@ -82,17 +83,22 @@ export default async function ProductLabelPage({
       </div>
       <div className={styles.label}>
         <h1 className={styles.name}>{name}</h1>
-        <DualMarkLabel
-          gtin14={gtin14 ?? ""}
-          legacyNote={
-            // #45: a GTIN with a non-zero GS1 indicator digit has no EAN-13
-            // equivalent — say so instead of silently showing a missing slot.
-            // Invalid/missing GTINs stay silent (nothing to explain yet).
-            gtin14 && deriveLegacyValue(gtin14) === null
-              ? t("labelLegacyNotApplicable")
-              : undefined
-          }
-        />
+        <ErrorBoundary
+          name="DualMarkLabel (label page)"
+          fallback={<p className={styles.hint}>{t("barcodeRenderError")}</p>}
+        >
+          <DualMarkLabel
+            gtin14={gtin14 ?? ""}
+            legacyNote={
+              // #45: a GTIN with a non-zero GS1 indicator digit has no EAN-13
+              // equivalent — say so instead of silently showing a missing slot.
+              // Invalid/missing GTINs stay silent (nothing to explain yet).
+              gtin14 && deriveLegacyValue(gtin14) === null
+                ? t("labelLegacyNotApplicable")
+                : undefined
+            }
+          />
+        </ErrorBoundary>
         {gtin14 && (
           <LabelDownloads productId={id} gtin14={gtin14} verified={verified} />
         )}

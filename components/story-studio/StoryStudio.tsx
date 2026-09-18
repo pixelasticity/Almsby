@@ -6,7 +6,7 @@ import Button from "@/components/ui/Button";
 import FormField from "@/components/ui/FormField";
 import Link from "next/link";
 import TipTapEditor from "./TipTapEditor";
-import EditorErrorBoundary from "./EditorErrorBoundary";
+import ErrorBoundary from "@/components/ui/ErrorBoundary";
 import MobilePreview from "./MobilePreview";
 import PassportSummary from "./PassportSummary";
 import { toGtin14 } from "@/lib/gs1/gtin";
@@ -226,7 +226,8 @@ export default function StoryStudio({ product }: { product: StudioProduct }) {
               <h2 className={styles.sectionTitle} id="story-content-heading">
                 Story Content
               </h2>
-              <EditorErrorBoundary
+              <ErrorBoundary
+                name="TipTapEditor"
                 fallback={
                   <div
                     style={{
@@ -247,7 +248,7 @@ export default function StoryStudio({ product }: { product: StudioProduct }) {
                   onChange={setContent}
                   ariaLabelledBy="story-content-heading"
                 />
-              </EditorErrorBoundary>
+              </ErrorBoundary>
             </section>
                       </div>
         </div>
