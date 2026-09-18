@@ -19,11 +19,15 @@ async function findOwnedProduct(productId: string, userId: string) {
   return db.product.findFirst({
     where: { id: productId, business: { ownerId: userId } },
     // Narrow projection — only the fields the UI and title display.
+    // storyPage.published is included so the detail page can render the
+    // story-entry status without a second sequential DB round-trip (the
+    // product detail page used to fire this as its own findUnique).
     select: {
       name: true,
       brand: true,
       status: true,
       gtin: { select: { gtinValue: true } },
+      storyPage: { select: { published: true } },
     },
   });
 }

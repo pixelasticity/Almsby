@@ -3,11 +3,11 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { getCurrentUser } from "@/lib/auth/server";
-import { getDb } from "@/lib/db";
 import { getOwnedProduct } from "@/lib/products/queries";
 import { toGtin14 } from "@/lib/gs1/gtin";
 import GtinSetup from "@/components/products/GtinSetup";
-import DualMarkLabel from "@/components/label/DualMarkLabel";
+import DualMarkLabelDeferred from "@/components/label/DualMarkLabelDeferred";
+import ErrorBoundary from "@/components/ui/ErrorBoundary";
 import { statusI18nKey } from "@/lib/products/validate";
 import styles from "./page.module.css";
 import storyStyles from "./story-entry.module.css";
@@ -48,6 +48,7 @@ export default async function ProductDetailPage({
   let brand: string | null = null;
   let status = "";
   let gtin: string | null = null;
+  let storyPublished: boolean | undefined;
 
   try {
     // Ownership-scoped: only products under the signed-in user's Business.
@@ -57,6 +58,7 @@ export default async function ProductDetailPage({
     brand = product.brand;
     status = product.status;
     gtin = product.gtin?.gtinValue ?? null;
+    storyPublished = product.storyPage?.published;
   } catch (error) {
     console.error("ProductDetailPage: failed to load product", id, error);
     notFound();
@@ -93,7 +95,12 @@ export default async function ProductDetailPage({
           <>
             <div className={styles.barcodeCard}>
               <h3 className={styles.cardTitle}>{t("barcodeSectionTitle")}</h3>
-              <DualMarkLabel gtin14={gtin14} />
+              <ErrorBoundary
+                name="DualMarkLabel (product page)"
+                fallback={<p className={styles.unverifiedNote}>{t("barcodeRenderError")}</p>}
+              >
+                <DualMarkLabelDeferred gtin14={gtin14} />
+              </ErrorBoundary>
               <p className={styles.unverifiedNote}>
                 {t("barcodeUnverifiedNote")}
               </p>
@@ -108,7 +115,7 @@ export default async function ProductDetailPage({
         </div>
       </section>
 
-      <StoryEntry productId={id} />
+      <StoryEntry productId={id} published={storyPublished} />
     </div>
   );
 }
@@ -119,23 +126,23 @@ export default async function ProductDetailPage({
  * links to /products/[id]/studio. Renders the entry link ALWAYS — a missing
  * StoryPage row means the maker has not started a story yet, but the link
  * still shows (the studio handles the empty state). The publish status is
- * shown only once a story row exists. Failures log loud but degrade to a
- * card with no status line (never hides the entry point).
+ * shown only once a story row exists.
+ *
+ * Synchronous data by design: `published` arrives via the page's single
+ * ownership-scoped query (getOwnedProduct now includes storyPage.published),
+ * so this component fires no second sequential DB round-trip. A query
+ * failure degrades at page level (logged, then notFound) — the previous
+ * per-component try/catch existed only because this was its own round-trip.
  */
-async function StoryEntry({ productId }: { productId: string }) {
+async function StoryEntry({
+  productId,
+  published,
+}: {
+  productId: string;
+  /** `true` = published, `false` = draft, `undefined` = no story yet. */
+  published: boolean | undefined;
+}) {
   const t = await getTranslations("story");
-
-  let published: boolean | undefined;
-  try {
-    const db = getDb();
-    const storyPage = await db.storyPage.findUnique({
-      where: { productId },
-      select: { published: true },
-    });
-    published = storyPage?.published;
-  } catch (error) {
-    console.error("StoryEntry: failed to load story status", productId, error);
-  }
 
   return (
     <section className={storyStyles.card} aria-label={t("title")}>

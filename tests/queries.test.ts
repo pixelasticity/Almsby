@@ -32,6 +32,7 @@ describe("getOwnedProduct", () => {
         brand: true,
         status: true,
         gtin: { select: { gtinValue: true } },
+        storyPage: { select: { published: true } },
       },
     });
   });
