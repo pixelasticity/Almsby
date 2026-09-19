@@ -177,6 +177,13 @@
 
 .nav-link {
     @apply dark:text-white dark:*:data-[slot=icon]:fill-zinc-400 dark:data-hover:bg-white/5 dark:data-hover:*:data-[slot=icon]:fill-white dark:data-active:bg-white/5 dark:data-active:*:data-[slot=icon]:fill-white dark:data-current:*:data-[slot=icon]:fill-white;
+    /* This class is shared by <a> nav links and the <button> items that have no
+       route yet, so reset the UA button chrome and inherit the typography. */
+    appearance: none;
+    background: none;
+    border: 0;
+    font-family: inherit;
+    cursor: pointer;
     display: flex;
     width: 100%;
     align-items: center;
