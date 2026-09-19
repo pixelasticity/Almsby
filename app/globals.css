@@ -1,6 +1,10 @@
+@import 'sanitize.css';
+@import 'sanitize.css/forms.css';
+@import 'sanitize.css/typography.css';
+
 :root {
   color-scheme: light;
-  --background: var(--primary-100);
+  --background: var(--primary-200);
   --foreground: var(--neutral-900);
   --card: var(--neutral-050);
   --border: rgba(0, 0, 0, 0.07);
@@ -164,6 +168,16 @@
   --duration-fast: 0.15s;
 }
 
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* color-scheme: dark;
+    --background: var(--primary-900);
+    --foreground: var(--neutral-100);
+    --card: var(--neutral-950);
+    --border: rgba(255, 255, 255, 0.07); */
+  }
+}
+
 /* ==========================================
    CORNER SHAPING (progressive enhancement)
 
@@ -201,6 +215,12 @@ body {
   padding: 0;
 }
 
+html {
+  background-color: var(--background);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 body {
   font-family: var(--font-body);
   background: var(--background);
@@ -215,7 +235,12 @@ h4 {
 }
 
 a {
-  color: var(--blue-500);
+  color: inherit;
+  -webkit-text-decoration: inherit;
+  -webkit-text-decoration: inherit;
+  -webkit-text-decoration: inherit;
+  -webkit-text-decoration: inherit;
+  text-decoration: inherit;
 }
 
 /* Respect the OS "reduce motion" setting (WCAG 2.3.3): kill decorative

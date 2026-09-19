@@ -1,7 +1,36 @@
 .root {
-  min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
+  padding-bottom: 0.5rem;
+  flex: 1 1 0%;
+}
+
+@media (width >= 64rem) {
+  .root {
+    min-width: 0;
+    padding-block-start: 0.5rem;
+    padding-inline-end: 0.5rem;
+    padding-inline-start: 16rem;
+  }
+}
+
+.wrap {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  align-items: normal;
+  justify-content: normal;
+}
+
+@media (width >= 64rem) {
+  .wrap {
+    background-color: var(--neutral-100);
+    border-radius: 0.5rem;
+    box-shadow:
+      oklab(0.141 0.00136331 -0.00481053 / 0.05) 0px 0px 0px 1px, 
+      rgba(0, 0, 0, 0.05) 0px 1px 2px 0px;
+  }
 }
 
 .header {
@@ -11,7 +40,8 @@
   gap: var(--space-10);
   padding: var(--space-7) var(--space-10);
   border-bottom: 1px solid var(--neutral-200);
-  background: var(--card);
+  border-radius: 0.5rem 0.5rem 0 0;
+  /* background: var(--card); */
 }
 
 .brand {
