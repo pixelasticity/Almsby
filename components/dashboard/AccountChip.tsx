@@ -44,12 +44,13 @@ export default function AccountChip({
   return (
     <AccountMenu
       menuLabel={t("menuLabel")}
-      trigger={(open, keyboard) => (
+            trigger={(open, keyboard, toggle) => (
         <MenuButton
           id="account-menu-button"
           chevron={open ? "up" : "down"}
           expanded={open}
           {...keyboard}
+          onClick={toggle}
         >
           <span className={styles.account}>
             <span data-slot="avatar" className={styles.avatar} aria-hidden="true">

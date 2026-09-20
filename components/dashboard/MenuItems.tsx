@@ -27,7 +27,8 @@ export function AccountMenu({
       and the key handling to spread on the trigger button. */
   trigger: (
     open: boolean,
-    keyboard: { onKeyDown: React.KeyboardEventHandler }
+    keyboard: { onKeyDown: React.KeyboardEventHandler },
+    toggle: () => void,
   ) => ReactNode;
   children: ReactNode;
   menuLabel: string;
@@ -104,7 +105,7 @@ export function AccountMenu({
 
   return (
     <span id={id} className={styles.wrap}>
-      {trigger(open, { onKeyDown: onTriggerKeyDown })}
+            {trigger(open, { onKeyDown: onTriggerKeyDown }, () => setOpen(!open))}
       {open && (
         <div
           role="menu"
