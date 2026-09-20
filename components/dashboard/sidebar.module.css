@@ -40,7 +40,7 @@
 }
 
 .section-top {
-    border-top-width: 1px;
+    border-bottom-width: 1px;
 }
 
 .section-main {
@@ -151,9 +151,15 @@
 .image {
     @apply outline -outline-offset-1 outline-black/10 dark:outline-white/10;
     display: inline-grid;
+    place-items: center;
     flex-shrink: 0;
     vertical-align: middle;
     border-radius: 999px;
+    background-color: var(--primary-200);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--blue-900);
+    user-select: none;
 }
 
 .image > *,
@@ -302,6 +308,7 @@
     width: 2.5rem;
     height: 2.5rem;
     display: inline-grid;
+    place-items: center;
     flex-shrink: 0;
     vertical-align: middle;
     border-radius: var(--avatar-radius);
@@ -309,6 +316,11 @@
     outline-width: 1px;
     outline-offset: calc(1px * -1);
     outline-color: #0000001a;
+    background-color: var(--primary-200);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--blue-900);
+    user-select: none;
 }
 
  @supports (color:color-mix(in lab, red, red)) {

@@ -9,7 +9,9 @@
     "settings": "Settings",
     "signOut": "Sign out",
     "primary": "Primary",
-    "skipToContent": "Skip to content"
+    "skipToContent": "Skip to content",
+    "accountFallbackName": "Me",
+    "workspaceFallbackName": "Workspace"
   },
   "landing": {
     "heroBadge": "GS1 Sunrise 2027 · EU Digital Product Passports",

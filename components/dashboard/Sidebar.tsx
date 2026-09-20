@@ -1,5 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { signOutAction } from "@/lib/auth/actions";
+import { getCurrentUser } from "@/lib/auth/server";
+import { getOwnedBusiness } from "@/lib/products/queries";
 import styles from "./sidebar.module.css";
 import MenuButton from "./MenuButton";
 import SidebarLink from "./SidebarLink";
@@ -13,16 +15,24 @@ const links = [
 /** Maker dashboard side bar: brand, primary nav links, sign-out. */
 export default async function Sidebar() {
   const t = await getTranslations("nav");
+  const user = await getCurrentUser();
+  // Null while onboarding is pending — the button still renders, the name
+  // falls back until the Business row exists.
+  const business = user ? await getOwnedBusiness(user.id) : null;
+  const accountName = t("accountFallbackName");
+  const accountEmail = user?.email ?? "";
+  const workspaceName = business?.name ?? t("workspaceFallbackName");
+  const initials = accountName.charAt(0).toUpperCase();
   return (
     <div className={styles.sidebar}>
         <nav className={styles.nav} aria-label={t("primary")}>
           <div className={styles['section-top']}>
             <span className={styles.wrap}>
               <MenuButton id="menu-button" chevron="down">
-                <span data-slot="avatar" className={styles.image}>
-                  <img alt="" src="https://catalyst-demo.tailwindui.com/teams/catalyst.svg"/>
+                <span data-slot="avatar" className={styles.image} aria-hidden="true">
+                  {workspaceName.charAt(0).toUpperCase()}
                 </span>
-                <span className={styles.truncate}>Catalyst</span>
+                <span className={styles.truncate}>{workspaceName}</span>
               </MenuButton>
             </span>
           </div>
@@ -111,12 +121,12 @@ export default async function Sidebar() {
             <span className={styles.wrap}>
               <MenuButton id="headlessui-menu-button-_r_3n_" chevron="up">
                 <span className={styles.account}>
-                  <span data-slot="avatar" className={styles.avatar}>
-                    <img alt="" src="https://catalyst-demo.tailwindui.com/users/erica.jpg"/>
+                  <span data-slot="avatar" className={styles.avatar} aria-hidden="true">
+                    {initials}
                   </span>
                   <span className={styles['account-details']}>
-                    <span className={`${styles['account-detail']} ${styles.name}`}>Erica</span>
-                    <span className={`${styles['account-detail']} ${styles.email}`}>erica@example.com</span>
+                    <span className={`${styles['account-detail']} ${styles.name}`}>{accountName}</span>
+                    <span className={`${styles['account-detail']} ${styles.email}`}>{accountEmail}</span>
                   </span>
                 </span>
               </MenuButton>
