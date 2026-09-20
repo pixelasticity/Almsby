@@ -1,10 +1,10 @@
 import { getTranslations } from "next-intl/server";
-import { signOutAction } from "@/lib/auth/actions";
 import { getCurrentUser } from "@/lib/auth/server";
 import { getOwnedBusiness } from "@/lib/products/queries";
 import styles from "./sidebar.module.css";
 import MenuButton from "./MenuButton";
 import SidebarLink from "./SidebarLink";
+import AccountChip from "./AccountChip";
 
 const links = [
     { name: "dashboard", path: "/dashboard" },
@@ -118,19 +118,7 @@ export default async function Sidebar() {
             </div>
           </div>
           <div className={styles['section-bottom']}>
-            <span className={styles.wrap}>
-              <MenuButton id="headlessui-menu-button-_r_3n_" chevron="up">
-                <span className={styles.account}>
-                  <span data-slot="avatar" className={styles.avatar} aria-hidden="true">
-                    {initials}
-                  </span>
-                  <span className={styles['account-details']}>
-                    <span className={`${styles['account-detail']} ${styles.name}`}>{accountName}</span>
-                    <span className={`${styles['account-detail']} ${styles.email}`}>{accountEmail}</span>
-                  </span>
-                </span>
-              </MenuButton>
-            </span>
+            <AccountChip name={accountName} email={accountEmail} initials={initials} />
           </div>
         </nav>
       </div>

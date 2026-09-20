@@ -22,6 +22,8 @@ type MenuButtonProps = {
   id?: string;
   /** Menu open state. No menus exist yet, so this is always false for now. */
   expanded?: boolean;
+  /** Forwarded key handling (e.g. the account menu's ArrowDown-to-open). */
+  onKeyDown?: React.KeyboardEventHandler<HTMLButtonElement>;
 };
 
 /**
@@ -36,6 +38,7 @@ export default function MenuButton({
   chevron = "down",
   id,
   expanded = false,
+  onKeyDown,
 }: MenuButtonProps) {
   const { hovered, active, focused, almsbyState, handlers } =
     useInteractionState();
@@ -51,6 +54,7 @@ export default function MenuButton({
       data-active={active ? "" : undefined}
       data-focus={focused ? "" : undefined}
       data-almsby-state={almsbyState}
+      onKeyDown={onKeyDown}
       {...handlers}
     >
       <span className={styles.target} aria-hidden="true"></span>

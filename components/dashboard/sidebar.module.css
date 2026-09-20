@@ -74,6 +74,7 @@
     line-height: 1.5;
     font-weight: 400;
     color: var(--neutral-950);
+    border: none;
 }
 
 .menu-button:hover,
@@ -132,6 +133,85 @@
         height: 1rem;
     }
 }
+
+.menu {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    left: 0;
+    z-index: 20;
+    min-width: 100%;
+    padding: 0.25rem;
+    border-radius: var(--radius-lg);
+    background-color: var(--card, #fff);
+    box-shadow: var(--shadow-popover, 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1));
+    outline: 1px solid var(--primary-300);
+}
+
+.menu-item {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: 0.625rem;
+    border-radius: var(--radius-md);
+    padding-inline: 0.75rem;
+    padding-block: 0.5rem;
+    text-align: left;
+    font-size: var(--text-md);
+    line-height: var(--leading-normal);
+    font-weight: 400;
+    color: var(--neutral-950);
+    cursor: default;
+}
+
+.menu-item:hover,
+.menu-item[data-hover],
+.menu-item:active,
+.menu-item[data-active],
+.menu-item:focus-visible,
+.menu-item[data-focus] {
+    background-color: var(--primary-300);
+    outline: none;
+}
+
+.menu-item:focus-visible,
+.menu-item[data-focus] {
+    outline: 2px solid var(--blue-400);
+    outline-offset: -2px;
+}
+
+.menu-item-icon {
+    display: inline-flex;
+    width: 1.25rem;
+    height: 1.25rem;
+    flex-shrink: 0;
+    color: var(--blue-500);
+}
+
+.menu-item-icon > svg {
+    width: 100%;
+    height: 100%;
+}
+
+.menu-item[data-focus] .menu-item-icon,
+.menu-item:focus-visible .menu-item-icon {
+    color: var(--blue-900);
+}
+
+.menu-item-label {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.menu-separator {
+    height: 1px;
+    margin-inline: 0.75rem;
+    margin-block: 0.25rem;
+    border: 0;
+    background-color: var(--primary-300);
+}
+
 
 .target {
     position: absolute;

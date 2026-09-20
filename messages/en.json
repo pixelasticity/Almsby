@@ -11,7 +11,9 @@
     "primary": "Primary",
     "skipToContent": "Skip to content",
     "accountFallbackName": "Me",
-    "workspaceFallbackName": "Workspace"
+    "workspaceFallbackName": "Workspace",
+    "myAccount": "My account",
+    "menuLabel": "Account menu"
   },
   "landing": {
     "heroBadge": "GS1 Sunrise 2027 · EU Digital Product Passports",
