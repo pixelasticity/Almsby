@@ -24,6 +24,8 @@ type MenuButtonProps = {
   expanded?: boolean;
   /** Forwarded key handling (e.g. the account menu's ArrowDown-to-open). */
   onKeyDown?: React.KeyboardEventHandler<HTMLButtonElement>;
+  /** Forwarded click handling (e.g. the account menu's open/close toggle). */
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
 };
 
 /**
@@ -39,6 +41,7 @@ export default function MenuButton({
   id,
   expanded = false,
   onKeyDown,
+  onClick,
 }: MenuButtonProps) {
   const { hovered, active, focused, almsbyState, handlers } =
     useInteractionState();
@@ -49,12 +52,15 @@ export default function MenuButton({
       type="button"
       aria-haspopup="menu"
       aria-expanded={expanded}
+      aria-controls={expanded ? "account-menu" : undefined}
       className={styles["menu-button"]}
       data-hover={hovered ? "" : undefined}
       data-active={active ? "" : undefined}
       data-focus={focused ? "" : undefined}
+      data-open={expanded ? "" : undefined}
       data-almsby-state={almsbyState}
       onKeyDown={onKeyDown}
+      onClick={onClick}
       {...handlers}
     >
       <span className={styles.target} aria-hidden="true"></span>

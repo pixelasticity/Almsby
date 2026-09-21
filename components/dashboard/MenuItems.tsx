@@ -40,12 +40,12 @@ export function AccountMenu({
 
   const root = () => document.getElementById(id);
 
-  const menuItems = () =>
+    const menuItems = () =>
     Array.from(
       root()?.querySelectorAll<HTMLAnchorElement | HTMLButtonElement>(
         '[role="menuitem"]'
       ) ?? []
-    );
+    ).filter((el) => !el.hasAttribute("data-disabled"));
 
   // Light dismiss: close on outside pointer-down.
   useEffect(() => {
@@ -64,7 +64,7 @@ export function AccountMenu({
 
   const openMenu = () => {
     setOpen(true);
-    // Focus lands on the first item after render.
+    // Focus lands on the first non-disabled item after render.
     requestAnimationFrame(() => menuItems()[0]?.focus());
   };
 
@@ -109,9 +109,11 @@ export function AccountMenu({
       {open && (
         <div
           role="menu"
-          aria-label={menuLabel}
-          tabIndex={-1}
+          id="account-menu"
+          aria-labelledby="account-menu-button"
+          tabIndex={0}
           className={styles.menu}
+          data-anchor="top start"
           data-open=""
           onKeyDown={onKeyDown}
         >
@@ -124,17 +126,23 @@ export function AccountMenu({
   );
 }
 
-/** One menu row: a link (href) or a button (action). Closes the menu on pick. */
+/** One menu row: a link (href) or a button (action). Closes the menu on pick.
+ *  A disabled row is exposed as `aria-disabled` and stripped of its `href`
+ *  (placeholder anchor) / given a native `disabled` button, so it is not
+ *  activatable or natively focusable. It remains in the DOM for screen readers
+ *  but is skipped by the menu's arrow-key navigation. */
 export function MenuItem({
   href,
   action,
   children,
   icon,
+  disabled = false,
 }: {
   href?: string;
   action?: () => void;
   children: ReactNode;
   icon: ReactNode;
+  disabled?: boolean;
 }) {
   const { hovered, active, focused, almsbyState, handlers } =
     useInteractionState();
@@ -144,33 +152,58 @@ export function MenuItem({
     role: "menuitem" as const,
     tabIndex: -1,
     className: styles["menu-item"],
-    "data-hover": hovered ? "" : undefined,
-    "data-active": active ? "" : undefined,
-    "data-focus": focused ? "" : undefined,
+    "aria-disabled": disabled || undefined,
+    "data-disabled": disabled ? "" : undefined,
+    "data-hover": disabled ? undefined : hovered ? "" : undefined,
+    "data-active": disabled ? undefined : active ? "" : undefined,
+    "data-focus": disabled ? undefined : focused ? "" : undefined,
     "data-almsby-state": almsbyState,
-    onClick: () => {
-      action?.();
-      onClose();
-    },
+    onClick: disabled
+      ? undefined
+      : () => {
+          action?.();
+          onClose();
+        },
   };
 
   const row = (
     <>
-      <span data-slot="icon" className={styles["menu-item-icon"]} aria-hidden="true">
-        {icon}
-      </span>
+      {icon}
       <span data-slot="label" className={styles["menu-item-label"]}>
         {children}
       </span>
     </>
   );
 
+  if (disabled) {
+    // Anchor without href is a placeholder (not focusable / not a link), with
+    // aria-disabled surfaced to AT. We use the button form for full inert
+    // suppression (real disabled => focus + click suppressed by the browser).
+    return (
+      <button
+        {...shared}
+        {...handlers}
+        type="button"
+        disabled
+      >
+        {row}
+      </button>
+    );
+  }
+
+  // Enabled path — keep interaction handlers and activation.
+  const enabledShared = {
+    ...shared,
+    "aria-disabled": undefined,
+    "data-disabled": undefined,
+  };
+
   return href ? (
-    <a {...shared} {...handlers} href={href}>
+    <a {...enabledShared} {...handlers} href={href}>
       {row}
     </a>
   ) : (
-    <button {...shared} {...handlers} type="button">
+    <button {...enabledShared} {...handlers} type="button">
       {row}
     </button>
   );
