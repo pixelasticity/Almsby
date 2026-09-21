@@ -15,7 +15,8 @@
     "accountFallbackName": "Mi cuenta",
     "workspaceFallbackName": "Espacio de trabajo",
     "myAccount": "Mi cuenta",
-    "menuLabel": "Menú de cuenta"
+    "menuLabel": "Menú de cuenta",
+    "recentProducts": "Productos recientes"
   },
   "landing": {
     "heroBadge": "GS1 Sunrise 2027 · Pasaportes Digitales de Producto de la UE",

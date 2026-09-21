@@ -1,19 +1,26 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { getOwnedBusiness, getOwnedProduct } from "@/lib/products/queries";
+import {
+  getOwnedBusiness,
+  getOwnedProduct,
+  getRecentProducts,
+} from "@/lib/products/queries";
 
 // Mock the Prisma delegate surface; queries.ts only touches these two.
-const { productFindFirst, businessFindFirst } = vi.hoisted(() => ({
-  productFindFirst: vi.fn(),
-  businessFindFirst: vi.fn(),
-}));
+const { productFindFirst, productFindMany, businessFindFirst } = vi.hoisted(
+  () => ({
+    productFindFirst: vi.fn(),
+    productFindMany: vi.fn(),
+    businessFindFirst: vi.fn(),
+  })
+);
 
 // cache() outside a React render is environment-dependent — treat wrappers
 // as plain functions so tests assert scoping/projection, not memoization.
-vi.mock("react", () => ({ cache: <T,>(fn: T) => fn }));
+vi.mock("react", () => ({ cache: <T>(fn: T) => fn }));
 
 vi.mock("@/lib/db", () => ({
   getDb: () => ({
-    product: { findFirst: productFindFirst },
+    product: { findFirst: productFindFirst, findMany: productFindMany },
     business: { findFirst: businessFindFirst },
   }),
 }));
@@ -62,5 +69,43 @@ describe("getOwnedBusiness", () => {
 
   it("returns null while onboarding is pending", async () => {
     await expect(getOwnedBusiness("user_2")).resolves.toBeNull();
+  });
+});
+
+describe("getRecentProducts", () => {
+  beforeEach(() => {
+    productFindMany.mockReset().mockResolvedValue([]);
+  });
+
+  it("scopes to the owner, orders by createdAt desc, takes 4, projects id+name", async () => {
+    await getRecentProducts("user_1");
+    expect(productFindMany).toHaveBeenCalledWith({
+      where: { business: { ownerId: "user_1" } },
+      orderBy: { createdAt: "desc" },
+      take: 4,
+      select: { id: true, name: true },
+    });
+  });
+
+  it("honors a custom limit", async () => {
+    await getRecentProducts("user_1", 10);
+    expect(productFindMany).toHaveBeenCalledWith(
+      expect.objectContaining({ take: 10 })
+    );
+  });
+
+  it("returns the rows projected as { id, name }", async () => {
+    const rows = [
+      { id: "p1", name: "Tee" },
+      { id: "p2", name: "Hood" },
+    ];
+    productFindMany.mockResolvedValue(rows);
+    await expect(getRecentProducts("user_1")).resolves.toEqual(rows);
+  });
+
+  it("returns an empty array when the user has no products", async () => {
+    await expect(getRecentProducts("user_with_no_products")).resolves.toEqual(
+      []
+    );
   });
 });

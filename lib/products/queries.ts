@@ -14,6 +14,31 @@ export const getOwnedBusiness = cache(async (userId: string) => {
   return db.business.findFirst({ where: { ownerId: userId } });
 });
 
+/** What the sidebar's "Recent Products" rows actually render. */
+export type RecentProduct = { id: string; name: string };
+
+/**
+ * The user's most-recently created products for the sidebar's "Recent
+ * Products" section. Ownership-scoped to the caller's business, so another
+ * business's id yields an empty array. Narrow projection (id, name) — only
+ * what the sidebar needs.
+ *
+ * The default limit of 4 is sized so the section fits the sidebar's vertical
+ * budget on shorter viewports — it is a layout choice, not a data limit.
+ * Covered by tests/queries.test.ts.
+ */
+export const getRecentProducts = cache(
+  async (userId: string, limit = 4): Promise<RecentProduct[]> => {
+    const db = getDb();
+    return db.product.findMany({
+      where: { business: { ownerId: userId } },
+      orderBy: { createdAt: "desc" },
+      take: limit,
+      select: { id: true, name: true },
+    });
+  }
+);
+
 async function findOwnedProduct(productId: string, userId: string) {
   const db = getDb();
   return db.product.findFirst({
