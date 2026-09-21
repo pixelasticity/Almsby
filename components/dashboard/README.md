@@ -6,7 +6,7 @@ Sidebar menu components and their shared foundation: trigger button, dropdown me
 
 | File | Purpose |
 |---|---|
-| `Sidebar.tsx` | Root sidebar shell (the container holding the nav column). |
+| `Sidebar.tsx` | Root sidebar shell (the container holding the nav column). Async server component: fetches the business + recent products, then renders nav, pinned links, the Recent Products section, and the account chip. |
 | `DashboardNav.tsx` | Top nav region. |
 | `SidebarLink.tsx` | A pinned nav link (left rail). |
 | `AccountChip.tsx` | Bottom account chip + its dropdown (`AccountMenu` + `MenuItem`s + `MenuSeparator`). |
@@ -14,6 +14,49 @@ Sidebar menu components and their shared foundation: trigger button, dropdown me
 | `MenuItems.tsx` | `AccountMenu` (state, keyboard, positioning), `MenuItem` (link-or-button row), `MenuSeparator`. |
 | `sidebar.module.css` | All sidebar styling (CSS module). |
 | `lib/hooks/useInteractionState.ts` | Shared `data-hover` / `data-active` / `data-focus` / `data-almsby-state` reporter used by `MenuButton`. |
+
+## Recent Products (sidebar data flow)
+
+`Sidebar.tsx` is an async server component. Each render resolves three things,
+in this order:
+
+| Step | Source | Null case |
+|---|---|---|
+| Signed-in user | `getCurrentUser()` — `lib/auth/server.ts` | signed out |
+| Business | `getOwnedBusiness(user.id)` — `lib/products/queries.ts` | onboarding pending |
+| Recent products | `getRecentProducts(user.id)` — same module | no products yet |
+
+Business and products are fetched **in parallel** (`Promise.all`) because
+neither depends on the other — so the extra read adds no wall-clock latency to
+the shared dashboard layout the sidebar renders inside. Both helpers are
+`cache()`-wrapped, so any page fetching the same rows in the same request
+shares one query instead of re-issuing it.
+
+The rules this section follows (each one is load-bearing):
+
+- **Ownership-scoped.** `where: { business: { ownerId: userId } }` — a user can
+  never read another business's rows, even with a guessed id.
+- **Narrow projection.** `select: { id, name }` only. Nothing else is fetched.
+- **Limit 4 by default**, sized so the section fits the sidebar's vertical
+  budget on shorter viewports. It is a layout choice, not a data limit; the
+  sidebar relies on the query default so the number lives in one place.
+- **Newest first.** `orderBy: { createdAt: "desc" }` — "recent" currently means
+  "most recently created"; `Product` has no `updatedAt` column.
+- **Hidden when empty.** The heading *and* rows are omitted when there are no
+  products — a "Recent Products" heading over nothing is dead UI. Because the
+  section is conditional, it never renders a placeholder skeleton.
+- **Fail-closed, never silent.** A failed query is `console.error`'d and the
+  section renders empty; the sidebar itself still renders. Silent swallowing is
+  forbidden here (AGENTS.md rule 1) — the `.catch` logs the original error
+  before returning the empty fallback.
+- **Real links.** Rows use `SidebarLink` → `/products/[id]`, so they inherit
+  `aria-current` + the left-rail indicator exactly like the pinned nav rows.
+  The `/events/NNNN` rows that used to sit here were inherited Catalyst demo
+  data; they are gone.
+
+Query behavior is covered by `tests/queries.test.ts` (ownership scoping,
+`orderBy`, `take`, projection, custom limit, empty case). There is no
+component-level test for the section itself yet — see Gotchas.
 
 ## The pattern, end-to-end
 
