@@ -21,17 +21,25 @@ const MenuCloseContext = createContext<() => void>(() => {});
 export function AccountMenu({
   trigger,
   children,
-  menuLabel,
+  menuId = "account-menu",
+  labelledBy,
+  anchor = "top start",
 }: {
   /** Renders the trigger; receives the open state (so the chevron can flip)
       and the key handling to spread on the trigger button. */
   trigger: (
     open: boolean,
     keyboard: { onKeyDown: React.KeyboardEventHandler },
-    toggle: () => void,
+    toggle: () => void
   ) => ReactNode;
   children: ReactNode;
-  menuLabel: string;
+  /** id for the menu div (also the aria-controls target for the trigger). */
+  menuId?: string;
+  /** id of the trigger button (aria-labelledby source). Required for correct menu labeling. */
+  labelledBy?: string;
+  /** data-anchor value for CSS placement (see sidebar.module.css).
+      "top start" opens above, left-aligned; "bottom start" below, left-aligned. */
+  anchor?: string;
 }) {
   const [open, setOpen] = useState(false);
   // DOM access is by id at event time — no refs, so the React compiler's
@@ -40,7 +48,7 @@ export function AccountMenu({
 
   const root = () => document.getElementById(id);
 
-    const menuItems = () =>
+  const menuItems = () =>
     Array.from(
       root()?.querySelectorAll<HTMLAnchorElement | HTMLButtonElement>(
         '[role="menuitem"]'
@@ -105,15 +113,15 @@ export function AccountMenu({
 
   return (
     <span id={id} className={styles.wrap}>
-            {trigger(open, { onKeyDown: onTriggerKeyDown }, () => setOpen(!open))}
+      {trigger(open, { onKeyDown: onTriggerKeyDown }, () => setOpen(!open))}
       {open && (
         <div
           role="menu"
-          id="account-menu"
-          aria-labelledby="account-menu-button"
+          id={menuId}
+          aria-labelledby={labelledBy}
           tabIndex={0}
           className={styles.menu}
-          data-anchor="top start"
+          data-anchor={anchor}
           data-open=""
           onKeyDown={onKeyDown}
         >
@@ -180,12 +188,7 @@ export function MenuItem({
     // aria-disabled surfaced to AT. We use the button form for full inert
     // suppression (real disabled => focus + click suppressed by the browser).
     return (
-      <button
-        {...shared}
-        {...handlers}
-        type="button"
-        disabled
-      >
+      <button {...shared} {...handlers} type="button" disabled>
         {row}
       </button>
     );
