@@ -9,6 +9,7 @@ import GtinSetup from "@/components/products/GtinSetup";
 import DualMarkLabelDeferred from "@/components/label/DualMarkLabelDeferred";
 import ErrorBoundary from "@/components/ui/ErrorBoundary";
 import { statusI18nKey } from "@/lib/products/validate";
+import Breadcrumbs from "@/components/dashboard/Breadcrumbs";
 import styles from "./page.module.css";
 import storyStyles from "./story-entry.module.css";
 
@@ -40,6 +41,7 @@ export default async function ProductDetailPage({
 }) {
   const { id } = await params;
   const t = await getTranslations("products");
+  const tNav = await getTranslations("nav");
   const user = await getCurrentUser();
 
   if (!user) notFound();
@@ -70,9 +72,16 @@ export default async function ProductDetailPage({
 
   return (
     <div className={styles.page}>
-      <Link href="/products" className={styles.back}>
-        <span aria-hidden="true">←</span> {t("backToProducts")}
-      </Link>
+      {/* Trail replaces the old "← Back to products" link: the parent step is
+          the way back, so a second affordance would be a second source of
+          truth for the same navigation. */}
+      <Breadcrumbs
+        items={[
+          { label: tNav("dashboard"), href: "/dashboard" },
+          { label: t("title"), href: "/products" },
+          { label: title },
+        ]}
+      />
 
       <header className={styles.head}>
         <h1>{title}</h1>
@@ -97,7 +106,11 @@ export default async function ProductDetailPage({
               <h3 className={styles.cardTitle}>{t("barcodeSectionTitle")}</h3>
               <ErrorBoundary
                 name="DualMarkLabel (product page)"
-                fallback={<p className={styles.unverifiedNote}>{t("barcodeRenderError")}</p>}
+                fallback={
+                  <p className={styles.unverifiedNote}>
+                    {t("barcodeRenderError")}
+                  </p>
+                }
               >
                 <DualMarkLabelDeferred gtin14={gtin14} />
               </ErrorBoundary>
@@ -119,7 +132,6 @@ export default async function ProductDetailPage({
     </div>
   );
 }
-
 
 /**
  * Entry point for the Story Studio: shows the story publish status and

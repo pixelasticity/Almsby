@@ -4,20 +4,17 @@
  * symbols at 1:1. Symbols are decode-verified per-generation before print
  * (#7); print-ready downloads and exact-size printing land in #9 below.
  */
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { getCurrentUser } from "@/lib/auth/server";
 import { getDb } from "@/lib/db";
 import { toGtin14 } from "@/lib/gs1/gtin";
 import { deriveLegacyValue } from "@/lib/gs1/barcode";
-import {
-  verifyBarcode,
-  warmBarcodeVerifier,
-} from "@/lib/gs1/verify";
+import { verifyBarcode, warmBarcodeVerifier } from "@/lib/gs1/verify";
 import DualMarkLabel from "@/components/label/DualMarkLabel";
 import ErrorBoundary from "@/components/ui/ErrorBoundary";
 import LabelDownloads from "@/components/label/LabelDownloads";
+import Breadcrumbs from "@/components/dashboard/Breadcrumbs";
 import styles from "./label.module.css";
 export default async function ProductLabelPage({
   params,
@@ -26,6 +23,7 @@ export default async function ProductLabelPage({
 }) {
   const { id } = await params;
   const t = await getTranslations("products");
+  const tNav = await getTranslations("nav");
   const user = await getCurrentUser();
   if (!user) notFound();
 
@@ -66,15 +64,21 @@ export default async function ProductLabelPage({
   return (
     <div className={styles.page}>
       <div className={styles.noPrint}>
-        <Link href={`/products/${id}`}>← {t("backToProducts")}</Link>
+        {/* Print-hidden with the rest of the on-screen chrome — a breadcrumb
+            trail on a 1:1 label sheet would print over the label. */}
+        <Breadcrumbs
+          className={styles.crumbNav}
+          items={[
+            { label: tNav("dashboard"), href: "/dashboard" },
+            { label: t("title"), href: "/products" },
+            { label: name, href: `/products/${id}` },
+            { label: t("label") },
+          ]}
+        />
         <p className={styles.hint}>{t("labelPrintHint")}</p>
         {gtin14 && (
           <p
-            className={
-              verified
-                ? styles.verifiedBadge
-                : styles.failedBadge
-            }
+            className={verified ? styles.verifiedBadge : styles.failedBadge}
             role="status"
           >
             {verified ? t("labelVerified") : t("labelFailed")}

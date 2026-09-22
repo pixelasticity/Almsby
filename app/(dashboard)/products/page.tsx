@@ -5,6 +5,7 @@ import { getCurrentUser } from "@/lib/auth/server";
 import { getDb } from "@/lib/db";
 import { statusI18nKey } from "@/lib/products/validate";
 import ProductForm from "@/components/products/ProductForm";
+import Breadcrumbs from "@/components/dashboard/Breadcrumbs";
 import styles from "./products.module.css";
 
 type ListProduct = { id: string; name: string; status: string };
@@ -16,6 +17,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function ProductsPage() {
   const t = await getTranslations("products");
+  const tNav = await getTranslations("nav");
   const user = await getCurrentUser();
   let products: ListProduct[] = [];
   let loadError = false;
@@ -37,6 +39,13 @@ export default async function ProductsPage() {
 
   return (
     <div className={styles.page}>
+      <Breadcrumbs
+        items={[
+          { label: tNav("dashboard"), href: "/dashboard" },
+          { label: t("title") },
+        ]}
+      />
+
       <header className={styles.head}>
         <h1>{t("title")}</h1>
         <p>{t("createSub")}</p>

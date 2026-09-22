@@ -16,7 +16,8 @@
     "workspaceFallbackName": "Workspace",
     "myAccount": "My account",
     "menuLabel": "Account menu",
-    "recentProducts": "Recent products"
+    "recentProducts": "Recent products",
+    "breadcrumb": "Breadcrumb"
   },
   "landing": {
     "heroBadge": "GS1 Sunrise 2027 · EU Digital Product Passports",
@@ -138,6 +139,7 @@
     "gtinErrorInUse": "That GTIN is already attached to another product in your business.",
     "gtinErrorSave": "Could not save the GTIN. Please try again.",
     "backToProducts": "Back to products",
+    "label": "Label",
     "concierge": {
       "choiceTitle": "Set up your product barcode",
       "choiceBody": "To sell with major retailers and enable digital scanning, your product needs a unique barcode identifier (GTIN). If you're new to this, we'll walk you through it step by step.",

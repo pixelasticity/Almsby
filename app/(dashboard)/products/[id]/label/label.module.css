@@ -5,9 +5,13 @@
 .noPrint {
   margin-bottom: var(--space-10);
 }
-.noPrint a {
-  color: var(--blue-500);
-  text-decoration: none;
+/* The trail is on-screen chrome like the hint, so it must not reach paper. The
+   default trail rhythm (breadcrumbs.module.css) is inherited unchanged — this
+   class therefore declares NO margin, so there is nothing to cascade against. */
+@media print {
+  .crumbNav {
+    display: none !important;
+  }
 }
 .hint {
   margin: var(--space-3) 0 0;

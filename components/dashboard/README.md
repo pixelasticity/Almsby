@@ -1,6 +1,6 @@
 # components/dashboard/
 
-Sidebar menu components and their shared foundation: trigger button, dropdown menu container, and rows/separator primitives.
+Sidebar and dashboard chrome: the sidebar menu components (trigger button, dropdown menu container, rows/separator primitives), the sidebar's Recent Products data section, and the breadcrumb trail.
 
 ## File map
 
@@ -13,6 +13,8 @@ Sidebar menu components and their shared foundation: trigger button, dropdown me
 | `MenuButton.tsx` | Shared trigger shell: touch-target overlay, content slot, chevron, and the `data-*` interaction reporting the CSS keys off. |
 | `MenuItems.tsx` | `AccountMenu` (state, keyboard, positioning), `MenuItem` (link-or-button row), `MenuSeparator`. |
 | `sidebar.module.css` | All sidebar styling (CSS module). |
+| `Breadcrumbs.tsx` | Dashboard breadcrumb trail. Server Component; renders nothing for an empty trail. |
+| `breadcrumbs.module.css` | Breadcrumb trail styling. |
 | `lib/hooks/useInteractionState.ts` | Shared `data-hover` / `data-active` / `data-focus` / `data-almsby-state` reporter used by `MenuButton`. |
 
 ## Recent Products (sidebar data flow)
@@ -57,6 +59,74 @@ The rules this section follows (each one is load-bearing):
 Query behavior is covered by `tests/queries.test.ts` (ownership scoping,
 `orderBy`, `take`, projection, custom limit, empty case). There is no
 component-level test for the section itself yet — see Gotchas.
+
+## Breadcrumbs
+
+`Breadcrumbs.tsx` is the dashboard's single hierarchy affordance. It is a
+**Server Component** — a trail is static per render, so it needs none of the
+client machinery `SidebarLink` carries (interaction state, active-route
+detection). Pages pass an explicit array:
+
+````tsx
+<Breadcrumbs
+  items={[
+    { label: tNav("dashboard"), href: "/dashboard" },
+    { label: t("title"), href: "/products" },
+    { label: title }, // current page: no href
+  ]}
+/>
+````
+
+### Rules
+
+- **Explicit items, never derived from the pathname.** Dynamic segments are
+  ids, so a trail built from `usePathname()` would show an id where a product
+  name belongs — and could not be translated. Every label must be a translated
+  string the page already has.
+- **The last crumb is not a link.** It renders as `<span aria-current="page">`.
+  A link to the page you are already on is a wasted tab stop.
+- **The landmark is named.** The `<nav>` is labelled from `nav.breadcrumb`
+  (both locales), so AT can distinguish it from the sidebar's `nav[aria-label="Primary"]`.
+- **Separators are decorative.** The `/` sits in an `aria-hidden` span; the
+  `<ol>` structure already conveys the sequence.
+- **The trail replaces back links.** Do not pair a trail with a
+  "← Back to products" link — the parent crumb *is* the way back. Two
+  affordances for one destination is two sources of truth for the same
+  navigation. (The product detail page's old back link was removed for exactly
+  this reason.)
+- **An empty trail renders nothing.** That is how the dashboard root opts out:
+  it is the trail's own starting point, so a lone "Dashboard" crumb is noise.
+
+### Where it is used
+
+| Route | Trail |
+|---|---|
+| `/dashboard` | (none — the trail root) |
+| `/products` | Dashboard / Products |
+| `/products/[id]` | Dashboard / Products / *product name* |
+| `/products/[id]/label` | Dashboard / Products / *product name* / Label |
+| `/settings` | Dashboard / Settings |
+
+### Spacing and print
+
+The trail carries one default rule,
+`:where(.crumbs) { margin-block-end: var(--space-7) }`, written with `:where()`
+so it contributes **zero specificity** — a caller's `className` therefore wins
+deterministically, with no dependence on stylesheet order. The label page uses
+this to print-hide the trail with the rest of the on-screen chrome: its
+`label.module.css` declares only `display: none` under `@media print`, and
+deliberately **no** margin, so there is nothing to cascade against.
+
+### Still open
+
+- **Story Studio has no trail.** Its root is a full-height client shell
+  (`.studio { flex: 1 0 0; min-height: 0 }`, `.main { overflow: hidden }`) whose
+  own header already shows the product name plus a "Story Studio" subtitle.
+  Adding a trail means either mirroring that flex context in a wrapper or
+  putting a slot inside the client component — a layout decision, not a
+  mechanical one.
+- **`/products/[id]/label/print`** still uses a `← Back to products` link. It
+  predates this component and was left alone this pass.
 
 ## The pattern, end-to-end
 

@@ -1,0 +1,77 @@
+/*
+ * Breadcrumb trail (components/dashboard/Breadcrumbs.tsx).
+ *
+ * Looks only — the trail has no vertical rhythm of its own beyond the default
+ * below, so a page can drop it above a heading without re-tuning padding.
+ */
+.crumbs {
+  font-size: var(--text-sm);
+}
+
+/*
+ * Default gap between the trail and whatever follows it. Declared with
+ * :where() so it contributes ZERO specificity: any className a caller passes
+ * wins deterministically, with no reliance on stylesheet order. A caller that
+ * needs no gap (or a different one) just declares its own margin-block-end.
+ */
+:where(.crumbs) {
+  margin-block-end: var(--space-7);
+}
+
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.separator {
+  color: var(--neutral-400);
+  /* Not a target for selection or AT: purely a visual delimiter. */
+  user-select: none;
+}
+
+.link {
+  color: var(--neutral-600);
+  text-decoration: none;
+  /* Long labels (product names) wrap inside the trail rather than truncating —
+     a clipped breadcrumb is an unreadable breadcrumb. */
+  overflow-wrap: anywhere;
+}
+
+.link:hover {
+  color: var(--blue-500);
+  text-decoration: underline;
+}
+
+.link:focus-visible {
+  outline: 2px solid var(--blue-500);
+  outline-offset: 2px;
+  border-radius: var(--radius-xs);
+}
+
+.current {
+  color: var(--neutral-900);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+/*
+ * A non-final step with no destination: rendered as text, NOT as the current
+ * page. Kept visually distinct from .current so "you are here" stays
+ * unambiguous. Declares no :hover — it is not interactive.
+ */
+.plain {
+  color: var(--neutral-600);
+  overflow-wrap: anywhere;
+}

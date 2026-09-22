@@ -16,7 +16,8 @@
     "workspaceFallbackName": "Espacio de trabajo",
     "myAccount": "Mi cuenta",
     "menuLabel": "Menú de cuenta",
-    "recentProducts": "Productos recientes"
+    "recentProducts": "Productos recientes",
+    "breadcrumb": "Ruta de navegación"
   },
   "landing": {
     "heroBadge": "GS1 Sunrise 2027 · Pasaportes Digitales de Producto de la UE",
@@ -138,6 +139,7 @@
     "gtinErrorInUse": "Ese GTIN ya está asociado a otro producto de tu negocio.",
     "gtinErrorSave": "No se pudo guardar el GTIN. Inténtalo de nuevo.",
     "backToProducts": "Volver a productos",
+    "label": "Etiqueta",
     "concierge": {
       "choiceTitle": "Configura el código de barras de tu producto",
       "choiceBody": "Para vender en grandes minoristas y habilitar el escaneo digital, tu producto necesita un identificador de código de barras único (GTIN). Si eres nuevo en esto, te guiaremos paso a paso.",
