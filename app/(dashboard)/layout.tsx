@@ -1,7 +1,7 @@
 import { getTranslations } from "next-intl/server";
-import DashboardNav from "@/components/dashboard/DashboardNav";
 import styles from "./layout.module.css";
 import Sidebar from "@/components/dashboard/Sidebar";
+import Breadcrumbs from "@/components/dashboard/Breadcrumbs";
 
 export default async function DashboardLayout({
   children,
@@ -17,7 +17,6 @@ export default async function DashboardLayout({
         <a href="#main-content" className={styles.skipLink}>
           {t("skipToContent")}
         </a>
-        <DashboardNav />
         <main id="main-content" className={styles.main}>
           {children}
         </main>
