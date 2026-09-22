@@ -117,14 +117,35 @@ this to print-hide the trail with the rest of the on-screen chrome: its
 `label.module.css` declares only `display: none` under `@media print`, and
 deliberately **no** margin, so there is nothing to cascade against.
 
+### Workspaces are exempt
+
+**Story Studio deliberately has no trail.** It is a full-height workspace
+(`.studio { flex: 1 0 0; min-height: 0 }`, `.main { overflow: hidden }`) — a
+place you *work in*, not a document you navigate through — and it already
+answers both questions a trail exists to answer:
+
+- *Where am I?* — its own header shows the product name as the h1 with "Story
+  Studio" as the subtitle.
+- *How do I get back?* — the persistent entry link from the product detail page,
+  and the sidebar's Products row stays current.
+
+A trail above that header would be a third rendering of the same hierarchy while
+shrinking the panes the page exists to show. Breadcrumbs earn their cost on
+pages you pass through, not pages you work in — the same reason mail composers
+and design canvases don't carry them.
+
+If studio wayfinding ever does need help, the right fix is a dirty-state-aware
+"back" affordance inside the studio's own header — **not** another navigation
+row above it, which would imply a reliable exit even while the page holds
+unsaved changes.
+
+Treatment rule: **document-shaped pages** (products, product detail, label,
+settings) follow the trail standard above. **Workspaces** (Story Studio, and
+anything similar to come) do not — document the exemption here with the
+reasoning when you add one.
+
 ### Still open
 
-- **Story Studio has no trail.** Its root is a full-height client shell
-  (`.studio { flex: 1 0 0; min-height: 0 }`, `.main { overflow: hidden }`) whose
-  own header already shows the product name plus a "Story Studio" subtitle.
-  Adding a trail means either mirroring that flex context in a wrapper or
-  putting a slot inside the client component — a layout decision, not a
-  mechanical one.
 - **`/products/[id]/label/print`** still uses a `← Back to products` link. It
   predates this component and was left alone this pass.
 

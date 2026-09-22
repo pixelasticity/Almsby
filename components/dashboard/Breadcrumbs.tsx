@@ -30,6 +30,11 @@ export type BreadcrumbItem = {
  * Do not pair them with a separate "back to …" link: one trail that includes
  * the parent is the way back, and two competing affordances is two sources of
  * truth for the same navigation.
+ *
+ * Document-shaped pages only. Workspaces (Story Studio) deliberately omit the
+ * trail — its own header already answers "where am I" and "how do I get back",
+ * so a trail would duplicate it while shrinking the panes it exists to show.
+ * Full rationale in components/dashboard/README.md.
  */
 export default async function Breadcrumbs({
   items,
