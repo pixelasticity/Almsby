@@ -9,14 +9,6 @@ import { normalizeTipTapContent } from "@/lib/story/tiptap";
 
 export type StudioActionState = { error?: string };
 
-/** Ownership-checked upsert of the product's StoryPage content. */
-async function getOwnedStoryPage(productId: string, userId: string) {
-  const product = await getOwnedProduct(productId, userId);
-  if (!product) return null;
-  const db = getDb();
-  return db.storyPage.findUnique({ where: { productId } });
-}
-
 /**
  * Save TipTap JSON content to the StoryPage. Creates the StoryPage row on
  * first save (a product may exist without one until the maker starts editing).
