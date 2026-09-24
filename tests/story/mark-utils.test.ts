@@ -1,12 +1,14 @@
 import { describe, expect, it } from "vitest";
 import { isValidElement, type ReactElement } from "react";
-import { renderMark, safeHref } from "@/lib/story/markUtils";
+import { findUnsafeHref, renderMark, safeHref } from "@/lib/story/markUtils";
 
 /**
  * Story links are stored in an unconstrained Json? column
  * (StoryPage.bodyContent) and rendered on the PUBLIC story page, so a bad href
- * executes in a consumer's browser, not just the maker's. These tests pin the
- * render-side allowlist that stands in for the missing write-side check.
+ * executes in a consumer's browser, not just the maker's. These tests pin BOTH
+ * gates: the render-side allowlist (safeHref / renderMark, for legacy rows)
+ * and the write-side walker (findUnsafeHref, which lets the story actions
+ * reject a hostile href before it is ever persisted).
  */
 
 describe("safeHref — hrefs that may become an anchor", () => {
@@ -105,5 +107,109 @@ describe("renderMark — link marks", () => {
     expect((renderMark("italic", "i") as ReactElement).type).toBe("em");
     expect((renderMark("strike", "s") as ReactElement).type).toBe("del");
     expect(renderMark("underline", "u")).toBe("u");
+  });
+});
+
+describe("findUnsafeHref — write-side walker", () => {
+  const doc = (paragraphContent: unknown) => ({
+    type: "doc",
+    content: [{ type: "paragraph", content: paragraphContent }],
+  });
+
+  it("returns null for a doc with no links at all", () => {
+    expect(findUnsafeHref(null)).toBeNull();
+    expect(findUnsafeHref(undefined)).toBeNull();
+    expect(findUnsafeHref(42)).toBeNull();
+    expect(findUnsafeHref(doc([]))).toBeNull();
+    expect(findUnsafeHref(doc([{ type: "text", text: "plain" }]))).toBeNull();
+  });
+
+  it("returns null when every link href is allowed", () => {
+    expect(
+      findUnsafeHref(
+        doc([
+          {
+            type: "text",
+            text: "our story",
+            marks: [{ type: "link", attrs: { href: "https://example.com" } }],
+          },
+        ])
+      )
+    ).toBeNull();
+  });
+
+  it("finds an unsafe href nested deep in the doc", () => {
+    const hostile = doc([
+      { type: "text", text: "fine" },
+      {
+        type: "text",
+        text: "click",
+        marks: [{ type: "link", attrs: { href: "javascript:alert(1)" } }],
+      },
+    ]);
+    expect(findUnsafeHref(hostile)).toBe("javascript:alert(1)");
+  });
+
+  it("reports every href form the renderer's allowlist rejects", () => {
+    for (const href of ["//evil.com", "/\\evil.com", "data:text/html,x"]) {
+      expect(
+        findUnsafeHref(
+          doc([
+            {
+              type: "text",
+              text: "x",
+              marks: [{ type: "link", attrs: { href } }],
+            },
+          ])
+        )
+      ).toBe(href);
+    }
+  });
+
+  it("treats a missing/absent href as benign (renderMark drops the anchor)", () => {
+    expect(
+      findUnsafeHref(
+        doc([{ type: "text", text: "x", marks: [{ type: "link", attrs: {} }] }])
+      )
+    ).toBeNull();
+    expect(
+      findUnsafeHref(doc([{ type: "text", text: "x", marks: [{ type: "link" }] }]))
+    ).toBeNull();
+    expect(
+      findUnsafeHref(
+        doc([
+          {
+            type: "text",
+            text: "x",
+            marks: [{ type: "link", attrs: { href: null } }],
+          },
+        ])
+      )
+    ).toBeNull();
+  });
+
+  it("reports non-string hrefs with a type marker instead of crashing", () => {
+    expect(
+      findUnsafeHref(
+        doc([
+          {
+            type: "text",
+            text: "x",
+            marks: [{ type: "link", attrs: { href: 42 } }],
+          },
+        ])
+      )
+    ).toBe("non-string href (number)");
+  });
+
+  it("ignores non-link marks and malformed nodes", () => {
+    expect(
+      findUnsafeHref(
+        doc([
+          { type: "text", text: "x", marks: [{ type: "bold" }, "stray", null] },
+        ])
+      )
+    ).toBeNull();
+    expect(findUnsafeHref("nonsense")).toBeNull();
   });
 });

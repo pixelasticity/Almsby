@@ -77,6 +77,53 @@ export function safeHref(value: unknown): string | null {
 }
 
 /**
+ * First UNSAFE link href found while walking an untrusted TipTap doc, or null
+ * when every link is acceptable (or there are none).
+ *
+ * Walks structurally over `unknown` rather than through the narrow TipTap
+ * types: StoryPage.bodyContent is an unconstrained Json? column, so the shapes
+ * worth defending against are precisely the ones the types don't describe.
+ * Complements the render-side safeHref gate — LinkButton validates on input,
+ * renderMark neutralizes anything legacy, and this lets the story actions
+ * REFUSE to persist a bad href in the first place.
+ *
+ * A link mark with a missing/absent href is benign (renderMark drops the
+ * anchor) and is NOT reported; only a present-but-rejected value is. Returns
+ * the offending href — or a type marker for non-string values — so callers can
+ * log the evidence.
+ */
+export function findUnsafeHref(node: unknown): string | null {
+  if (typeof node !== "object" || node === null) return null;
+  const record = node as Record<string, unknown>;
+
+  const marks = record.marks;
+  if (Array.isArray(marks)) {
+    for (const mark of marks) {
+      if (typeof mark !== "object" || mark === null) continue;
+      const { type, attrs } = mark as Record<string, unknown>;
+      if (type !== "link") continue;
+      const href =
+        typeof attrs === "object" && attrs !== null
+          ? (attrs as Record<string, unknown>).href
+          : undefined;
+      if (href === null || href === undefined) continue;
+      if (safeHref(href) === null) {
+        return typeof href === "string" ? href : `non-string href (${typeof href})`;
+      }
+    }
+  }
+
+  const content = record.content;
+  if (Array.isArray(content)) {
+    for (const child of content) {
+      const found = findUnsafeHref(child);
+      if (found !== null) return found;
+    }
+  }
+  return null;
+}
+
+/**
  * Renders a single text content through one mark into the appropriate React
  * element. `content` is whatever React node already accumulated (a string or
  * a wrapped element) so marks compose left-to-right.

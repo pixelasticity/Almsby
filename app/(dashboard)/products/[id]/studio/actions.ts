@@ -5,6 +5,7 @@ import { getCurrentUser } from "@/lib/auth/server";
 import { getDb } from "@/lib/db";
 import { optionalInput } from "@/lib/input";
 import { getOwnedProduct } from "@/lib/products/queries";
+import { findUnsafeHref } from "@/lib/story/markUtils";
 import { normalizeTipTapContent, type TipTapDoc } from "@/lib/story/tiptap";
 
 export type StudioActionState = { error?: string };
@@ -43,6 +44,24 @@ async function loadStoryInput(
     return {
       ok: false,
       error: "Story content could not be read. Please refresh and try again.",
+    };
+  }
+
+  // Write-side link gate: an href the renderer's allowlist would reject (see
+  // safeHref in markUtils) must never be persisted — refusing the save stops
+  // bodyContent accumulating hostile values that every consumer render would
+  // then have to keep neutralizing. The offending value is logged as evidence
+  // (fail-loud); the maker gets a user-safe message. Benign missing or
+  // malformed-but-harmless hrefs render as plain text and are NOT rejected.
+  const unsafeHref = findUnsafeHref(doc);
+  if (unsafeHref !== null) {
+    console.error(
+      `loadStoryInput: rejected story save for product ${productId} — unsafe link href: ${unsafeHref}`
+    );
+    return {
+      ok: false,
+      error:
+        "The story contains a link with an address that is not allowed. Edit the link and try again.",
     };
   }
 
