@@ -11,6 +11,7 @@ import { getDb } from "@/lib/db";
 import { toGtin14 } from "@/lib/gs1/gtin";
 import { deriveLegacyValue } from "@/lib/gs1/barcode";
 import { verifyBarcode, warmBarcodeVerifier } from "@/lib/gs1/verify";
+import { isLabelVerified } from "@/lib/label/verified";
 import DualMarkLabel from "@/components/label/DualMarkLabel";
 import ErrorBoundary from "@/components/ui/ErrorBoundary";
 import LabelDownloads from "@/components/label/LabelDownloads";
@@ -55,11 +56,7 @@ export default async function ProductLabelPage({
   // Fail-closed: if ANY shipped symbol fails to decode, the label is NOT
   // usable. An absent legacy symbol (non-zero indicator digit) is a vacuous
   // pass, not a failure.
-  const verified =
-    verification !== null &&
-    verification.qr.ok &&
-    verification.dm.ok &&
-    verification.legacy.ok;
+  const verified = isLabelVerified(verification);
 
   return (
     <div className={styles.page}>
