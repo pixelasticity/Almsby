@@ -43,15 +43,22 @@ export default function GtinImportForm({
 
   const saved = existingGtin ?? state?.gtin;
   // Prefer the classifier state's translated warning, then generic key copy.
+  // An UNKNOWN action error code resolves to the generic save-failure copy
+  // (this form's explicit fallback) instead of rendering the raw code at the
+  // user; `warning` still stays empty when there is no error at all.
   const clsKey = resolveActionErrorKey(state?.cls, CLS_KEYS, "");
-  const errorKey = resolveActionErrorKey(state?.error, ERROR_KEYS, "");
+  const errorKey = resolveActionErrorKey(
+    state?.error,
+    ERROR_KEYS,
+    "gtinErrorSave"
+  );
   const warning = state?.cls
     ? clsKey
       ? t(clsKey)
       : undefined
-    : errorKey
+    : state?.error
       ? t(errorKey)
-      : state?.error;
+      : undefined;
 
   return (
     <form action={formAction} className={styles.form} noValidate>
