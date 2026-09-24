@@ -41,7 +41,6 @@ export function middleware(_request: NextRequest): NextResponse {
     "Permissions-Policy",
     "camera=(), microphone=(), geolocation=()"
   );
-  response.headers.set("X-Nonce", nonce);
 
   return response;
 }

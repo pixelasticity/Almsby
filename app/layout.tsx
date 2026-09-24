@@ -27,8 +27,11 @@ const albert = Albert_Sans({
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  // If custom inline scripts are ever added, apply the CSP nonce from the
-  // middleware-generated X-Nonce response header: (await headers()).get("x-nonce")
+  // Nonce note: middleware() puts a per-request nonce in Content-Security-Policy
+  // and Next.js parses that header to nonce its own scripts automatically. For
+  // CUSTOM inline scripts later: forward the nonce on the request headers from
+  // middleware (the x-nonce pattern in Next's CSP guide) and read it here via
+  // (await headers()) — never echo it as a response header.
   const locale = await getLocale();
   const messages = await getMessages();
   return (
