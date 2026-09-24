@@ -106,8 +106,22 @@ export async function signInAction(
   redirect(safeNext);
 }
 
+/**
+ * Best-effort sign-out: log BOTH failure modes — a thrown client/cookie error
+ * and Supabase's returned `{ error }` (signOut does NOT throw on API failure,
+ * so `await supabase.auth.signOut()` alone discarded it) — then always land on
+ * /sign-in. The redirect stays outside try so NEXT_REDIRECT is never swallowed;
+ * a sign-out that failed and left a live session behind is a loud log line,
+ * never a silent success.
+ */
 export async function signOutAction(): Promise<void> {
-  const supabase = await createServerSupabaseClient();
-  await supabase.auth.signOut();
+  try {
+    const supabase = await createServerSupabaseClient();
+    const { error } = await supabase.auth.signOut();
+    if (error) console.error("[auth] signOut failed:", error);
+  } catch (error) {
+    console.error("[auth] signOut errored:", error);
+  }
+
   redirect("/sign-in");
 }
