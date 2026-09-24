@@ -32,7 +32,9 @@ Business and products are fetched **in parallel** (`Promise.all`) because
 neither depends on the other — so the extra read adds no wall-clock latency to
 the shared dashboard layout the sidebar renders inside. Both helpers are
 `cache()`-wrapped, so any page fetching the same rows in the same request
-shares one query instead of re-issuing it.
+shares one query instead of re-issuing it. Both reads are also individually
+fail-closed (`.catch` → log → null/empty), so a DB hiccup degrades one sidebar
+region instead of taking down the whole layout.
 
 The rules this section follows (each one is load-bearing):
 

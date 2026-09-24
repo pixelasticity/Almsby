@@ -20,7 +20,14 @@ export default async function Sidebar() {
   // this adds no wall-clock latency.
   const [business, recent] = user
     ? await Promise.all([
-        getOwnedBusiness(user.id),
+        // Fail-closed: a DB hiccup here must not take down the whole sidebar,
+        // so the workspace name falls back to its translated default below.
+        // The original error is still logged — never swallowed silently
+        // (AGENTS.md rule 1).
+        getOwnedBusiness(user.id).catch((error: unknown) => {
+          console.error("[sidebar] business query failed", error);
+          return null;
+        }),
         // Fail-closed: a DB hiccup must not take down the whole sidebar, so
         // the section renders empty. The original error is still logged —
         // never swallowed silently (AGENTS.md rule 1).
