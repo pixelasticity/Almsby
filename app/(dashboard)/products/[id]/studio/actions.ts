@@ -74,17 +74,16 @@ async function loadStoryInput(
  * Normalized TipTap doc → StoryPage.bodyContent. The single place the
  * unconstrained Json? column's input is built.
  *
- * A "clear" save (doc === null) must be Prisma.DbNull: Prisma rejects plain JS
- * `null` for nullable Json fields at runtime ("Argument bodyContent must not
- * be null …"), which the old `as unknown` cast hid from the compiler and turned
- * into a generic "Could not save the story" on every clear. DbNull stores SQL
- * NULL, which reads back as null through normalizeTipTapContent on every load
- * path. The non-null cast remains only because TipTapDoc's optional attrs don't
- * structurally match Prisma's index-signature Json input — the runtime values
- * are plain JSON either way.
- *
- * (Type-level fix; needs one manual clear-save check in the studio against a
- * live DB, since Prisma's runtime arg validation can't run without one.)
+ * A "clear" save (doc === null) stores Prisma.DbNull — the explicit,
+ * documented way to write SQL NULL for a nullable Json column — so the null
+ * case no longer needs `as unknown` to satisfy generated types that exclude
+ * plain JS `null`. (A runtime probe against local Postgres showed plain null
+ * is ALSO accepted on update — failing only on record-not-found — so the
+ * earlier "it must throw" assumption was wrong; DbNull removes reliance on
+ * that coercion and states the intent. SQL NULL reads back as null through
+ * normalizeTipTapContent on every load path.) The non-null cast remains only
+ * because TipTapDoc's optional attrs don't structurally match Prisma's
+ * index-signature Json input — the runtime values are plain JSON either way.
  */
 function toBodyContent(
   doc: TipTapDoc | null
