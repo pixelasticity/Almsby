@@ -12,6 +12,22 @@ import styles from "./ConciergeForm.module.css";
 
 type Mode = "choice" | "explain" | "prefix";
 
+// Every error code conciergeAction can return, as an allowlist: the codes map
+// 1:1 to keys inside the `concierge` namespace (no rename needed), so an
+// identity Record would only pretend otherwise. Anything unknown falls back to
+// `genericError` — next-intl throws on an unknown key, so we never pass one
+// blindly.
+const KNOWN_ERROR_CODES: readonly string[] = [
+  "missingProduct",
+  "authRequired",
+  "productNotFound",
+  "saveFailed",
+  "prefixEmpty",
+  "prefixNonNumeric",
+  "prefixInvalid",
+  "prefixExhausted",
+];
+
 export default function ConciergeForm({
   productId,
 }: {
@@ -25,20 +41,7 @@ export default function ConciergeForm({
   const t = useTranslations("products");
   const errKey = "error" in state ? state.error : undefined;
 
-  // Map action error keys → i18n keys (relative to the `concierge` namespace),
-  // with an explicit generic fallback (next-intl would throw on an unknown
-  // key, so we never pass one blindly).
-  const ERROR_KEYS: Record<string, string> = {
-    missingProduct: "missingProduct",
-    authRequired: "authRequired",
-    productNotFound: "productNotFound",
-    saveFailed: "saveFailed",
-    prefixEmpty: "prefixEmpty",
-    prefixNonNumeric: "prefixNonNumeric",
-    prefixInvalid: "prefixInvalid",
-    prefixExhausted: "prefixExhausted",
-  };
-  const msgKey = resolveActionErrorKey(errKey, ERROR_KEYS, "genericError");
+  const msgKey = resolveActionErrorKey(errKey, KNOWN_ERROR_CODES, "genericError");
 
   return (
     <div className={styles.wrap}>
