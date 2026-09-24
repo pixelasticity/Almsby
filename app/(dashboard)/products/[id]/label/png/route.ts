@@ -119,6 +119,14 @@ export async function GET(
         ? verification.dm.ok
         : verification.legacy.ok;
   if (!symbolVerified) {
+    // Rule 1 (fail-loud): a failed verification must leave a log line for
+    // support — a silent 409 is undiagnosable. The full per-symbol result IS
+    // the evidence; the gate itself stays unchanged (still fail-closed 409).
+    console.error("[label-png] symbol failed decode verification", {
+      gtin14,
+      symbol,
+      verification,
+    });
     return new NextResponse("Symbol failed decode verification", {
       status: 409,
     });
