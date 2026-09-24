@@ -29,11 +29,6 @@
   font-size: var(--text-lg);
   font-weight: 700;
 }
-.savedGtin {
-  margin: 0 0 var(--space-7);
-  font-size: var(--text-md);
-  color: var(--green-700);
-}
 .muted {
   margin: 0 0 var(--space-7);
   font-size: var(--text-sm);

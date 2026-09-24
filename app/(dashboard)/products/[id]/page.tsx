@@ -93,11 +93,9 @@ export default async function ProductDetailPage({
 
       <section className={styles.card} aria-label={t("gtinSectionTitle")}>
         <h2 className={styles.cardTitle}>{t("gtinSectionTitle")}</h2>
-        {gtin ? (
-          <p className={styles.savedGtin}>
-            {t("gtinSaved")}: <strong>{gtin}</strong>
-          </p>
-        ) : (
+        {/* The saved-GTIN line lives in GtinSetup below (once, above the
+            disabled form); rendering it here too displayed it twice. */}
+        {!gtin && (
           <p className={styles.muted}>{t("gtinSectionEmpty")}</p>
         )}
         {gtin14 && (
