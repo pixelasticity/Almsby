@@ -1,4 +1,7 @@
+"use client";
+
 import React from "react";
+import { useTranslations } from "next-intl";
 import styles from "./story-studio.module.css";
 
 type PassportProduct = {
@@ -9,24 +12,32 @@ type PassportProduct = {
 };
 
 export default function PassportSummary({ product }: { product: PassportProduct }) {
+  const t = useTranslations("passport");
+
   return (
     <div className={styles.passport}>
       <div className={styles.passportHeader}>
         <div className={styles.passportDot} />
-        <h3 className={styles.passportTitle}>Product Passport Data</h3>
+        <h3 className={styles.passportTitle}>{t("title")}</h3>
       </div>
       <div className={styles.passportGrid}>
-        <PassportItem label="GTIN-14" value={product.gtin?.gtinValue || "—"} />
-        <PassportItem label="Origin" value={product.countryOfOrigin || "Not set"} />
-        <PassportItem label="Material" value={product.materialComposition || "Not set"} />
+        <PassportItem label={t("gtin")} value={product.gtin?.gtinValue || "—"} />
+        <PassportItem
+          label={t("origin")}
+          value={product.countryOfOrigin || t("notSet")}
+        />
+        <PassportItem
+          label={t("material")}
+          value={product.materialComposition || t("notSet")}
+        />
         {/* recyclable is nullable (Boolean?): "not yet specified" (null) must
             not be conflated with an explicit "No". Dash until the maker states
             it — compliance-field accuracy matters. */}
         <PassportItem
-          label="Recyclable"
+          label={t("recyclable")}
           value={product.recyclable === null || product.recyclable === undefined
             ? "—"
-            : product.recyclable ? "Yes" : "No"}
+            : product.recyclable ? t("yes") : t("no")}
         />
       </div>
     </div>

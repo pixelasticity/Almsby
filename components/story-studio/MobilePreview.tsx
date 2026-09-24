@@ -1,3 +1,6 @@
+"use client";
+
+import { useTranslations } from "next-intl";
 import styles from "./story-studio.module.css";
 import TipTapRenderer, {
   type TipTapNode,
@@ -16,6 +19,7 @@ export default function MobilePreview({
   headline,
   isPublished,
 }: MobilePreviewProps) {
+  const t = useTranslations("story");
   const nodes = (content as TipTapNode | null)?.content ?? [];
 
   return (
@@ -36,9 +40,9 @@ export default function MobilePreview({
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <h3 className={styles.comingSoonTitle}>Coming Soon</h3>
+            <h3 className={styles.comingSoonTitle}>{t("comingSoonTitle")}</h3>
             <p className={styles.comingSoonText}>
-              The maker is still crafting this story. Check back soon for a glimpse into the process.
+              {t("comingSoonBody")}
             </p>
           </div>
         )}
@@ -47,7 +51,7 @@ export default function MobilePreview({
           {headline ? <h1 className={styles.previewHeadline}>{headline}</h1> : null}
           {nodes.length === 0 ? (
             <div className={styles.blocksEmpty}>
-              <p>Start adding blocks to see the story unfold...</p>
+              <p>{t("emptyHint")}</p>
             </div>
           ) : (
             <TipTapRenderer content={nodes} />

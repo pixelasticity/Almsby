@@ -206,7 +206,39 @@
     "statusPublished": "Publicado",
     "headlineLabel": "Titular",
     "headlinePlaceholder": "Ponle un título a tu historia…",
-    "headlineHelper": "Aparece en la parte superior de tu página de historia pública."
+    "headlineHelper": "Aparece en la parte superior de tu página de historia pública.",
+    "comingSoonTitle": "Próximamente",
+    "comingSoonBody": "El fabricante todavía está creando esta historia. Vuelve pronto para descubrir el proceso.",
+    "emptyHint": "Empieza a añadir bloques para ver cómo se desarrolla la historia…"
+  },
+  "storyStudio": {
+    "subtitle": "Story Studio",
+    "statusLive": "En vivo",
+    "statusDraft": "Borrador",
+    "statusLabelLive": "Estado de la historia: en vivo",
+    "statusLabelDraft": "Estado de la historia: borrador",
+    "unsaved": "Sin guardar",
+    "save": "Guardar",
+    "saving": "Guardando…",
+    "saved": "Guardado",
+    "publish": "Publicar historia",
+    "unpublish": "Dejar de publicar",
+    "confirmUnpublish": "¿Dejar de publicar esta historia? Ya no será visible para los compradores.",
+    "contentHeading": "Contenido de la historia",
+    "editorLoadError": "No se pudo cargar el editor de historias. Actualiza la página e inténtalo de nuevo. Si el problema continúa, el contenido guardado de la historia puede estar dañado — contacta con soporte e indica el error exacto.",
+    "viewLive": "Ver la historia publicada",
+    "tabEdit": "Editar",
+    "tabPreview": "Vista previa"
+  },
+  "passport": {
+    "title": "Datos del pasaporte del producto",
+    "gtin": "GTIN-14",
+    "origin": "Origen",
+    "material": "Material",
+    "recyclable": "Reciclable",
+    "notSet": "Sin definir",
+    "yes": "Sí",
+    "no": "No"
   },
   "business": {
     "creation": {
@@ -225,17 +257,40 @@
         "subtitle": "Elige la categoría que mejor describa lo que vendes o fabricas.",
         "category": {
           "label": "Categoría de la industria",
-          "helper": "Nos ayuda a preconfigurar las herramientas adecuadas para tu panel."
+          "helper": "Nos ayuda a preconfigurar las herramientas adecuadas para tu panel.",
+          "options": {
+            "apparel": "Prendas y textiles",
+            "food": "Alimentación y bebidas",
+            "home": "Hogar y artículos",
+            "beauty": "Belleza y cuidado personal",
+            "electronics": "Electrónica",
+            "other": "Otros"
+          }
         },
         "cta": "Siguiente: Localización"
       },
       "step3": {
         "title": "¿Desde dónde operas?",
         "country": {
-          "label": "País"
+          "label": "País",
+          "options": {
+            "us": "Estados Unidos",
+            "gb": "Reino Unido",
+            "eu": "Unión Europea",
+            "ca": "Canadá",
+            "au": "Australia",
+            "other": "Otros"
+          }
         },
         "currency": {
-          "label": "Moneda por defecto"
+          "label": "Moneda por defecto",
+          "options": {
+            "usd": "USD — dólar estadounidense",
+            "gbp": "GBP — libra esterlina",
+            "eur": "EUR — euro",
+            "cad": "CAD — dólar canadiense",
+            "aud": "AUD — dólar australiano"
+          }
         },
         "helper": "Establece los cálculos de impuestos base y los pagos de tu tienda.",
         "cta": "Lanzar el espacio de trabajo"

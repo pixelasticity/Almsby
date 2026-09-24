@@ -89,12 +89,12 @@ export default function BusinessOnboardingForm() {
           <option value="" disabled>
             —
           </option>
-          <option value="apparel">Apparel / textiles</option>
-          <option value="food">Food & beverage</option>
-          <option value="home">Home & goods</option>
-          <option value="beauty">Beauty & care</option>
-          <option value="electronics">Electronics</option>
-          <option value="other">Other</option>
+          <option value="apparel">{t("creation.step2.category.options.apparel")}</option>
+          <option value="food">{t("creation.step2.category.options.food")}</option>
+          <option value="home">{t("creation.step2.category.options.home")}</option>
+          <option value="beauty">{t("creation.step2.category.options.beauty")}</option>
+          <option value="electronics">{t("creation.step2.category.options.electronics")}</option>
+          <option value="other">{t("creation.step2.category.options.other")}</option>
         </select>
         <p className={styles.helper}>{t("creation.step2.category.helper")}</p>
       </div>
@@ -117,12 +117,12 @@ export default function BusinessOnboardingForm() {
               <option value="" disabled>
                 —
               </option>
-              <option value="US">United States</option>
-              <option value="GB">United Kingdom</option>
-              <option value="EU">European Union</option>
-              <option value="CA">Canada</option>
-              <option value="AU">Australia</option>
-              <option value="OTHER">Other</option>
+              <option value="US">{t("creation.step3.country.options.us")}</option>
+              <option value="GB">{t("creation.step3.country.options.gb")}</option>
+              <option value="EU">{t("creation.step3.country.options.eu")}</option>
+              <option value="CA">{t("creation.step3.country.options.ca")}</option>
+              <option value="AU">{t("creation.step3.country.options.au")}</option>
+              <option value="OTHER">{t("creation.step3.country.options.other")}</option>
             </select>
           </div>
           <div className={styles.col}>
@@ -139,11 +139,11 @@ export default function BusinessOnboardingForm() {
               <option value="" disabled>
                 —
               </option>
-              <option value="USD">USD — US dollar</option>
-              <option value="GBP">GBP — Pound</option>
-              <option value="EUR">EUR — Euro</option>
-              <option value="CAD">CAD — Canadian dollar</option>
-              <option value="AUD">AUD — Australian dollar</option>
+              <option value="USD">{t("creation.step3.currency.options.usd")}</option>
+              <option value="GBP">{t("creation.step3.currency.options.gbp")}</option>
+              <option value="EUR">{t("creation.step3.currency.options.eur")}</option>
+              <option value="CAD">{t("creation.step3.currency.options.cad")}</option>
+              <option value="AUD">{t("creation.step3.currency.options.aud")}</option>
             </select>
           </div>
         </div>

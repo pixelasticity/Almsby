@@ -206,7 +206,39 @@
     "statusPublished": "Published",
     "headlineLabel": "Headline",
     "headlinePlaceholder": "Give your story a title…",
-    "headlineHelper": "Shows at the top of your public story page."
+    "headlineHelper": "Shows at the top of your public story page.",
+    "comingSoonTitle": "Coming Soon",
+    "comingSoonBody": "The maker is still crafting this story. Check back soon for a glimpse into the process.",
+    "emptyHint": "Start adding blocks to see the story unfold..."
+  },
+  "storyStudio": {
+    "subtitle": "Story Studio",
+    "statusLive": "Live",
+    "statusDraft": "Draft",
+    "statusLabelLive": "Story status: Live",
+    "statusLabelDraft": "Story status: Draft",
+    "unsaved": "Unsaved",
+    "save": "Save",
+    "saving": "Saving…",
+    "saved": "Saved",
+    "publish": "Publish Story",
+    "unpublish": "Unpublish",
+    "confirmUnpublish": "Unpublish this story? It will no longer be visible to shoppers.",
+    "contentHeading": "Story Content",
+    "editorLoadError": "The story editor could not be loaded. Refresh the page to try again. If this keeps happening, the saved story content may be corrupted — contact support with the exact error.",
+    "viewLive": "View live story",
+    "tabEdit": "Edit",
+    "tabPreview": "Preview"
+  },
+  "passport": {
+    "title": "Product Passport Data",
+    "gtin": "GTIN-14",
+    "origin": "Origin",
+    "material": "Material",
+    "recyclable": "Recyclable",
+    "notSet": "Not set",
+    "yes": "Yes",
+    "no": "No"
   },
   "business": {
     "creation": {
@@ -225,17 +257,40 @@
         "subtitle": "Pick the category that best describes what you sell or build.",
         "category": {
           "label": "Industry Category",
-          "helper": "Helps us pre-configure the right tools for your dashboard."
+          "helper": "Helps us pre-configure the right tools for your dashboard.",
+          "options": {
+            "apparel": "Apparel / textiles",
+            "food": "Food & beverage",
+            "home": "Home & goods",
+            "beauty": "Beauty & care",
+            "electronics": "Electronics",
+            "other": "Other"
+          }
         },
         "cta": "Next: Localization"
       },
       "step3": {
         "title": "Where are you operating?",
         "country": {
-          "label": "Country"
+          "label": "Country",
+          "options": {
+            "us": "United States",
+            "gb": "United Kingdom",
+            "eu": "European Union",
+            "ca": "Canada",
+            "au": "Australia",
+            "other": "Other"
+          }
         },
         "currency": {
-          "label": "Default Currency"
+          "label": "Default Currency",
+          "options": {
+            "usd": "USD — US dollar",
+            "gbp": "GBP — Pound",
+            "eur": "EUR — Euro",
+            "cad": "CAD — Canadian dollar",
+            "aud": "AUD — Australian dollar"
+          }
         },
         "helper": "Sets your baseline tax calculations and store payouts.",
         "cta": "Launch Workspace"

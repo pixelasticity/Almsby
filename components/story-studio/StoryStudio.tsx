@@ -32,6 +32,9 @@ type StudioProduct = {
 
 export default function StoryStudio({ product }: { product: StudioProduct }) {
   const t = useTranslations("story");
+  // Studio chrome (status / save / publish / tabs) has its own namespace so the
+  // maker's editor copy and the public story page's copy can't be confused.
+  const tStudio = useTranslations("storyStudio");
   // TipTap JSON content — stored directly in StoryPage.bodyContent.
   const [content, setContent] = useState<Record<string, unknown> | null>(
     (product.storyPage?.bodyContent as Record<string, unknown>) ?? null
@@ -119,7 +122,7 @@ export default function StoryStudio({ product }: { product: StudioProduct }) {
     // Unpublishing takes a live, customer-facing page offline — confirm first.
     // Native confirm() is used here (consistent with the existing window.prompt()
     // link flow) and is accessible by default. Flag as a future ConfirmDialog.
-    if (isPublished && !window.confirm("Unpublish this story? It will no longer be visible to shoppers.")) {
+    if (isPublished && !window.confirm(tStudio("confirmUnpublish"))) {
       return;
     }
 
@@ -150,32 +153,36 @@ export default function StoryStudio({ product }: { product: StudioProduct }) {
       <header className={styles.header}>
         <div>
           <h1 className={styles.headerTitle}>{product.name}</h1>
-          <p className={styles.headerSubtitle}>Story Studio</p>
+          <p className={styles.headerSubtitle}>{tStudio("subtitle")}</p>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
           <span
             className={`${styles.status} ${isPublished ? styles.statusLive : styles.statusDraft}`}
             role="status"
-            aria-label={isPublished ? "Story status: Live" : "Story status: Draft"}
+            aria-label={isPublished ? tStudio("statusLabelLive") : tStudio("statusLabelDraft")}
           >
-            {isPublished ? "● Live" : "○ Draft"}
+            {isPublished
+              ? `● ${tStudio("statusLive")}`
+              : `○ ${tStudio("statusDraft")}`}
           </span>
           {hasUnsavedChanges && (
             <span className={`${styles.status} ${styles.unsaved}`} aria-hidden="true">
-              • Unsaved
+              • {tStudio("unsaved")}
             </span>
           )}
           <Button
             variant="secondary"
             type="button"
             pending={isSaving}
-            pendingLabel="Saving…"
+            pendingLabel={tStudio("saving")}
             onClick={handleSave}
           >
-            Save
+            {tStudio("save")}
           </Button>
           {saveStatus === "saved" && (
-            <span className={`${styles.status} ${styles.statusLive}`}>Saved ✓</span>
+            <span className={`${styles.status} ${styles.statusLive}`}>
+              {tStudio("saved")} ✓
+            </span>
           )}
           <Button
             variant={isPublished ? "secondary" : "primary"}
@@ -183,7 +190,7 @@ export default function StoryStudio({ product }: { product: StudioProduct }) {
             pending={isPublishing}
             onClick={handlePublish}
           >
-            {isPublished ? "Unpublish" : "Publish Story"}
+            {isPublished ? tStudio("unpublish") : tStudio("publish")}
           </Button>
         </div>
       </header>
@@ -224,7 +231,7 @@ export default function StoryStudio({ product }: { product: StudioProduct }) {
 
             <section>
               <h2 className={styles.sectionTitle} id="story-content-heading">
-                Story Content
+                {tStudio("contentHeading")}
               </h2>
               <ErrorBoundary
                 name="TipTapEditor"
@@ -237,9 +244,7 @@ export default function StoryStudio({ product }: { product: StudioProduct }) {
                       color: "var(--danger-700)",
                     }}
                   >
-                    The story editor could not be loaded. Refresh the page to try again.
-                    If this keeps happening, the saved story content may be corrupted —
-                    contact support with the exact error.
+                    {tStudio("editorLoadError")}
                   </div>
                 }
               >
@@ -269,7 +274,7 @@ export default function StoryStudio({ product }: { product: StudioProduct }) {
           <div className={styles.previewInner}>
             {liveUrl && (
               <Link href={liveUrl} target="_blank" rel="noopener noreferrer" className={styles.viewLive}>
-                View live story ↗
+                {tStudio("viewLive")} ↗
               </Link>
             )}
             <MobilePreview content={content} headline={headline} isPublished={isPublished} />
@@ -285,7 +290,7 @@ export default function StoryStudio({ product }: { product: StudioProduct }) {
           onClick={() => setActiveTab("edit")}
           className={`${styles.mobileTab} ${activeTab === "edit" ? styles.mobileTabActive : ""}`}
         >
-          Edit
+          {tStudio("tabEdit")}
         </button>
         <button
           type="button"
@@ -294,7 +299,7 @@ export default function StoryStudio({ product }: { product: StudioProduct }) {
           onClick={() => setActiveTab("preview")}
           className={`${styles.mobileTab} ${activeTab === "preview" ? styles.mobileTabActive : ""}`}
         >
-          Preview
+          {tStudio("tabPreview")}
         </button>
       </div>
     </div>
