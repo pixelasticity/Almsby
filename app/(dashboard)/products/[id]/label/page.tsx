@@ -10,8 +10,8 @@ import { getCurrentUser } from "@/lib/auth/server";
 import { getDb } from "@/lib/db";
 import { toGtin14 } from "@/lib/gs1/gtin";
 import { deriveLegacyValue } from "@/lib/gs1/barcode";
-import { verifyBarcode, warmBarcodeVerifier } from "@/lib/gs1/verify";
 import { isLabelVerified } from "@/lib/label/verified";
+import { verifyBarcodeCached } from "@/lib/label/verified-cache";
 import DualMarkLabel from "@/components/label/DualMarkLabel";
 import ErrorBoundary from "@/components/ui/ErrorBoundary";
 import LabelDownloads from "@/components/label/LabelDownloads";
@@ -49,9 +49,11 @@ export default async function ProductLabelPage({
 
   // Per-generation decode verification (#7's remaining half): before a maker
   // can print/download, prove every symbol round-trips through a real decoder.
-  // Pre-warm the WASM once per process; the verification itself is ~1s here.
-  await warmBarcodeVerifier();
-  const verification = gtin14 ? await verifyBarcode(gtin14) : null;
+  // Through the short-lived server cache (lib/label/verified-cache): the
+  // first load pays the ~1s live decode, a repeat within the TTL reuses that
+  // verified result, and any failure always flows through the live decoder
+  // (successes only — rule 5 preserved exactly).
+  const verification = gtin14 ? await verifyBarcodeCached(gtin14) : null;
 
   // Fail-closed: if ANY shipped symbol fails to decode, the label is NOT
   // usable. An absent legacy symbol (non-zero indicator digit) is a vacuous

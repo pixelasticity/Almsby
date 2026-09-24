@@ -5,9 +5,10 @@
  * The download=verified invariant, enforced server-side:
  *   1. The SVG rasterized here is produced by the SAME pure renderers the
  *      verify harness decodes — a PNG can only be generated from a symbol
- *      that has passed per-generation decode verification (re-verified on
- *      every request; the URL is guessable, the client button alone is not
- *      the gate).
+ *      that has passed per-generation decode verification (checked on every
+ *      request: a live decode, or a success from the short-lived server-side
+ *      verification cache keyed on the exact decode inputs; the URL is
+ *      guessable, the client button alone is not the gate).
  *   2. The raster scale is computed so the achieved X-dimension is at or
  *      above the requested one (never below the floor) at a real DPI, and
  *      the pHYs chunk stamps that DPI into the file so print tools size it
@@ -29,7 +30,7 @@ import {
   parseViewBox,
   pngScaleForX,
 } from "@/lib/gs1/print-size";
-import { verifyBarcode, warmBarcodeVerifier } from "@/lib/gs1/verify";
+import { verifyBarcodeCached } from "@/lib/label/verified-cache";
 
 export const runtime = "nodejs";
 
@@ -107,11 +108,12 @@ export async function GET(
   if (!gtin14) return new NextResponse("Not found", { status: 404 });
 
   // Fail-closed re-verification: the URL is guessable, so the client-side
-  // disabled button is NOT the gate. A symbol is served only if the live
-  // decode round-trip passes right now — the same check that drives the
-  // label page badge.
-  await warmBarcodeVerifier();
-  const verification = await verifyBarcode(gtin14);
+  // disabled button is NOT the gate. A symbol is served only if a REAL
+  // decode round-trip passed for these exact inputs — live, or from the
+  // short-lived server cache (successes only, keyed on GTIN + resolver +
+  // renderer + encoder versions; lib/label/verified-cache). Same check that
+  // drives the label page badge; a failure always re-runs live.
+  const verification = await verifyBarcodeCached(gtin14);
   const symbolVerified =
     symbol === "qr"
       ? verification.qr.ok

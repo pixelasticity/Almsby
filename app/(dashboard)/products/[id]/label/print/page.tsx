@@ -30,8 +30,8 @@ import {
   parseViewBox,
   type SymbolGeometry,
 } from "@/lib/gs1/print-size";
-import { verifyBarcode, warmBarcodeVerifier } from "@/lib/gs1/verify";
 import { isLabelVerified } from "@/lib/label/verified";
+import { verifyBarcodeCached } from "@/lib/label/verified-cache";
 import PrintButton from "@/components/label/PrintButton";
 
 export const metadata: Metadata = { robots: { index: false } };
@@ -70,8 +70,7 @@ export default async function ProductLabelPrintPage({
     notFound();
   }
 
-  await warmBarcodeVerifier();
-  const verification = gtin14 ? await verifyBarcode(gtin14) : null;
+  const verification = gtin14 ? await verifyBarcodeCached(gtin14) : null;
   const verified = isLabelVerified(verification);
 
   const qr = verified && gtin14 ? renderDigitalLinkQr(gtin14) : null;
