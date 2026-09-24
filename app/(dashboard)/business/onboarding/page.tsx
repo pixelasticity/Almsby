@@ -12,6 +12,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function BusinessOnboardingPage() {
+  const t = await getTranslations("business");
   const user = await getCurrentUser();
 
   let hasBusiness = false;
@@ -25,7 +26,7 @@ export default async function BusinessOnboardingPage() {
         <main className={styles.page}>
           <div className={styles.wrap}>
             <p className={styles.error}>
-              Could not check your workspace. Please refresh or try again.
+              {t("errors.workspaceCheckFailed")}
             </p>
           </div>
         </main>

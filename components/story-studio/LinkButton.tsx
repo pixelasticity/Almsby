@@ -2,6 +2,7 @@
 
 import { type Editor } from "@tiptap/core";
 import { useEffect, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import Button from "@/components/ui/Button";
 import styles from "./tiptap-editor.module.css";
 
@@ -22,6 +23,7 @@ export default function LinkButton({ editor }: { editor: Editor }) {
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const t = useTranslations("storyStudio");
 
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -48,11 +50,11 @@ export default function LinkButton({ editor }: { editor: Editor }) {
   const apply = () => {
     const url = draft.trim();
     if (!url) {
-      setError("Enter a URL.");
+      setError(t("linkErrorEmpty"));
       return;
     }
     if (!/^https?:\/\//i.test(url)) {
-      setError("Link must start with http:// or https://");
+      setError(t("linkErrorScheme"));
       return;
     }
     editor
@@ -96,7 +98,7 @@ export default function LinkButton({ editor }: { editor: Editor }) {
         onClick={openEditor}
         aria-expanded={open}
       >
-        Link
+        {t("linkButton")}
       </Button>
 
       {open && (
@@ -120,12 +122,12 @@ export default function LinkButton({ editor }: { editor: Editor }) {
               if (e.key === "Escape") close();
             }}
             placeholder="https://example.com"
-            aria-label="Link URL"
+            aria-label={t("linkAriaLabel")}
           />
           {error && <p className={styles.linkError}>{error}</p>}
           <div className={styles.linkActions}>
             <Button variant="primary" type="submit">
-              Apply
+              {t("linkApply")}
             </Button>
             {editingExisting && (
               <Button
@@ -136,7 +138,7 @@ export default function LinkButton({ editor }: { editor: Editor }) {
                   close();
                 }}
               >
-                Remove
+                {t("linkRemove")}
               </Button>
             )}
           </div>

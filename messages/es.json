@@ -17,7 +17,9 @@
     "myAccount": "Mi cuenta",
     "menuLabel": "Menú de cuenta",
     "recentProducts": "Productos recientes",
-    "breadcrumb": "Ruta de navegación"
+    "breadcrumb": "Ruta de navegación",
+    "support": "Soporte",
+    "changelog": "Novedades"
   },
   "landing": {
     "heroBadge": "GS1 Sunrise 2027 · Pasaportes Digitales de Producto de la UE",
@@ -228,7 +230,17 @@
     "editorLoadError": "No se pudo cargar el editor de historias. Actualiza la página e inténtalo de nuevo. Si el problema continúa, el contenido guardado de la historia puede estar dañado — contacta con soporte e indica el error exacto.",
     "viewLive": "Ver la historia publicada",
     "tabEdit": "Editar",
-    "tabPreview": "Vista previa"
+    "tabPreview": "Vista previa",
+    "editorPlaceholder": "Escribe tu historia…",
+    "editorAriaLabel": "Contenido del editor de historia",
+    "paragraphStyleLabel": "Estilo de párrafo",
+    "paragraphOption": "Párrafo",
+    "linkButton": "Enlace",
+    "linkAriaLabel": "URL del enlace",
+    "linkApply": "Aplicar",
+    "linkRemove": "Quitar",
+    "linkErrorEmpty": "Introduce una URL.",
+    "linkErrorScheme": "El enlace debe empezar por http:// o https://"
   },
   "passport": {
     "title": "Datos del pasaporte del producto",
@@ -303,7 +315,8 @@
       "nameTooShort": "El nombre del negocio debe tener al menos 2 caracteres.",
       "categoryRequired": "Selecciona una categoría de industria para personalizar las herramientas de tu espacio de trabajo.",
       "countryRequired": "Selecciona tu país de operación principal.",
-      "currencyRequired": "Selecciona una moneda por defecto para precios y pagos."
+      "currencyRequired": "Selecciona una moneda por defecto para precios y pagos.",
+      "workspaceCheckFailed": "No se pudo comprobar tu espacio de trabajo. Actualiza la página o inténtalo de nuevo."
     }
   },
   "errors": {

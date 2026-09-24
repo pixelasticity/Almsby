@@ -17,7 +17,9 @@
     "myAccount": "My account",
     "menuLabel": "Account menu",
     "recentProducts": "Recent products",
-    "breadcrumb": "Breadcrumb"
+    "breadcrumb": "Breadcrumb",
+    "support": "Support",
+    "changelog": "Changelog"
   },
   "landing": {
     "heroBadge": "GS1 Sunrise 2027 · EU Digital Product Passports",
@@ -228,7 +230,17 @@
     "editorLoadError": "The story editor could not be loaded. Refresh the page to try again. If this keeps happening, the saved story content may be corrupted — contact support with the exact error.",
     "viewLive": "View live story",
     "tabEdit": "Edit",
-    "tabPreview": "Preview"
+    "tabPreview": "Preview",
+    "editorPlaceholder": "Write your story…",
+    "editorAriaLabel": "Story editor content",
+    "paragraphStyleLabel": "Paragraph style",
+    "paragraphOption": "Paragraph",
+    "linkButton": "Link",
+    "linkAriaLabel": "Link URL",
+    "linkApply": "Apply",
+    "linkRemove": "Remove",
+    "linkErrorEmpty": "Enter a URL.",
+    "linkErrorScheme": "Link must start with http:// or https://"
   },
   "passport": {
     "title": "Product Passport Data",
@@ -303,7 +315,8 @@
       "nameTooShort": "Business names must be at least 2 characters long.",
       "categoryRequired": "Select an industry category to customize your workspace tools.",
       "countryRequired": "Select your primary operating country.",
-      "currencyRequired": "Select a default currency for pricing and payouts."
+      "currencyRequired": "Select a default currency for pricing and payouts.",
+      "workspaceCheckFailed": "Could not check your workspace. Please refresh or try again."
     }
   },
   "errors": {

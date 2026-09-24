@@ -6,6 +6,7 @@ import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
 import type { Level } from "@tiptap/extension-heading";
 import { useEffect } from "react";
+import { useTranslations } from "next-intl";
 import FormatButton from "./FormatButton";
 import LinkButton from "./LinkButton";
 import styles from "./tiptap-editor.module.css";
@@ -25,6 +26,7 @@ type TipTapEditorProps = {
  * only nodes we explicitly allow can ever be produced.
  */
 export default function TipTapEditor({ content, onChange, ariaLabelledBy }: TipTapEditorProps) {
+  const t = useTranslations("storyStudio");
   // Never let a malformed/legacy content value reach TipTap's parser: a legacy
   // BlockComposer array or other shape crashes EditorState.create with
   // "config.doc.type is undefined". Normalize at the boundary; non-doc values
@@ -38,7 +40,7 @@ export default function TipTapEditor({ content, onChange, ariaLabelledBy }: TipT
     shouldRerenderOnTransaction: true,
     extensions: [
       Placeholder.configure({
-        placeholder: "Write your story…",
+        placeholder: t("editorPlaceholder"),
       }),
       StarterKit.configure({
         // Disable everything we don't want; keep only the constrained set.
@@ -102,8 +104,8 @@ export default function TipTapEditor({ content, onChange, ariaLabelledBy }: TipT
           className={styles.toolbarSelect}
           value={String(activeHeading)}
           onChange={(e) => applyHeading(Number(e.target.value))}
-          aria-label="Paragraph style">
-          <option value="0">Paragraph</option>
+          aria-label={t("paragraphStyleLabel")}>
+          <option value="0">{t("paragraphOption")}</option>
           <option value="2">H2</option>
           <option value="3">H3</option>
           <option value="4">H4</option>
@@ -122,7 +124,7 @@ export default function TipTapEditor({ content, onChange, ariaLabelledBy }: TipT
       <div className={styles.content}>
         <EditorContent
           editor={editor}
-          aria-label="Story editor content"
+          aria-label={t("editorAriaLabel")}
           aria-labelledby={ariaLabelledBy}
         />
       </div>
