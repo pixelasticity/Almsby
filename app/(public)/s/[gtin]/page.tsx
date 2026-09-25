@@ -13,9 +13,10 @@
  * events even with the locale cookie removed), so today every scan is fresh
  * and the invalidation calls are inert no-ops. Making it actually static is an
  * i18n-architecture question (cookie-locale + next-intl setRequestLocale were
- * never adopted repo-wide) — recorded with evidence in
- * guidelines/delivery/phase2/dod-status.md (§ISR, decision pending), not a bug
- * in this file. Do not add session reads regardless (they'd lock dynamic forever).
+ * never adopted repo-wide) — the decision is recorded in
+ * guidelines/delivery/phase2/dod-status.md (§ISR): accepted as dynamic for now
+ * (option A), with the revisit trigger for a static migration. Not a bug in
+ * this file. Do not add session reads regardless (they'd lock dynamic forever).
  *
  * Draft safety: an unpublished or unknown story renders Coming Soon as a
  * normal 200 with noindex — never a 404, never a leaked draft (brief §5).

@@ -111,11 +111,11 @@ function toBodyContent(
  *
  * VERIFIED (local ISR probe, NEXT_PRIVATE_DEBUG_CACHE=1): both spellings reach
  * the cache layer as tags `_N_T_/(public)/s/[gtin]/page` and `_N_T_/s/[gtin]/page`
- * (batched, no errors). NOTE: today the route renders DYNAMIC per request
- * (private/no-store, no cache events) — the revalidate=false contract above is
- * inert until the i18n static-rendering question is resolved — so these calls
- * are currently harmless no-ops that become load-bearing the moment the route
- * is served statically.
+ * (batched, no errors). NOTE: the route renders DYNAMIC per request today
+ * (private/no-store, no cache events) — accepted as the current position
+ * (Phase 2 ISR decision, dod-status.md §ISR) — so these calls are currently
+ * harmless no-ops that become load-bearing the moment a static migration
+ * happens.
  */
 function clearStoryPageCache(): void {
   revalidatePath("/(public)/s/[gtin]", "page");

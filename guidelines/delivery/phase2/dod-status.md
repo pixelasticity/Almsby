@@ -35,9 +35,17 @@ Public page reuses the studio's `PassportSummary` — single source of truth for
 gtin / origin / material / recyclable display, read from `Product`, not
 duplicated onto `StoryPage`.
 
-## ⚠️ DECISION PENDING — ISR (brief §4, §8 "ISR caching confirmed working")
+## ⚠️ DECIDED — ISR (brief §4, §8 "ISR caching confirmed working")
 
-**Wired and execution-proven; currently inert. The DoD line is NOT claimable yet.**
+**Decision: Option A — accept dynamic rendering for now** (founder, 2026-09-24).
+This DoD line stays **OPEN, annotated — not checked**: the brief asks for ISR
+caching and the route demonstrably does not cache. "Code-done" for the
+invalidation wiring is true; "phase-done" for this item is not.
+
+Rationale: at current scan volume a per-request render is invisible in latency
+and cost, and dynamic rendering satisfies the DoD's underlying intent —
+"page updates reflect after publish without a full rebuild" — trivially, with
+zero stale-page risk (no stale window can exist when nothing is cached).
 
 Evidence (local probes, 2026-09-24, `next build` + `next start` +
 `NEXT_PRIVATE_DEBUG_CACHE=1`):
@@ -52,22 +60,13 @@ Evidence (local probes, 2026-09-24, `next build` + `next start` +
   sole cause; the never-adopted next-intl static pattern (`setRequestLocale` is
   called nowhere) is the remaining suspect.
 
-**Consequence today:** freshness-after-publish holds trivially (every scan
-renders fresh), and a stale-page/unpublish leak cannot occur while dynamic. The
-invalidation calls are no-ops that become load-bearing the moment the route is
-served statically.
-
-**Options (owner: founder — architecture call, not a code change):**
-- **A — Accept dynamic for now (recommended at this scale).** Zero work. Annotate
-  this DoD item rather than checking it; revisit when scan volume makes the
-  per-request render cost visible.
-- **B — Static migration (its own PR/phase).** Adopt next-intl's static
-  rendering: `setRequestLocale` across layouts/pages plus either a cookie-free
-  request config (dashboard loses cookie locale unless the locale moves into the
-  URL) or URL-prefixed locales (`localePrefix: 'as-needed'` keeps `/s/{gtin}`
-  canonical for English). Then re-run the HIT→MISS probe and close this item.
-
-Do not close this on "code merged" — the DoD requires a manual verification.
+**Revisit trigger (when to do Option B):** scan volume makes the per-request
+render visible in latency or cost, or custom-domain support lands (each domain
+multiplies rendered scans). Option B = next-intl static rendering:
+`setRequestLocale` across layouts/pages, plus either a cookie-free request
+config (the dashboard loses cookie locale unless the locale moves into the URL)
+or URL-prefixed locales (`localePrefix: 'as-needed'` keeps `/s/{gtin}` canonical
+for English). Then re-run the HIT→MISS probe above and close this item.
 
 ## ❌ PENDING / NOT BUILT
 
