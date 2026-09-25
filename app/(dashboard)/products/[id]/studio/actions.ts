@@ -1,6 +1,7 @@
 "use server";
 
 import { Prisma } from "@prisma/client";
+import { revalidatePath } from "next/cache";
 import { getCurrentUser } from "@/lib/auth/server";
 import { getDb } from "@/lib/db";
 import { optionalInput } from "@/lib/input";
@@ -93,6 +94,35 @@ function toBodyContent(
 }
 
 /**
+ * Clear the consumer story page's cached entries after a SUCCESSFUL write.
+ *
+ * revalidatePath, not revalidateTag/updateTag: the public route does zero
+ * tagged fetches (Prisma only), so a tag has no association on the route to
+ * act on — the path form is documented to invalidate every path matching the
+ * page file, including `revalidate = false` entries. Both route-group
+ * spellings are passed because Next has matched the file path (groups
+ * included) and the URL path in different versions; an unmatched form is a
+ * no-op, so calling both guarantees the match. Cost: any story write clears
+ * every story page's cache (they re-render on next visit) — accepted at this
+ * scale over a missed unpublish.
+ *
+ * Called only AFTER the committed upsert: a failed write must never clear a
+ * good cached page.
+ *
+ * VERIFIED (local ISR probe, NEXT_PRIVATE_DEBUG_CACHE=1): both spellings reach
+ * the cache layer as tags `_N_T_/(public)/s/[gtin]/page` and `_N_T_/s/[gtin]/page`
+ * (batched, no errors). NOTE: today the route renders DYNAMIC per request
+ * (private/no-store, no cache events) — the revalidate=false contract above is
+ * inert until the i18n static-rendering question is resolved — so these calls
+ * are currently harmless no-ops that become load-bearing the moment the route
+ * is served statically.
+ */
+function clearStoryPageCache(): void {
+  revalidatePath("/(public)/s/[gtin]", "page");
+  revalidatePath("/s/[gtin]", "page");
+}
+
+/**
  * Save TipTap JSON content to the StoryPage. Creates the StoryPage row on
  * first save (a product may exist without one until the maker starts editing).
  */
@@ -128,6 +158,7 @@ export async function saveStoryAction(
     return { error: "Could not save the story. Please try again." };
   }
 
+  clearStoryPageCache();
   return {};
 }
 
@@ -148,6 +179,13 @@ export async function publishStoryAction(
     "You must be signed in to publish a story."
   );
   if (!input.ok) return { error: input.error };
+
+  // Headline required to publish (Phase 2 brief §5: "headline (short, required
+  // to publish)"). Drafts may save without one; only the publish transition is
+  // gated. English copy matches this file's raw-string action-error convention.
+  if (!input.headline) {
+    return { error: "A headline is required to publish a story." };
+  }
 
   try {
     const db = getDb();
@@ -170,5 +208,6 @@ export async function publishStoryAction(
     return { error: "Could not update the story. Please try again." };
   }
 
+  clearStoryPageCache();
   return {};
 }
