@@ -18,6 +18,10 @@
  * (option A), with the revisit trigger for a static migration. Not a bug in
  * this file. Do not add session reads regardless (they'd lock dynamic forever).
  *
+ * Crawler signals: published pages carry a canonical URL on the resolver host
+ * (one page, two hosts — see lib/story/url.ts) plus Schema.org Product JSON-LD
+ * (lib/story/jsonLd.ts). Coming-soon pages carry neither; they stay noindex.
+ *
  * Draft safety: an unpublished or unknown story renders Coming Soon as a
  * normal 200 with noindex — never a 404, never a leaked draft (brief §5).
  */
@@ -27,6 +31,8 @@ import { getTranslations } from "next-intl/server";
 import { isValidGtin, toGtin14 } from "@/lib/gs1/gtin";
 import { getProductWithStoryByGtin } from "@/lib/story/queries";
 import { normalizeTipTapContent } from "@/lib/story/tiptap";
+import { storyPageCanonicalUrl } from "@/lib/story/url";
+import { buildProductJsonLd, serializeJsonLd } from "@/lib/story/jsonLd";
 import TipTapRenderer from "@/components/story-page/TipTapRenderer";
 import ComingSoon from "@/components/story-page/ComingSoon";
 import PassportSummary from "@/components/story-studio/PassportSummary";
@@ -46,11 +52,22 @@ export async function generateMetadata({
   // Coming-soon (unpublished, unknown, malformed): indexable only when real
   // content is live — draft and placeholder states must never be crawled.
   if (!isValidGtin(gtin)) return { title: t("title"), robots: { index: false } };
-  const product = await getProductWithStoryByGtin(toGtin14(gtin)!);
+  const gtin14 = toGtin14(gtin)!;
+  const product = await getProductWithStoryByGtin(gtin14);
   if (!product?.storyPage?.published) {
     return { title: t("title"), robots: { index: false } };
   }
-  return { title: product.storyPage.headline || product.name };
+  return {
+    title: product.storyPage.headline || product.name,
+    // ONE page, TWO hosts: scans arrive on the resolver domain (the resolver
+    // redirects host-relative), while the dashboard's "View live story" link
+    // uses the app domain. Consolidate crawl signals on the resolver host — the
+    // permanent one — so the two copies never compete with each other.
+    // Unpublished pages deliberately get NO canonical: they also carry
+    // robots noindex, and a canonical would advertise a URL that should not be
+    // indexed at all.
+    alternates: { canonical: storyPageCanonicalUrl(gtin14) },
+  };
 }
 
 export default async function StoryPage({
@@ -85,6 +102,18 @@ export default async function StoryPage({
 
   return (
     <section className={shellStyles.shell}>
+      {/* Schema.org Product data for crawlers / AI legibility (brief §6).
+          serializeJsonLd escapes every `<`, so no Product field can close this
+          tag. This is the one sanctioned dangerouslySetInnerHTML in the story
+          path and NOT the thing brief §9 forbids: none of it is story HTML (the
+          payload is built from Product columns, never from the TipTap body) and
+          it renders no DOM. See lib/story/jsonLd.ts. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: serializeJsonLd(buildProductJsonLd(product)),
+        }}
+      />
       <h1 className={styles.headline}>{story.headline || product.name}</h1>
       {body && (
         <div className={styles.body}>

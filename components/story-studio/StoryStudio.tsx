@@ -10,6 +10,7 @@ import ErrorBoundary from "@/components/ui/ErrorBoundary";
 import MobilePreview from "./MobilePreview";
 import PassportSummary from "./PassportSummary";
 import { toGtin14 } from "@/lib/gs1/gtin";
+import { storyPagePath } from "@/lib/story/url";
 import { saveStoryAction, publishStoryAction } from "@/app/(dashboard)/products/[id]/studio/actions";
 import { toPlainJson } from "@/lib/story/plainJson";
 import { optionalInput } from "@/lib/input";
@@ -64,11 +65,13 @@ export default function StoryStudio({ product }: { product: StudioProduct }) {
     headline !== savedHeadline;
 
   // The public story page is served at `/s/{gtin14}` (see app/(public)/s/[gtin])
-  // — the same path the resolver redirects a scanned barcode to. Relative link,
-  // domain-agnostic: works on whatever host this dashboard is served from.
+  // — the same path the resolver redirects a scanned barcode to. storyPagePath
+  // owns the path shape (shared with the public page's canonical URL); the link
+  // stays relative and domain-agnostic: it works on whatever host this
+  // dashboard is served from.
   const liveUrl =
     isPublished && product.gtin?.gtinValue
-      ? `/s/${toGtin14(product.gtin.gtinValue) ?? product.gtin.gtinValue}`
+      ? storyPagePath(product.gtin.gtinValue)
       : null;
 
   // Auto-clear the "Saved" confirmation after a moment so it never lingers stale.

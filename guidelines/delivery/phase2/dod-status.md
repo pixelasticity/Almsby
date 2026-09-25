@@ -35,7 +35,46 @@ Public page reuses the studio's `PassportSummary` — single source of truth for
 gtin / origin / material / recyclable display, read from `Product`, not
 duplicated onto `StoryPage`.
 
-## ⚠️ DECIDED — ISR (brief §4, §8 "ISR caching confirmed working")
+### Crawler signals — canonical URL + Schema.org JSON-LD (brief §2.6, §6)
+Published pages now emit `<link rel="canonical">` and Schema.org Product JSON-LD.
+
+- **Canonical** (`lib/story/url.ts`): anchored to the **resolver host**, because
+  that is where scans and shared barcode links land, and it is the domain that
+  cannot move (AGENTS.md rule 3) while `NEXT_PUBLIC_APP_URL` may change freely.
+  Unpublished pages emit none — they are already `robots: noindex`, and a
+  canonical would advertise a URL that must not be indexed.
+- **JSON-LD** (`lib/story/jsonLd.ts`): brief §6 fields exactly (name, brand,
+  gtin14, countryOfOrigin, material). Unset Product fields are omitted, never
+  emitted as null/"" — "no origin stated" is a different claim from "origin is
+  empty". Escaping (`<` → `\u003c`) is proven against a `</script>` payload in
+  `tests/story/json-ld.test.ts`, so the tag cannot be broken out of.
+- Path shape is single-sourced (`storyPagePath`), shared by the canonical URL
+  and the studio's "View live story" link.
+
+**FLAGGED — deliberate exception to AGENTS.md rule 3, needs your blessing on
+the wording:** rule 3 scopes `NEXT_PUBLIC_RESOLVER_URL` to GS1 Digital Link
+URIs. The canonical is not a Digital Link URI — it is the resolver *host*, used
+to anchor content that is canonically served there. Approved in conversation
+(2026-09-24) and implemented with the reasoning in code; the AGENTS rule text
+has NOT been amended, so the file and the exception currently disagree on
+paper. Suggested carve-out if you agree: "…or to construct canonical URLs for
+content served on the resolver domain."
+
+**Adjacent gap noted, deliberately not touched:** `app/layout.tsx` sets no
+`metadataBase`. This page does not need one — its canonical is absolute — but
+the first relative Open Graph image or relative alternate elsewhere will, and a
+repo-wide `metadataBase` decision belongs with that change, not smuggled in
+here.
+
+**Manual verification still owed (founder):** the DoD asks for the Google Rich
+Results Test. Expect it to report **no eligible rich results** — Google's
+Product rich result requires `offers` (or `review`/`aggregateRating`), and a
+passport page has no price. That is not a defect and not a reason to invent an
+offer: brief §6 / architecture §6 Layer 1 is about *machine legibility* (AI
+crawlers, agents), which is what the markup delivers. Record the actual tool
+output before ticking that line.
+
+
 
 **Decision: Option A — accept dynamic rendering for now** (founder, 2026-09-24).
 This DoD line stays **OPEN, annotated — not checked**: the brief asks for ISR
@@ -73,9 +112,6 @@ for English). Then re-run the HIT→MISS probe above and close this item.
 - **Photo upload (brief §2.1).** `lib/story/storage.ts` (R2 upload, fail-loud,
   tested) has no caller: the studio has no photo UI and `StoryPage.photos` is
   never written. Needs the R2 bucket name confirmed before wiring.
-- **Schema.org JSON-LD (brief §2.6).** Not emitted anywhere; the story query
-  already returns `gtinValue` for it. Small separate PR, validated with Google's
-  Rich Results Test.
 - **Physical scan of the live story page (brief §8 item 3).** Real printed Phase 1
   label → resolver → published page, in production. Manual/founder step; the code
   path exists but CI cannot claim it.
