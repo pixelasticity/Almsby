@@ -119,7 +119,6 @@ export default function BusinessOnboardingForm() {
               </option>
               <option value="US">{t("creation.step3.country.options.us")}</option>
               <option value="GB">{t("creation.step3.country.options.gb")}</option>
-              <option value="EU">{t("creation.step3.country.options.eu")}</option>
               <option value="CA">{t("creation.step3.country.options.ca")}</option>
               <option value="AU">{t("creation.step3.country.options.au")}</option>
               <option value="OTHER">{t("creation.step3.country.options.other")}</option>
