@@ -7,11 +7,16 @@
  * deliberately public. Maker-side writes (CMS save, publish) re-confirm
  * ownership at the action boundary via getOwnedProduct.
  *
- * Not cache()-wrapped on purpose: the ISR revalidate=false strategy built for
- * #71..#74 caches at the route level, so a second layer of request-level React
- * cache would only add confusion and stale reads.
+ * cache()-wrapped, request-scoped: React's cache() memoizes for ONE render, so
+ * it can never serve stale data across requests. It exists because the story
+ * route looks the product up twice per render (generateMetadata + the page
+ * body) and the second lookup should not hit Postgres. Safe in both worlds: if
+ * /s/[gtin] is ever served statically (see the Phase 2 ISR decision), the
+ * per-render dedupe still holds — unlike unstable_cache, this never
+ * introduces a cross-request staleness window.
  */
 import type { Prisma } from "@prisma/client";
+import { cache } from "react";
 import { getDb } from "@/lib/db";
 
 /**
@@ -53,13 +58,15 @@ export type ProductStoryDb = {
  * The optional db arg defaults to the app connection; tests pass a stub so the
  * join shape can be asserted without a live database (same seam as GtinLookupDb).
  */
-export async function getProductWithStoryByGtin(
-  gtin14: string,
-  db?: ProductStoryDb
-): Promise<StoryPageInclude | null> {
-  const client = db ?? getDb();
-  return client.product.findFirst({
-    where: { gtin: { gtinValue: gtin14 } },
-    include: { storyPage: true, gtin: true },
-  });
-}
+export const getProductWithStoryByGtin = cache(
+  async (
+    gtin14: string,
+    db?: ProductStoryDb
+  ): Promise<StoryPageInclude | null> => {
+    const client = db ?? getDb();
+    return client.product.findFirst({
+      where: { gtin: { gtinValue: gtin14 } },
+      include: { storyPage: true, gtin: true },
+    });
+  }
+);
