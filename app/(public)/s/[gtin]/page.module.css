@@ -1,0 +1,80 @@
+/* Public story page — consumer-facing, styled to the shared design tokens. */
+
+.headline {
+  margin: 0 0 var(--space-7);
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  line-height: 1.2;
+}
+
+.body {
+  margin: 0 0 var(--space-8);
+  font-size: var(--text-md);
+  line-height: 1.6;
+}
+.body h2,
+.body h3,
+.body h4,
+.body h5,
+.body h6 {
+  margin: var(--space-7) 0 var(--space-4);
+  font-family: var(--font-display);
+  line-height: 1.25;
+}
+.body h2 {
+  font-size: var(--text-xl);
+}
+.body h3 {
+  font-size: var(--text-lg);
+}
+.body h4,
+.body h5,
+.body h6 {
+  font-size: var(--text-md);
+}
+.body p {
+  margin: 0 0 var(--space-5);
+}
+.body a {
+  color: var(--blue-600);
+}
+.body a:hover {
+  text-decoration: underline;
+}
+
+/* Coming-soon state — same shape as the studio preview's, so "what the maker
+   saw" and "what the scanner sees" stay visually consistent. */
+.comingSoon {
+  text-align: center;
+  padding: var(--space-10) 0;
+}
+.comingSoonIcon {
+  color: var(--neutral-500);
+  margin-bottom: var(--space-5);
+}
+.comingSoonTitle {
+  margin: 0 0 var(--space-4);
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+}
+.comingSoonBody {
+  margin: 0 auto;
+  max-width: 42ch;
+  font-size: var(--text-md);
+  color: var(--neutral-600);
+  line-height: 1.6;
+}
+
+/* "Powered by Almsby" referral badge — small, tasteful, not an ad (GTM plan). */
+.badge {
+  display: inline-block;
+  margin-top: var(--space-9);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--neutral-600);
+  text-decoration: none;
+}
+.badge:hover {
+  color: var(--blue-600);
+  text-decoration: underline;
+}

@@ -202,7 +202,6 @@
   },
   "story": {
     "title": "Historia del producto",
-    "placeholder": "Placeholder de la Fase 0. El renderizado completo de la página de historia llega en la Fase 2. GTIN solicitado: {gtin}.",
     "edit": "Editar historia",
     "statusDraft": "Borrador — aún no visible para los compradores",
     "statusPublished": "Publicado",
@@ -211,7 +210,8 @@
     "headlineHelper": "Aparece en la parte superior de tu página de historia pública.",
     "comingSoonTitle": "Próximamente",
     "comingSoonBody": "El fabricante todavía está creando esta historia. Vuelve pronto para descubrir el proceso.",
-    "emptyHint": "Empieza a añadir bloques para ver cómo se desarrolla la historia…"
+    "emptyHint": "Empieza a añadir bloques para ver cómo se desarrolla la historia…",
+    "poweredBy": "Powered by Almsby"
   },
   "storyStudio": {
     "subtitle": "Story Studio",

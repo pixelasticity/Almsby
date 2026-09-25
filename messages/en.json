@@ -202,7 +202,6 @@
   },
   "story": {
     "title": "Product story",
-    "placeholder": "Phase 0 placeholder. Full story-page rendering lands in Phase 2. Requested GTIN: {gtin}.",
     "edit": "Edit story",
     "statusDraft": "Draft — not visible to shoppers yet",
     "statusPublished": "Published",
@@ -211,7 +210,8 @@
     "headlineHelper": "Shows at the top of your public story page.",
     "comingSoonTitle": "Coming Soon",
     "comingSoonBody": "The maker is still crafting this story. Check back soon for a glimpse into the process.",
-    "emptyHint": "Start adding blocks to see the story unfold..."
+    "emptyHint": "Start adding blocks to see the story unfold...",
+    "poweredBy": "Powered by Almsby"
   },
   "storyStudio": {
     "subtitle": "Story Studio",
