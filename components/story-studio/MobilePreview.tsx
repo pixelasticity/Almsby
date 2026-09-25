@@ -5,6 +5,7 @@ import styles from "./story-studio.module.css";
 import TipTapRenderer, {
   type TipTapNode,
 } from "@/components/story-page/TipTapRenderer";
+import ComingSoon from "@/components/story-page/ComingSoon";
 
 interface MobilePreviewProps {
   content: Record<string, unknown> | null;
@@ -34,17 +35,12 @@ export default function MobilePreview({
 
       <div className={styles.phoneContent}>
         {!isPublished && (
-          <div className={styles.comingSoon}>
-            <div className={styles.comingSoonIcon}>
-              <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-            <h3 className={styles.comingSoonTitle}>{t("comingSoonTitle")}</h3>
-            <p className={styles.comingSoonText}>
-              {t("comingSoonBody")}
-            </p>
-          </div>
+          <ComingSoon
+            title={t("comingSoonTitle")}
+            body={t("comingSoonBody")}
+            styles={styles}
+            as="h3"
+          />
         )}
 
         <div className={styles.storyContent}>

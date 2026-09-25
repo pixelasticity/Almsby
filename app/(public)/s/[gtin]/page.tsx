@@ -13,7 +13,8 @@
  * events even with the locale cookie removed), so today every scan is fresh
  * and the invalidation calls are inert no-ops. Making it actually static is an
  * i18n-architecture question (cookie-locale + next-intl setRequestLocale were
- * never adopted repo-wide) — tracked as a Phase 2 status decision, not a bug
+ * never adopted repo-wide) — recorded with evidence in
+ * guidelines/delivery/phase2/dod-status.md (§ISR, decision pending), not a bug
  * in this file. Do not add session reads regardless (they'd lock dynamic forever).
  *
  * Draft safety: an unpublished or unknown story renders Coming Soon as a
@@ -26,6 +27,7 @@ import { isValidGtin, toGtin14 } from "@/lib/gs1/gtin";
 import { getProductWithStoryByGtin } from "@/lib/story/queries";
 import { normalizeTipTapContent } from "@/lib/story/tiptap";
 import TipTapRenderer from "@/components/story-page/TipTapRenderer";
+import ComingSoon from "@/components/story-page/ComingSoon";
 import PassportSummary from "@/components/story-studio/PassportSummary";
 import { env } from "@/lib/env";
 import shellStyles from "@/styles/pageShell.module.css";
@@ -67,26 +69,11 @@ export default async function StoryPage({
   if (!product || !story?.published) {
     return (
       <section className={shellStyles.shell}>
-        <div className={styles.comingSoon}>
-          <div className={styles.comingSoonIcon} aria-hidden="true">
-            <svg
-              width="24"
-              height="24"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-          </div>
-          <h1 className={styles.comingSoonTitle}>{t("comingSoonTitle")}</h1>
-          <p className={styles.comingSoonBody}>{t("comingSoonBody")}</p>
-        </div>
+        <ComingSoon
+          title={t("comingSoonTitle")}
+          body={t("comingSoonBody")}
+          styles={styles}
+        />
       </section>
     );
   }

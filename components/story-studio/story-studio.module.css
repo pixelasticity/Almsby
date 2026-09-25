@@ -283,7 +283,7 @@
   margin-bottom: var(--space-3);
 }
 
-.comingSoonText {
+.comingSoonBody {
   font-size: var(--text-sm);
   color: var(--neutral-700);
   line-height: var(--leading-normal);
