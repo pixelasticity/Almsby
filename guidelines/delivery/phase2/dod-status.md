@@ -50,6 +50,14 @@ Published pages now emit `<link rel="canonical">` and Schema.org Product JSON-LD
   `tests/story/json-ld.test.ts`, so the tag cannot be broken out of.
 - Path shape is single-sourced (`storyPagePath`), shared by the canonical URL
   and the studio's "View live story" link.
+- **Adjacent risk flagged, not changed** (HIGH-RISK zone, AGENTS rule 2):
+  `app/01/[gtin]/route.ts` still spells its redirect target as the literal
+  `/s/${gtin14}`. That is behaviorally identical to `storyPagePath()` today, and
+  the resolver's decoupling from story-side modules is deliberate — but the same
+  invariant is now described from two files, so a future change to the path
+  shape must move BOTH or every scanned barcode lands on a 404. Decide when the
+  resolver is next opened: either import the helper there, or add a test pinning
+  the redirect target to `storyPagePath()`.
 
 **FLAGGED — deliberate exception to AGENTS.md rule 3, needs your blessing on
 the wording:** rule 3 scopes `NEXT_PUBLIC_RESOLVER_URL` to GS1 Digital Link
