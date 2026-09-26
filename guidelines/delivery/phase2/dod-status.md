@@ -35,6 +35,55 @@ Public page reuses the studio's `PassportSummary` — single source of truth for
 gtin / origin / material / recyclable display, read from `Product`, not
 duplicated onto `StoryPage`.
 
+### Photo upload (brief §2.1)
+The studio's Photos section: heading, helper copy, a count line ("N photos" /
+"Uploading N photos…") that appears only once there is something to count, a
+drag-and-drop dropzone, and thumbnail previews in a grid that fits **up to 4
+columns** (2 on phones).
+
+- **Client-side compression first** (`lib/story/clientCompress.ts`). A phone
+  photo (8–20 MB) is downscaled to a 2560px long edge and re-encoded in the
+  browser, so `MAX_PHOTO_BYTES` (5 MB) stays a strict server contract instead of
+  a wall the maker hits. A file already under 4.5 MB passes through
+  **byte-identical**; a re-encode that would grow the file is discarded; a decode
+  timeout stops a corrupt file from spinning forever; any failure is logged and
+  falls back to the original — server validation, never this module, is the
+  boundary.
+- **Server Action body limit raised to 6 MB** (`next.config.ts`). The framework
+  default is 1 MB, which would have rejected a legitimate compressed photo with a
+  framework error instead of our user-safe message.
+- **Upload-on-select, persist-on-save.** The photo is written to R2 as soon as it
+  is chosen (so the maker sees the real stored image, not a fake local preview),
+  and the URL joins `StoryPage.photos` on the next Save/Publish — the same model
+  as headline and body. Dirty tracking was extended to photos, plus a
+  photo-specific "not saved yet" note.
+- **Write-side URL gate** (`lib/story/photos.ts`). Only
+  `https://{R2_PUBLIC_DOMAIN}/story-photos/…` URLs are storable; off-domain,
+  scheme-trick (`javascript:`, `data:`, protocol-relative, `http:`) and
+  non-string entries are refused and logged, with a 12-photo cap. The public page
+  renders these as `<img src>`, so this is the same "refuse on write what the
+  render path would otherwise neutralize" discipline as the TipTap link allowlist.
+- **One shared `PhotoGallery`** renders the studio preview AND the public page in
+  the same slot (directly under the headline), so preview parity is structural
+  rather than a convention.
+- **VERIFIED LIVE** (2026-09-24, dev bucket `almsby-story-photos-dev`, real
+  credentials via `.env.local`): uploaded a real PNG → returned
+  `https://pub-…r2.dev/story-photos/tmp-live-check/…-live-check.png` → `fetch`
+  **200 `image/png`**. Bucket name, key shape, public domain and content type
+  confirmed against real R2, not mocks. (One throwaway object now sits in the dev
+  bucket — see the orphan-cleanup follow-up.)
+- **Tests:** `tests/story/photos.test.ts` (URL gate, cap, duplicates, scheme
+  tricks), `tests/story/client-compress.test.ts` (dimension math, passthrough,
+  oversized-source refusal, decode-failure fallback), and photo cases added to
+  `tests/story/studio-actions.test.ts` (photo persistence on save/publish, URL
+  refusal, cap, upload-action session/ownership/no-file gates, error mapping).
+
+**Follow-ups, explicitly not blockers:** orphaned R2 objects when a maker uploads
+then abandons or removes a photo (no delete path yet — an R2 lifecycle rule is the
+fix); `next/image` optimization for R2-hosted images (2 `no-img-element` lint
+warnings today); photo alt text is generic ("Product photo N") because the schema
+has no caption field — captions would be a schema change, not a UI tweak.
+
 ### Crawler signals — canonical URL + Schema.org JSON-LD (brief §2.6, §6)
 Published pages now emit `<link rel="canonical">` and Schema.org Product JSON-LD.
 
@@ -117,12 +166,15 @@ for English). Then re-run the HIT→MISS probe above and close this item.
 
 ## ❌ PENDING / NOT BUILT
 
-- **Photo upload (brief §2.1).** `lib/story/storage.ts` (R2 upload, fail-loud,
-  tested) has no caller: the studio has no photo UI and `StoryPage.photos` is
-  never written. Needs the R2 bucket name confirmed before wiring.
+- **Photo upload (brief §2.1).** Done — see the Photos section above; the R2
+  bucket is confirmed working end to end against the dev bucket.
 - **Physical scan of the live story page (brief §8 item 3).** Real printed Phase 1
   label → resolver → published page, in production. Manual/founder step; the code
   path exists but CI cannot claim it.
+- **A full studio session on real data (headline + body + photos → publish →
+  scan).** The R2 half is now proven live; the manual walkthrough that a maker can
+  complete the whole flow without help is still owed (same class of manual step as
+  the scan).
 
 ## Out of scope (unchanged)
 Compliance dashboard (Phase 3), billing (Phase 4), translated story content
