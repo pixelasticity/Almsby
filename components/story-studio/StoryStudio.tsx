@@ -10,8 +10,8 @@ import ErrorBoundary from "@/components/ui/ErrorBoundary";
 import MobilePreview from "./MobilePreview";
 import PassportSummary from "./PassportSummary";
 import PhotoUploader from "./PhotoUploader";
-import { toGtin14 } from "@/lib/gs1/gtin";
 import { storyPagePath } from "@/lib/story/url";
+import type { StoryPhoto } from "@/lib/story/photos";
 import { saveStoryAction, publishStoryAction } from "@/app/(dashboard)/products/[id]/studio/actions";
 import { toPlainJson } from "@/lib/story/plainJson";
 import { optionalInput } from "@/lib/input";
@@ -29,8 +29,8 @@ type StudioProduct = {
     published: boolean;
     bodyContent: unknown;
     headline: string | null;
-    /** R2 URLs; [] when the story has none yet (and on pre-photo rows). */
-    photos: string[];
+    /** R2-backed photo metadata; [] when the story has none yet. */
+    photos: StoryPhoto[];
   } | null;
 };
 
@@ -47,9 +47,12 @@ export default function StoryStudio({ product }: { product: StudioProduct }) {
   // the bounded rich-text schema (paragraph/heading/bold/italic/strike/link
   // only) stays intact per the Phase 2 brief.
   const [headline, setHeadline] = useState(product.storyPage?.headline ?? "");
-  // Photo URLs. Uploading writes to R2 immediately; this array is what gets
-  // persisted with the next Save/Publish (see PhotoUploader's header comment).
-  const [photos, setPhotos] = useState<string[]>(product.storyPage?.photos ?? []);
+  // Photo metadata (url + optional role/caption). Uploading writes the object to
+  // R2 immediately; this array is what gets persisted with the next Save/Publish
+  // (see PhotoUploader's header comment).
+  const [photos, setPhotos] = useState<StoryPhoto[]>(
+    product.storyPage?.photos ?? []
+  );
   const [isPublished, setIsPublished] = useState(product.storyPage?.published ?? false);
   const [activeTab, setActiveTab] = useState<"edit" | "preview">("edit");
   const [error, setError] = useState<string | null>(null);
@@ -62,7 +65,7 @@ export default function StoryStudio({ product }: { product: StudioProduct }) {
   // Snapshot of the last successfully-persisted content, used for dirty tracking.
   const [savedContent, setSavedContent] = useState<Record<string, unknown> | null>(content);
   const [savedHeadline, setSavedHeadline] = useState(product.storyPage?.headline ?? "");
-  const [savedPhotos, setSavedPhotos] = useState<string[]>(
+  const [savedPhotos, setSavedPhotos] = useState<StoryPhoto[]>(
     product.storyPage?.photos ?? []
   );
   // "idle" (nothing to report) | "saved" (brief confirmation) — errors go to the banner.

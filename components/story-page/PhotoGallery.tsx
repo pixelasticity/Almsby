@@ -11,37 +11,72 @@
  * because alt copy needs translating and this component has no locale of its own.
  *
  * Expected class names in the caller's CSS module:
- *   .photos  (the grid)  .photo  (a cell)  .photoImg  (the image)
+ *   .photos (grid)  .photo (cell)  .photoHero (first cell, spans the row)
+ *   .photoFrame (crop box)  .photoImg (the image)
+ *   .photoRole (role badge)  .photoCaption (caption line)
  */
+import { photoAltText, type PhotoRole, type StoryPhoto } from "@/lib/story/photos";
+
 type CssModule = { readonly [key: string]: string };
 
 type PhotoGalleryProps = {
-  /** R2 URLs, already validated on the write path (lib/story/photos.ts). */
-  photos: string[];
-  /** The caller's CSS module providing the three classes documented above. */
+  /** Structured photos, normalized on the way in (lib/story/photos.ts). */
+  photos: StoryPhoto[];
+  /** The caller's CSS module providing the classes documented above. */
   styles: CssModule;
-  /** Translated alt text for the photo at `index` (0-based). */
-  altText: (index: number) => string;
+  /** Translated label for a role, e.g. "Process". */
+  roleLabel: (role: PhotoRole) => string;
+  /** Translated alt fallback for a photo with neither caption nor role. */
+  altFallback: (index: number) => string;
 };
 
-export default function PhotoGallery({ photos, styles, altText }: PhotoGalleryProps) {
+export default function PhotoGallery({
+  photos,
+  styles,
+  roleLabel,
+  altFallback,
+}: PhotoGalleryProps) {
   // Render nothing at all when there are no photos — an empty grid would leave
   // a gap in the story, and the caller's layout already handles the no-photo case.
   if (photos.length === 0) return null;
 
   return (
     <ul className={styles.photos}>
-      {photos.map((src, index) => (
-        <li key={src} className={styles.photo}>
-          <img
-            src={src}
-            alt={altText(index)}
-            className={styles.photoImg}
-            loading="lazy"
-            decoding="async"
-          />
-        </li>
-      ))}
+      {photos.map((photo, index) => {
+        // Position IS the cover choice: the first photo leads the story. Keeping
+        // it positional avoids an `isCover` flag that could fall out of sync with
+        // the array it describes — "Make cover" in the studio just moves a photo
+        // to the front.
+        const isCover = index === 0;
+        return (
+          <li
+            key={photo.url}
+            className={`${styles.photo} ${isCover ? styles.photoHero : ""}`}
+          >
+            <div className={styles.photoFrame}>
+              <img
+                src={photo.url}
+                // Most specific description available: the maker's caption, else
+                // the role they chose, else a generic label.
+                alt={photoAltText(
+                  photo,
+                  photo.role ? roleLabel(photo.role) : undefined,
+                  altFallback(index)
+                )}
+                className={styles.photoImg}
+                loading={isCover ? "eager" : "lazy"}
+                decoding="async"
+              />
+            </div>
+            {photo.role ? (
+              <p className={styles.photoRole}>{roleLabel(photo.role)}</p>
+            ) : null}
+            {photo.caption ? (
+              <p className={styles.photoCaption}>{photo.caption}</p>
+            ) : null}
+          </li>
+        );
+      })}
     </ul>
   );
 }

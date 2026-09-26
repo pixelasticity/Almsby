@@ -55,7 +55,11 @@ const HOSTILE_DOC = {
 
 const upsert = vi.fn();
 const PHOTO_PREFIX = "https://images.example.test/story-photos/prod_1/";
-const PHOTO_1 = `${PHOTO_PREFIX}uuid-1-hero.jpg`;
+const PHOTO_1 = {
+  url: `${PHOTO_PREFIX}uuid-1-raw.jpg`,
+  role: "materials",
+  caption: "Undyed merino, straight off the carder",
+};
 const STORY_PATHS: [string, string][] = [
   ["/(public)/s/[gtin]", "page"],
   ["/s/[gtin]", "page"],
@@ -172,12 +176,12 @@ describe("publishStoryAction", () => {
   });
 });
 
-describe("saveStoryAction — photo URL gate", () => {
+describe("saveStoryAction — photo gate", () => {
   it("rejects an off-domain photo URL before any write or cache clear", async () => {
     const log = vi.spyOn(console, "error").mockImplementation(() => {});
     try {
       const state = await saveStoryAction("prod_1", DOC, "A headline", [
-        "https://evil.example/track.gif",
+        { url: "https://evil.example/track.gif" },
       ]);
       expect(state.error).toMatch(/could not be verified/);
       expect(upsert).not.toHaveBeenCalled();
@@ -188,12 +192,42 @@ describe("saveStoryAction — photo URL gate", () => {
     }
   });
 
+  it("rejects an unknown photo role with role-specific copy", async () => {
+    const log = vi.spyOn(console, "error").mockImplementation(() => {});
+    try {
+      const state = await saveStoryAction("prod_1", DOC, "A headline", [
+        { url: `${PHOTO_PREFIX}x.jpg`, role: "cover" },
+      ]);
+      expect(state.error).toMatch(/category/);
+      expect(upsert).not.toHaveBeenCalled();
+      expectCacheNotCleared();
+    } finally {
+      log.mockRestore();
+    }
+  });
+
+  it("stores a legacy bare URL as a structured photo", async () => {
+    // A tab left open across a deploy still sends the old shape; that save must
+    // succeed, and what lands in the column is structured either way.
+    const state = await saveStoryAction("prod_1", DOC, "A headline", [
+      `${PHOTO_PREFIX}legacy.jpg`,
+    ]);
+    expect(state).toEqual({});
+    expect(upsert).toHaveBeenCalledWith(
+      expect.objectContaining({
+        update: expect.objectContaining({
+          photos: [{ url: `${PHOTO_PREFIX}legacy.jpg` }],
+        }),
+      })
+    );
+  });
+
   it("refuses more photos than the cap", async () => {
     const log = vi.spyOn(console, "error").mockImplementation(() => {});
     try {
       const many = Array.from(
         { length: MAX_STORY_PHOTOS + 1 },
-        (_, index) => `${PHOTO_PREFIX}${index}.jpg`
+        (_, index) => ({ url: `${PHOTO_PREFIX}${index}.jpg` })
       );
       const state = await saveStoryAction("prod_1", DOC, "A headline", many);
       expect(state.error).toMatch(/up to 12 photos/);
@@ -256,9 +290,9 @@ describe("uploadStoryPhotoAction", () => {
   });
 
   it("returns the stored URL and writes nothing to the database", async () => {
-    vi.mocked(uploadStoryPhoto).mockResolvedValue(PHOTO_1);
+    vi.mocked(uploadStoryPhoto).mockResolvedValue(PHOTO_1.url);
     const state = await uploadStoryPhotoAction("prod_1", form(jpeg()));
-    expect(state).toEqual({ ok: true, url: PHOTO_1 });
+    expect(state).toEqual({ ok: true, url: PHOTO_1.url });
     expect(validatePhotoFile).toHaveBeenCalled();
     // Upload-on-select, persist-on-save: an upload never touches the DB.
     expect(upsert).not.toHaveBeenCalled();

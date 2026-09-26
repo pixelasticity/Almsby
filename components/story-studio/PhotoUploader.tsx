@@ -12,6 +12,13 @@ import {
   ALLOWED_PHOTO_TYPES,
   MAX_STORY_PHOTOS,
 } from "@/lib/story/photoTypes";
+import {
+  MAX_PHOTO_CAPTION_LENGTH,
+  PHOTO_ROLES,
+  photoAltText,
+  type PhotoRole,
+  type StoryPhoto,
+} from "@/lib/story/photos";
 import styles from "./story-studio.module.css";
 
 /**
@@ -30,19 +37,34 @@ import styles from "./story-studio.module.css";
  * (type/size in lib/story/storage.ts, URL origin in lib/story/photos.ts).
  * Client-side checks are UX, never the trust boundary.
  */
+/**
+ * One photo's editable fields. Empty values are dropped rather than stored as
+ * "": "no role chosen" and "role: ''" must not be two states in the database.
+ *
+ * NOTE: the caption is NOT trimmed here. Trimming on every keystroke eats the
+ * space in "hand stitched" while it is being typed; the server trims once, on
+ * save (validateStoryPhotos), and that stored value is what shoppers see.
+ */
+function cleanPhoto(photo: StoryPhoto): StoryPhoto {
+  const next: StoryPhoto = { url: photo.url };
+  if (photo.role) next.role = photo.role;
+  if (photo.caption) next.caption = photo.caption;
+  return next;
+}
+
 type PhotoUploaderProps = {
   productId: string;
-  /** Current (possibly unsaved) photo URLs held by StoryStudio. */
-  photos: string[];
-  /** Last persisted URLs — drives the "not saved yet" note. */
-  savedPhotos: string[];
+  /** Current (possibly unsaved) photos held by StoryStudio. */
+  photos: StoryPhoto[];
+  /** Last persisted photos — drives the "not saved yet" note. */
+  savedPhotos: StoryPhoto[];
   /**
    * Receives an updater rather than a finished array: uploads resolve
    * asynchronously, so the append must apply to the LATEST list (a removal made
    * while an upload is in flight must not be undone by a late append). StoryStudio
    * passes its setState directly.
    */
-  onChange: (updater: (previous: string[]) => string[]) => void;
+  onChange: (updater: (previous: StoryPhoto[]) => StoryPhoto[]) => void;
 };
 
 type PendingUpload = { id: number; name: string };
@@ -55,6 +77,9 @@ export default function PhotoUploader({
   onChange,
 }: PhotoUploaderProps) {
   const tStudio = useTranslations("storyStudio");
+  // Role labels are PUBLIC story copy (they appear on the story page), so they
+  // live in the `story` namespace and are reused here rather than duplicated.
+  const t = useTranslations("story");
   const inputRef = useRef<HTMLInputElement>(null);
   const nextId = useRef(0);
 
@@ -64,7 +89,37 @@ export default function PhotoUploader({
 
   const photosChanged =
     photos.length !== savedPhotos.length ||
-    photos.some((url, index) => url !== savedPhotos[index]);
+    photos.some(
+      (photo, index) =>
+        photo.url !== savedPhotos[index]?.url ||
+        photo.role !== savedPhotos[index]?.role ||
+        photo.caption !== savedPhotos[index]?.caption
+    );
+
+  function roleLabelFor(photo: StoryPhoto): string | undefined {
+    return photo.role ? t(`photoRoles.${photo.role}`) : undefined;
+  }
+
+  /** Patch one photo's role/caption in place. */
+  function updatePhoto(url: string, patch: { role?: PhotoRole; caption?: string }) {
+    onChange((previous) =>
+      previous.map((photo) =>
+        photo.url === url ? cleanPhoto({ ...photo, ...patch }) : photo
+      )
+    );
+  }
+
+  /**
+   * "Make cover" = move to the front. Position is the cover (see PhotoGallery),
+   * so there is no separate flag to keep in sync.
+   */
+  function makeCover(url: string) {
+    onChange((previous) => {
+      const cover = previous.find((photo) => photo.url === url);
+      if (!cover) return previous;
+      return [cover, ...previous.filter((photo) => photo.url !== url)];
+    });
+  }
 
   async function handleFiles(list: FileList | null) {
     const selected = Array.from(list ?? []);
@@ -115,7 +170,9 @@ export default function PhotoUploader({
         body.append("file", upload);
         const result = await uploadStoryPhotoAction(productId, body);
         if (result.ok) {
-          onChange((previous) => [...previous, result.url]);
+          // No role/caption yet — the maker sets those on the tile. The upload
+          // only supplies the URL; what the photo SHOWS is their call.
+          onChange((previous) => [...previous, { url: result.url }]);
         } else {
           setFailures((prev) => [
             ...prev,
@@ -223,30 +280,96 @@ export default function PhotoUploader({
 
       {photos.length > 0 || pending.length > 0 ? (
         <ul className={styles.uploadGrid}>
-          {photos.map((url, index) => (
-            <li key={url} className={styles.uploadTile}>
-              <img
-                src={url}
-                alt={tStudio("photosTileAlt", { number: index + 1 })}
-                className={styles.uploadTileImg}
-              />
-              <Button
-                variant="ghost"
-                className={styles.uploadRemove}
-                onClick={() => onChange((previous) => previous.filter((item) => item !== url))}
-                aria-label={`${tStudio("photosRemove")} ${index + 1}`}
-                title={tStudio("photosRemove")}
-              >
-                ×
-              </Button>
+          {photos.map((photo, index) => (
+            <li key={photo.url} className={styles.uploadCard}>
+              <div className={styles.uploadTile}>
+                <img
+                  src={photo.url}
+                  alt={photoAltText(
+                    photo,
+                    roleLabelFor(photo),
+                    tStudio("photosTileAlt", { number: index + 1 })
+                  )}
+                  className={styles.uploadTileImg}
+                />
+                {index === 0 ? (
+                  <span className={styles.uploadCoverBadge}>
+                    {tStudio("photosCoverBadge")}
+                  </span>
+                ) : null}
+                <Button
+                  variant="ghost"
+                  className={styles.uploadRemove}
+                  onClick={() =>
+                    onChange((previous) =>
+                      previous.filter((item) => item.url !== photo.url)
+                    )
+                  }
+                  aria-label={`${tStudio("photosRemove")} ${index + 1}`}
+                  title={tStudio("photosRemove")}
+                >
+                  ×
+                </Button>
+              </div>
+
+              {/* What the photo SHOWS. Optional by design — a photo with no role
+                  renders without a badge rather than with a guessed one. */}
+              <label className={styles.uploadField}>
+                <span className={styles.uploadFieldLabel}>
+                  {tStudio("photosRoleLabel")}
+                </span>
+                <select
+                  className={styles.uploadSelect}
+                  value={photo.role ?? ""}
+                  onChange={(event) =>
+                    updatePhoto(photo.url, {
+                      role: (event.target.value || undefined) as
+                        | PhotoRole
+                        | undefined,
+                    })
+                  }
+                >
+                  <option value="">{tStudio("photosRolePrompt")}</option>
+                  {PHOTO_ROLES.map((role) => (
+                    <option key={role} value={role}>
+                      {t(`photoRoles.${role}`)}
+                    </option>
+                  ))}
+                </select>
+              </label>
+
+              <label className={styles.uploadField}>
+                <span className={styles.uploadFieldLabel}>
+                  {tStudio("photosCaptionLabel")}
+                </span>
+                <input
+                  type="text"
+                  className={styles.uploadCaption}
+                  value={photo.caption ?? ""}
+                  maxLength={MAX_PHOTO_CAPTION_LENGTH}
+                  placeholder={tStudio("photosCaptionPlaceholder")}
+                  onChange={(event) =>
+                    updatePhoto(photo.url, { caption: event.target.value })
+                  }
+                />
+              </label>
+
+              {index > 0 ? (
+                <Button
+                  variant="ghost"
+                  className={styles.uploadCoverButton}
+                  onClick={() => makeCover(photo.url)}
+                >
+                  {tStudio("photosSetCover")}
+                </Button>
+              ) : null}
             </li>
           ))}
           {pending.map((item) => (
-            <li
-              key={item.id}
-              className={`${styles.uploadTile} ${styles.uploadTilePending}`}
-            >
-              <span className={styles.uploadSpinner} aria-hidden="true" />
+            <li key={item.id} className={styles.uploadCard}>
+              <div className={`${styles.uploadTile} ${styles.uploadTilePending}`}>
+                <span className={styles.uploadSpinner} aria-hidden="true" />
+              </div>
             </li>
           ))}
         </ul>

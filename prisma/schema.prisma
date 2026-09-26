@@ -90,7 +90,12 @@ model StoryPage {
   product     Product  @relation(fields: [productId], references: [id])
   headline    String?
   bodyContent Json? // structured blocks — {type: 'paragraph' | 'heading', text: string}[] (Phase 2 CMS)
-  photos      String[] @default([])
+  // Structured photo metadata, not bare URLs: each entry is
+  // { url, role?: PhotoRole, caption?: string } so a photo can say WHAT it shows
+  // (materials / process / details / makers / in_use) and carry a caption.
+  // See lib/story/photos.ts for the shape, the write gate, and the read-path
+  // normalization that upgrades legacy bare-URL rows.
+  photos      Json     @default("[]")
   published   Boolean  @default(false)
   updatedAt   DateTime @updatedAt
 }

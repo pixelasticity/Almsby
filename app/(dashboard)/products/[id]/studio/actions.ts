@@ -8,7 +8,7 @@ import { optionalInput } from "@/lib/input";
 import { getOwnedProduct } from "@/lib/products/queries";
 import { findUnsafeHref } from "@/lib/story/markUtils";
 import { normalizeTipTapContent, type TipTapDoc } from "@/lib/story/tiptap";
-import { validateStoryPhotos } from "@/lib/story/photos";
+import { validateStoryPhotos, type StoryPhoto } from "@/lib/story/photos";
 import { validatePhotoFile, uploadStoryPhoto } from "@/lib/story/storage";
 
 export type StudioActionState = { error?: string };
@@ -85,7 +85,7 @@ async function loadStoryInput(
  */
 function parseStoryPhotos(
   photos: unknown
-): { ok: true; photos: string[] } | { ok: false; error: string } {
+): { ok: true; photos: StoryPhoto[] } | { ok: false; error: string } {
   const result = validateStoryPhotos(photos);
   if (result.ok) return result;
   console.error(

@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { getDb } from "@/lib/db";
 import { requireAuth } from "@/lib/auth/server";
 import { normalizeTipTapContent } from "@/lib/story/tiptap";
+import { normalizeStoryPhotos } from "@/lib/story/photos";
 import StoryStudio from "@/components/story-studio/StoryStudio";
 
 export default async function StoryStudioPage({
@@ -47,7 +48,7 @@ export default async function StoryStudioPage({
               published: product.storyPage.published,
               bodyContent,
               headline: product.storyPage.headline,
-              photos: product.storyPage.photos,
+              photos: normalizeStoryPhotos(product.storyPage.photos),
             }
           : null,
       }}

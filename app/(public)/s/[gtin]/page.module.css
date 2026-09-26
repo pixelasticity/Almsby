@@ -81,7 +81,9 @@
 
 /* Photo gallery — rendered by components/story-page/PhotoGallery.tsx, the SAME
    component the studio preview uses, so a shopper's view cannot drift from the
-   maker's. Contract: .photos (grid) / .photo (cell) / .photoImg (image). */
+   maker's. Contract: .photos (grid) / .photo (cell) / .photoHero (first cell) /
+   .photoFrame (crop box) / .photoImg (image) / .photoRole (badge) /
+   .photoCaption (caption). */
 .photos {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -98,6 +100,18 @@
 }
 
 .photo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin: 0;
+}
+
+/* The cover leads the story: full width, wider crop. */
+.photoHero {
+  grid-column: 1 / -1;
+}
+
+.photoFrame {
   aspect-ratio: 1;
   border-radius: var(--radius-2xl);
   overflow: hidden;
@@ -105,9 +119,29 @@
   box-shadow: var(--shadow-inset);
 }
 
+.photoHero .photoFrame {
+  aspect-ratio: 16 / 10;
+}
+
 .photoImg {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.photoRole {
+  margin: 0;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--primary-600);
+}
+
+.photoCaption {
+  margin: 0;
+  font-size: var(--text-sm);
+  line-height: var(--leading-snug);
+  color: var(--neutral-600);
 }

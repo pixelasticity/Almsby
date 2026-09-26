@@ -212,7 +212,14 @@
     "comingSoonBody": "The maker is still crafting this story. Check back soon for a glimpse into the process.",
     "emptyHint": "Start adding blocks to see the story unfold...",
     "poweredBy": "Powered by Almsby",
-    "photoAlt": "Product photo {number}"
+    "photoAlt": "Product photo {number}",
+    "photoRoles": {
+      "materials": "Materials",
+      "process": "Process",
+      "details": "Details",
+      "makers": "Makers",
+      "in_use": "In use"
+    }
   },
   "storyStudio": {
     "subtitle": "Story Studio",
@@ -255,7 +262,14 @@
     "photosUnsupported": "{name} isn't a file type we can use. Try JPEG, PNG, WebP, AVIF, or GIF.",
     "photosTooLarge": "{name} is larger than 25 MB. Try a smaller version.",
     "photosMaxReached": "You can add up to {max} photos.",
-    "photosUploadFailed": "Could not upload {name}. Please try again."
+    "photosUploadFailed": "Could not upload {name}. Please try again.",
+    "photosRoleLabel": "What this photo shows",
+    "photosRolePrompt": "Choose one",
+    "photosCaptionLabel": "Caption",
+    "photosCaptionPlaceholder": "Add a caption (optional)",
+    "photosCoverBadge": "Cover",
+    "photosSetCover": "Make cover",
+    "previewDraftNotice": "Draft — shoppers see “Coming soon” until you publish."
   },
   "passport": {
     "title": "Product Passport Data",

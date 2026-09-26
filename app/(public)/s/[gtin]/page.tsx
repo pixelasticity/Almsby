@@ -31,6 +31,7 @@ import { getTranslations } from "next-intl/server";
 import { isValidGtin, toGtin14 } from "@/lib/gs1/gtin";
 import { getProductWithStoryByGtin } from "@/lib/story/queries";
 import { normalizeTipTapContent } from "@/lib/story/tiptap";
+import { normalizeStoryPhotos } from "@/lib/story/photos";
 import { storyPageCanonicalUrl } from "@/lib/story/url";
 import { buildProductJsonLd, serializeJsonLd } from "@/lib/story/jsonLd";
 import TipTapRenderer from "@/components/story-page/TipTapRenderer";
@@ -118,11 +119,14 @@ export default async function StoryPage({
       <h1 className={styles.headline}>{story.headline || product.name}</h1>
       {/* Photos sit directly under the headline — the emotional hook before the
           prose. Rendered by the SAME component the studio preview uses, in the
-          same slot, so the maker's view and the shopper's cannot drift. */}
+          same slot, so the maker's view and the shopper's cannot drift.
+          normalizeStoryPhotos repairs legacy/partial rows on read: a photo that
+          predates roles renders without a badge rather than never rendering. */}
       <PhotoGallery
-        photos={story.photos}
+        photos={normalizeStoryPhotos(story.photos)}
         styles={styles}
-        altText={(index) => t("photoAlt", { number: index + 1 })}
+        roleLabel={(role) => t(`photoRoles.${role}`)}
+        altFallback={(index) => t("photoAlt", { number: index + 1 })}
       />
       {body && (
         <div className={styles.body}>

@@ -5,8 +5,8 @@ import styles from "./story-studio.module.css";
 import TipTapRenderer, {
   type TipTapNode,
 } from "@/components/story-page/TipTapRenderer";
-import ComingSoon from "@/components/story-page/ComingSoon";
 import PhotoGallery from "@/components/story-page/PhotoGallery";
+import type { StoryPhoto } from "@/lib/story/photos";
 
 interface MobilePreviewProps {
   content: Record<string, unknown> | null;
@@ -15,7 +15,7 @@ interface MobilePreviewProps {
   headline: string | null;
   isPublished: boolean;
   /** StoryPage.photos — rendered in the same slot as the public page. */
-  photos: string[];
+  photos: StoryPhoto[];
 }
 
 export default function MobilePreview({
@@ -25,6 +25,7 @@ export default function MobilePreview({
   photos,
 }: MobilePreviewProps) {
   const t = useTranslations("story");
+  const tStudio = useTranslations("storyStudio");
   const nodes = (content as TipTapNode | null)?.content ?? [];
 
   return (
@@ -38,14 +39,16 @@ export default function MobilePreview({
       </div>
 
       <div className={styles.phoneContent}>
-        {!isPublished && (
-          <ComingSoon
-            title={t("comingSoonTitle")}
-            body={t("comingSoonBody")}
-            styles={styles}
-            as="h3"
-          />
-        )}
+        {/* Draft state is a NOTICE, not a replacement. The preview's job is to
+            show the maker the layout they are building — swapping the whole
+            frame for the coming-soon placeholder (which is every unpublished
+            story, i.e. every story while it is being written) made the preview
+            useless exactly when it was needed. What shoppers currently see is
+            still stated, and the real coming-soon screen remains the public
+            page's own behavior. */}
+        {!isPublished ? (
+          <p className={styles.previewDraftNotice}>{tStudio("previewDraftNotice")}</p>
+        ) : null}
 
         <div className={styles.storyContent}>
           {headline ? <h1 className={styles.previewHeadline}>{headline}</h1> : null}
@@ -54,7 +57,8 @@ export default function MobilePreview({
           <PhotoGallery
             photos={photos}
             styles={styles}
-            altText={(index) => t("photoAlt", { number: index + 1 })}
+            roleLabel={(role) => t(`photoRoles.${role}`)}
+            altFallback={(index) => t("photoAlt", { number: index + 1 })}
           />
           {nodes.length === 0 ? (
             <div className={styles.blocksEmpty}>

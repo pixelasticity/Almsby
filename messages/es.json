@@ -212,7 +212,14 @@
     "comingSoonBody": "El fabricante todavía está creando esta historia. Vuelve pronto para descubrir el proceso.",
     "emptyHint": "Empieza a añadir bloques para ver cómo se desarrolla la historia…",
     "poweredBy": "Powered by Almsby",
-    "photoAlt": "Foto del producto {number}"
+    "photoAlt": "Foto del producto {number}",
+    "photoRoles": {
+      "materials": "Materiales",
+      "process": "Proceso",
+      "details": "Detalles",
+      "makers": "Artesanos",
+      "in_use": "En uso"
+    }
   },
   "storyStudio": {
     "subtitle": "Story Studio",
@@ -255,7 +262,14 @@
     "photosUnsupported": "{name} no es un tipo de archivo compatible. Prueba con JPEG, PNG, WebP, AVIF o GIF.",
     "photosTooLarge": "{name} supera los 25 MB. Prueba con una versión más pequeña.",
     "photosMaxReached": "Puedes añadir hasta {max} fotos.",
-    "photosUploadFailed": "No se pudo subir {name}. Inténtalo de nuevo."
+    "photosUploadFailed": "No se pudo subir {name}. Inténtalo de nuevo.",
+    "photosRoleLabel": "Qué muestra esta foto",
+    "photosRolePrompt": "Elige una",
+    "photosCaptionLabel": "Descripción",
+    "photosCaptionPlaceholder": "Añade una descripción (opcional)",
+    "photosCoverBadge": "Portada",
+    "photosSetCover": "Usar como portada",
+    "previewDraftNotice": "Borrador — los clientes ven «Próximamente» hasta que publiques."
   },
   "passport": {
     "title": "Datos del pasaporte del producto",
