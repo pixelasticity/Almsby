@@ -78,11 +78,73 @@ columns** (2 on phones).
   `tests/story/studio-actions.test.ts` (photo persistence on save/publish, URL
   refusal, cap, upload-action session/ownership/no-file gates, error mapping).
 
+#### Roles and captions — a photo now says what it SHOWS (migration `20260926120000`)
+The concept design's facets, implemented as a bounded vocabulary rather than
+free-text categories: **Materials** (raw components/fabrics before assembly),
+**Process** (crafting/assembly in action), **Details** (textures, finishes,
+hardware, stitching), **Makers** (artisans, founders, the workshop),
+**In use** (the finished product worn, held, used). Each photo also takes an
+optional caption (≤160 chars).
+
+- `StoryPage.photos` is now `Json` holding `StoryPhoto[]`
+  (`{ url, role?, caption? }`) instead of `String[]` of bare URLs. Migration
+  converts legacy values to `{ url }` with NO role and NO caption —
+  `normalizeStoryPhotos` reads that shape and the gallery renders **no badge** for
+  it. Inventing a role for a photo whose subject we don't know would be a false
+  claim on a consumer-facing page.
+- Role and caption are both **optional by design**: a photo with no role still
+  renders (badge-less), so uploading stays fast and the maker is never blocked by
+  a taxonomy question. The uploader prompts for the role on every tile.
+- Cover is **positional** — the first photo leads the story, and "Make cover"
+  moves a photo to the front. No `isCover` flag that could fall out of sync with
+  the array it describes.
+- Alt text is now the MOST specific description available: the maker's caption →
+  the role label → generic copy (`photoAltText`, unit-tested priority).
+- Write path (`validateStoryPhotos`) is strict but **permissive in**: it accepts a
+  bare URL string (a maker's tab kept open across a deploy sends the old shape)
+  and upgrades it, so a deployment can't fail someone's save over a shape we can
+  fix ourselves. Unknown roles and over-long captions are rejected with specific
+  copy.
+- Read path (`normalizeStoryPhotos`) never throws and never hides a maker's photo
+  over a bad tag: an untrusted URL is dropped (logged), while a bad role or
+  over-long caption keeps the photo with every field that DID validate.
+- **VERIFIED LIVE** (2026-09-24, local Supabase Postgres): migration applied via
+  `prisma migrate deploy`; column reads back `jsonb nullable=NO
+  default='[]'::jsonb`, **0 rows are a non-array**, the one row that had photos
+  survived the legacy conversion, and a structured write→read round-trip through
+  the generated Prisma client + `normalizeStoryPhotos` returns the expected
+  objects. Dev data was restored afterwards.
+- **DEPLOY ORDER matters** (noted in the migration file): apply with the app code
+  that reads objects. The previous app version expects bare strings — it would not
+  render those rows correctly (it would put an object into `<img src>`), though it
+  will not crash. Nothing is in production yet.
+
+#### Preview fix — draft state is a notice, not a replacement
+The studio's phone preview replaced its ENTIRE content with the coming-soon block
+whenever the story was unpublished — which is every story, the whole time it is
+being written. So the maker could not see the layout they were building; that is
+the "preview doesn't work" report, and it was real.
+
+The preview now always renders the draft layout (headline → cover → photo gallery
+→ body) with a compact amber strip stating what shoppers currently see
+(`previewDraftNotice`). `ComingSoon` remains the public page's real behavior; it
+is simply no longer what the preview *becomes*.
+
+
 **Follow-ups, explicitly not blockers:** orphaned R2 objects when a maker uploads
 then abandons or removes a photo (no delete path yet — an R2 lifecycle rule is the
 fix); `next/image` optimization for R2-hosted images (2 `no-img-element` lint
-warnings today); photo alt text is generic ("Product photo N") because the schema
-has no caption field — captions would be a schema change, not a UI tweak.
+warnings today); ordering is append-only apart from "Make cover" (no
+drag-to-reorder yet); the phone preview still omits the passport block that the
+public page renders below the body (parity gap, deliberately left out of this
+change); and JSON-LD could now carry `image` (Schema.org `Product.image`, built
+from the photo URLs) — not added, because brief §6 fixes that field list.
+
+**Owed and flagged rather than quietly skipped:** AGENTS' local migration practice
+is `supabase db reset` before a push — it proves migrations apply *from scratch*,
+not only incrementally. This change verified its migration by APPLYING it to the
+local Supabase database instead, plus the live checks above; the from-scratch reset
+is still owed before this branch merges.
 
 ### Crawler signals — canonical URL + Schema.org JSON-LD (brief §2.6, §6)
 Published pages now emit `<link rel="canonical">` and Schema.org Product JSON-LD.
