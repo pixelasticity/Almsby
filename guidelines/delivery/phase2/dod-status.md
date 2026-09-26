@@ -130,6 +130,51 @@ The preview now always renders the draft layout (headline → cover → photo ga
 (`previewDraftNotice`). `ComingSoon` remains the public page's real behavior; it
 is simply no longer what the preview *becomes*.
 
+#### Preview fix, part two — the report survived the first fix, and had two more causes
+
+The "preview doesn't work" report was still open after the draft-notice change,
+so it was chased in the browser rather than in the code. Two independent defects
+were found; neither is visible by reading the component, which is why both shipped.
+
+1. **CSP blocked every R2 image (the reason photos were blank anywhere).**
+   `middleware.ts` sent `img-src 'self' data: blob:`, which forbids *every*
+   external host — including the R2 bucket the photos are actually served from.
+   The upload path succeeded, the stored URL was correct, the object existed and
+   served `200 image/jpeg`, and the browser simply refused to request it. Every
+   `<img>` pointing at R2 was affected on three surfaces (studio thumbnails, phone
+   preview, public story page), so the symptom looked like a rendering/layout bug.
+   The policy is now built in `lib/csp.ts` (pure, unit-tested) from
+   `R2_PUBLIC_DOMAIN` plus the `https://*.r2.dev` wildcard, and the failure mode is
+   documented there: this list must grow when a new origin appears, and forgetting
+   fails *silently*.
+   **Verified in Chrome (Playwright, real R2 object on the published story page):**
+   with the fix — `img-src 'self' data: blob: https://*.r2.dev https://pub-…r2.dev`,
+   0 CSP violations, image decoded (`naturalWidth` 992) and painted (624×390).
+   Control run, forcing the header back to the pre-fix value on the same URL — 2
+   violations naming that exact photo and the request blocked. Causation, not
+   coincidence.
+   **Owed at deploy:** confirm the production header actually lists the production
+   bucket host. `middleware.ts` reads `R2_PUBLIC_DOMAIN` where it is *built*, so if
+   that variable is absent from the build environment the header degrades to the
+   r2.dev wildcard only — silently, which is the class of bug this whole section is
+   about. One `curl -I` against staging closes it.
+2. **The phone preview could not be shown on desktop at all.** The panels toggled
+   with inline `style={{ display: … }}`, and an inline style outranks a media query
+   — on desktop `activeTab` is permanently `"edit"` (the tab bar is hidden there),
+   so `.previewPanel` stayed `display: none` with no control that could bring it
+   back. Visibility is now CSS scoped to `max-width: 767px`, where the tabs exist,
+   and all three columns show on desktop. The same mobile block makes
+   `.previewInner` static: it is `position: absolute` inside a panel that has no
+   fixed height on mobile, and an absolute child of a zero-height box paints
+   nothing — so even the mobile tab, when it did show the panel, showed an empty
+   frame.
+
+**Build note found on the way:** a bare local `npm run build` fails at
+`/auth/confirm` because `lib/env.ts` refuses to bake a localhost Supabase URL into
+a production build unless `CI` is set. That guard is correct and left alone —
+`CI=true npm run build` is green — but it is not obvious, and the failure looks
+like a broken app rather than a deliberate guard.
+
 
 **Follow-ups, explicitly not blockers:** orphaned R2 objects when a maker uploads
 then abandons or removes a photo (no delete path yet — an R2 lifecycle rule is the
