@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { contentSecurityPolicy } from "@/lib/csp";
 
 /**
  * Edge security headers — set here because the next.config.ts headers()
@@ -6,30 +7,25 @@ import { NextResponse, type NextRequest } from "next/server";
  * production responses).
  *
  * CSP uses a per-request nonce + 'strict-dynamic' so Next.js injected
- * hydration/chunk scripts work without individual nonces.
+ * hydration/chunk scripts work without individual nonces. The policy itself is
+ * built in lib/csp.ts — a pure module with tests, because forgetting to add a
+ * new external host there fails silently (story photos were blank until
+ * `img-src` learned about R2).
  *
- * NOTE: if you add external resources (analytics, CDN, browser-side
- * APIs), update the relevant CSP directives here:
- *   - script-src: external JS
- *   - connect-src: fetch/XHR/WebSocket endpoints (Supabase listed)
- *   - img-src / font-src / style-src: hosts for those resource types
+ * R2_PUBLIC_DOMAIN is read here for the bucket's custom production host. It must
+ * be present in the environment this middleware is BUILT and RUN in (Vercel
+ * project env / .env.local), which is the same requirement the upload path
+ * already has — but note the failure mode differs: if it is missing there, the
+ * header falls back to the r2.dev wildcard only. Verify the header on staging
+ * after a deploy.
  */
 export function middleware(_request: NextRequest): NextResponse {
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
 
-  const csp = [
-    "default-src 'self'",
-    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'`,
-    "style-src 'self' 'unsafe-inline'",
-    "img-src 'self' data: blob:",
-    "font-src 'self'",
-    "connect-src 'self' https://*.supabase.co wss://*.supabase.co",
-    "frame-ancestors 'none'",
-    "object-src 'none'",
-    "base-uri 'self'",
-    "form-action 'self'",
-    "upgrade-insecure-requests",
-  ].join("; ");
+  const csp = contentSecurityPolicy({
+    nonce,
+    r2PublicDomain: process.env.R2_PUBLIC_DOMAIN,
+  });
 
   const response = NextResponse.next();
 
