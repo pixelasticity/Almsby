@@ -226,10 +226,17 @@ export default function StoryStudio({ product }: { product: StudioProduct }) {
         </div>
       )}
 
+      {/* Panel visibility. Below 768px the mobile tabs show ONE column at a
+          time; on desktop all three columns are always visible (the tabs are
+          hidden there). This is CSS-scoped on purpose — it used to be inline
+          `style={{ display: … }}`, and an inline style beats the desktop media
+          query, so the phone preview was permanently hidden on desktop no matter
+          what the maker clicked. */}
       <main className={styles.main}>
         <div
-          className={styles.editPanel}
-          style={{ display: activeTab === "preview" ? "none" : "block" }}
+          className={`${styles.editPanel} ${
+            activeTab === "preview" ? styles.hideOnMobilePreview : ""
+          }`}
         >
           <div className={styles.editInner}>
             {/* Headline — shared FormField primitive, styled via this module's
@@ -292,15 +299,17 @@ export default function StoryStudio({ product }: { product: StudioProduct }) {
                 {/* Passport data — shown alongside the editor on wide screens,
             full-width below the editor on mobile. Shares the edit tab's visibility. */}
         <div
-          className={styles.passportPanel}
-          style={{ display: activeTab === "preview" ? "none" : "block" }}
+          className={`${styles.passportPanel} ${
+            activeTab === "preview" ? styles.hideOnMobilePreview : ""
+          }`}
         >
           <PassportSummary product={product} />
         </div>
 
         <div
-          className={styles.previewPanel}
-          style={{ display: activeTab === "edit" ? "none" : "block" }}
+          className={`${styles.previewPanel} ${
+            activeTab === "preview" ? styles.previewPanelOpen : ""
+          }`}
         >
           <div className={styles.previewInner}>
             {liveUrl && (

@@ -467,6 +467,32 @@
   }
 }
 
+/* Below 768px the tabs show one column at a time. Scoped to the mobile media
+   query deliberately: these states were inline styles before, and an inline
+   `display` outranks the desktop rule above — which hid the phone preview on
+   desktop entirely, with no way to bring it back (the tab bar is hidden there).
+
+   The absolute `.previewInner` also has to become static here: on mobile the
+   panel has no fixed height, and an absolutely positioned child inside a
+   zero-height box renders nothing at all. */
+@media (max-width: 767px) {
+  .hideOnMobilePreview {
+    display: none;
+  }
+
+  .previewPanelOpen {
+    display: block;
+    width: 100%;
+    border-left: none;
+    overflow: visible;
+  }
+
+  .previewPanelOpen .previewInner {
+    position: static;
+    padding: var(--space-10) var(--space-7);
+  }
+}
+
 .previewInner {
   position: absolute;
   inset: 0;
