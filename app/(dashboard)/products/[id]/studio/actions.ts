@@ -8,6 +8,8 @@ import { optionalInput } from "@/lib/input";
 import { getOwnedProduct } from "@/lib/products/queries";
 import { findUnsafeHref } from "@/lib/story/markUtils";
 import { normalizeTipTapContent, type TipTapDoc } from "@/lib/story/tiptap";
+import { validateStoryPhotos } from "@/lib/story/photos";
+import { validatePhotoFile, uploadStoryPhoto } from "@/lib/story/storage";
 
 export type StudioActionState = { error?: string };
 
@@ -72,6 +74,27 @@ async function loadStoryInput(
 }
 
 /**
+ * Photo gate shared by both story writes.
+ *
+ * StoryPage.photos becomes <img src> on the PUBLIC page, so the list is
+ * re-validated here (lib/story/photos.ts: our own R2 host under story-photos/
+ * only, cap enforced) even though the uploader already filtered client-side.
+ * A refusal is logged with the offending value as evidence and nothing is
+ * written — the render path must never be the only thing standing between a
+ * tampered value and a shopper's browser.
+ */
+function parseStoryPhotos(
+  photos: unknown
+): { ok: true; photos: string[] } | { ok: false; error: string } {
+  const result = validateStoryPhotos(photos);
+  if (result.ok) return result;
+  console.error(
+    `story write: rejected a photo entry (${result.offending}) — only R2 story-photos URLs are storable.`
+  );
+  return { ok: false, error: result.error };
+}
+
+/**
  * Normalized TipTap doc → StoryPage.bodyContent. The single place the
  * unconstrained Json? column's input is built.
  *
@@ -125,11 +148,16 @@ function clearStoryPageCache(): void {
 /**
  * Save TipTap JSON content to the StoryPage. Creates the StoryPage row on
  * first save (a product may exist without one until the maker starts editing).
+ *
+ * `photos` is the full photo URL list from the uploader — photos are written to
+ * R2 on selection, but the association is persisted HERE, with the rest of the
+ * story, so a shopper never sees a photo the maker hasn't saved.
  */
 export async function saveStoryAction(
   productId: string,
   content: Record<string, unknown> | null,
-  headline: string | null
+  headline: string | null,
+  photos: unknown
 ): Promise<StudioActionState> {
   const input = await loadStoryInput(
     productId,
@@ -139,6 +167,9 @@ export async function saveStoryAction(
   );
   if (!input.ok) return { error: input.error };
 
+  const photoList = parseStoryPhotos(photos);
+  if (!photoList.ok) return { error: photoList.error };
+
   try {
     const db = getDb();
     await db.storyPage.upsert({
@@ -147,10 +178,12 @@ export async function saveStoryAction(
         productId,
         headline: input.headline,
         bodyContent: toBodyContent(input.doc),
+        photos: photoList.photos,
       },
       update: {
         headline: input.headline,
         bodyContent: toBodyContent(input.doc),
+        photos: photoList.photos,
       },
     });
   } catch (error) {
@@ -170,7 +203,8 @@ export async function publishStoryAction(
   productId: string,
   content: Record<string, unknown> | null,
   headline: string | null,
-  published: boolean
+  published: boolean,
+  photos: unknown
 ): Promise<StudioActionState> {
   const input = await loadStoryInput(
     productId,
@@ -179,6 +213,9 @@ export async function publishStoryAction(
     "You must be signed in to publish a story."
   );
   if (!input.ok) return { error: input.error };
+
+  const photoList = parseStoryPhotos(photos);
+  if (!photoList.ok) return { error: photoList.error };
 
   // Headline required to publish (Phase 2 brief §5: "headline (short, required
   // to publish)"). Drafts may save without one; only the publish transition is
@@ -196,11 +233,13 @@ export async function publishStoryAction(
         headline: input.headline,
         bodyContent: toBodyContent(input.doc),
         published,
+        photos: photoList.photos,
       },
       update: {
         headline: input.headline,
         bodyContent: toBodyContent(input.doc),
         published,
+        photos: photoList.photos,
       },
     });
   } catch (error) {
@@ -211,3 +250,84 @@ export async function publishStoryAction(
   clearStoryPageCache();
   return {};
 }
+
+export type UploadPhotoState =
+  | { ok: true; url: string }
+  | { ok: false; error: string };
+
+/**
+ * Upload ONE story photo to R2 and hand its URL back to the uploader.
+ *
+ * Deliberately does NOT touch the database: the URL joins StoryPage.photos when
+ * the maker saves the story (see saveStoryAction), so nothing a shopper can see
+ * changes until then. An abandoned upload therefore costs one orphaned R2 object
+ * rather than a half-written page — orphan cleanup (R2 lifecycle rules) is a
+ * known follow-up, not an oversight.
+ *
+ * Same session + ownership gate as every other studio write. Validation runs
+ * HERE first so the maker gets storage's exact user-safe message (wrong type,
+ * too large, empty); a failure inside uploadStoryPhoto itself is logged in full
+ * and returned as a generic message — storage internals must never leak, and a
+ * failure must never look like success (AGENTS rule 1).
+ */
+export async function uploadStoryPhotoAction(
+  productId: string,
+  formData: FormData
+): Promise<UploadPhotoState> {
+  const user = await getCurrentUser();
+  if (!user) return { ok: false, error: "You must be signed in to upload photos." };
+
+  const owned = await getOwnedProduct(productId, user.id);
+  if (!owned) return { ok: false, error: "Product not found." };
+
+  const file = formData.get("file");
+  if (!(file instanceof File) || file.size === 0) {
+    return { ok: false, error: "No image was received. Please try again." };
+  }
+
+  let bytes: Uint8Array;
+  try {
+    bytes = new Uint8Array(await file.arrayBuffer());
+  } catch (error) {
+    // Reading the upload failed (transport-level) — log the original, never
+    // surface it: the maker gets a safe message and a retry.
+    console.error(
+      `uploadStoryPhotoAction: could not read the upload ${file.name} for product ${productId}:`,
+      error
+    );
+    return { ok: false, error: "The image could not be read. Please try again." };
+  }
+
+  try {
+    // Same validation the storage layer runs — calling it here means the maker
+    // sees its precise, user-safe message (type, size, empty file) instead of a
+    // generic one.
+    validatePhotoFile({ bytes, filename: file.name, contentType: file.type });
+  } catch (error) {
+    console.error(
+      `uploadStoryPhotoAction: rejected ${file.name} (${file.type}, ${file.size} bytes) for product ${productId}:`,
+      error
+    );
+    return {
+      ok: false,
+      error:
+        error instanceof Error
+          ? error.message
+          : "That image could not be uploaded. Please try again.",
+    };
+  }
+
+  try {
+    const url = await uploadStoryPhoto({
+      bytes,
+      filename: file.name,
+      contentType: file.type,
+      productId,
+    });
+    return { ok: true, url };
+  } catch (error) {
+    console.error(`uploadStoryPhotoAction failed for product ${productId}:`, error);
+    return { ok: false, error: "Could not upload the photo. Please try again." };
+  }
+}
+

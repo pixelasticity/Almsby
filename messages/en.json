@@ -211,7 +211,8 @@
     "comingSoonTitle": "Coming Soon",
     "comingSoonBody": "The maker is still crafting this story. Check back soon for a glimpse into the process.",
     "emptyHint": "Start adding blocks to see the story unfold...",
-    "poweredBy": "Powered by Almsby"
+    "poweredBy": "Powered by Almsby",
+    "photoAlt": "Product photo {number}"
   },
   "storyStudio": {
     "subtitle": "Story Studio",
@@ -240,7 +241,21 @@
     "linkApply": "Apply",
     "linkRemove": "Remove",
     "linkErrorEmpty": "Enter a URL.",
-    "linkErrorScheme": "Link must start with http:// or https://"
+    "linkErrorScheme": "Link must start with http:// or https://",
+    "photosHeading": "Photos",
+    "photosHelper": "Add photos of your materials, process, or finished piece. Large images are resized automatically before they're uploaded.",
+    "photosCount": "{count, plural, one {# photo} other {# photos}}",
+    "photosUploadingCount": "{count, plural, one {Uploading # photo…} other {Uploading # photos…}}",
+    "photosDropPrompt": "Drag and drop photos here",
+    "photosBrowse": "or choose files",
+    "photosTypes": "JPEG, PNG, WebP, AVIF, or GIF · up to 25 MB each",
+    "photosRemove": "Remove photo",
+    "photosTileAlt": "Photo {number}",
+    "photosUnsaved": "Not saved yet — use Save to keep these photos.",
+    "photosUnsupported": "{name} isn't a file type we can use. Try JPEG, PNG, WebP, AVIF, or GIF.",
+    "photosTooLarge": "{name} is larger than 25 MB. Try a smaller version.",
+    "photosMaxReached": "You can add up to {max} photos.",
+    "photosUploadFailed": "Could not upload {name}. Please try again."
   },
   "passport": {
     "title": "Product Passport Data",

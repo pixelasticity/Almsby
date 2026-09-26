@@ -19,7 +19,7 @@ export default async function StoryStudioPage({
     where: { id: productId, business: { ownerId: user.id } },
     include: {
       gtin: { select: { gtinValue: true } },
-      storyPage: { select: { id: true, published: true, bodyContent: true, headline: true } },
+      storyPage: { select: { id: true, published: true, bodyContent: true, headline: true, photos: true } },
     },
   });
 
@@ -47,6 +47,7 @@ export default async function StoryStudioPage({
               published: product.storyPage.published,
               bodyContent,
               headline: product.storyPage.headline,
+              photos: product.storyPage.photos,
             }
           : null,
       }}

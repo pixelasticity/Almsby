@@ -518,3 +518,221 @@
   color: var(--primary-600);
   border-top: 2px solid var(--primary-600);
 }
+
+/* ── Photo uploader (edit panel) ─────────────────────────────────────────── */
+
+.photosSection {
+  margin-top: var(--space-10);
+}
+
+.photosHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-5);
+}
+
+/* Count line — "3 photos" / "Uploading 2 photos…". */
+.photosCount {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--neutral-600);
+}
+
+.photosHelper {
+  margin: var(--space-3) 0 var(--space-5);
+  font-size: var(--text-sm);
+  color: var(--neutral-600);
+  line-height: var(--leading-relaxed);
+}
+
+.dropzone {
+  position: relative;
+  border: 1.5px dashed var(--neutral-300);
+  border-radius: var(--radius-2xl);
+  background: var(--card);
+  transition: border-color var(--duration-fast), background var(--duration-fast);
+}
+
+.dropzoneActive {
+  border-color: var(--primary-600);
+  background: var(--primary-100);
+}
+
+/* Visually hidden, still programmatically associated: the button is the one
+   keyboard stop, the input is what it opens. */
+.fileInput {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.dropzoneButton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  padding: var(--space-9) var(--space-7);
+  background: none;
+  border: none;
+  border-radius: var(--radius-2xl);
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}
+
+.dropzoneButton:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus-ring);
+}
+
+.dropzoneIcon {
+  color: var(--primary-600);
+}
+
+.dropzoneTitle {
+  font-weight: 700;
+  color: var(--neutral-800);
+}
+
+.dropzoneBrowse {
+  font-size: var(--text-sm);
+  color: var(--neutral-600);
+  text-decoration: underline;
+}
+
+.dropzoneHint {
+  margin: 0;
+  padding: 0 var(--space-7) var(--space-7);
+  text-align: center;
+  font-size: var(--text-xs);
+  color: var(--neutral-500);
+}
+
+.photosErrors {
+  margin: var(--space-5) 0 0;
+  padding: var(--space-5) var(--space-6);
+  list-style: none;
+  border: 1px solid var(--danger-300);
+  border-radius: var(--radius-lg);
+  background: var(--danger-100);
+  color: var(--danger-700);
+  font-size: var(--text-sm);
+}
+
+/* Thumbnail grid — up to 4 columns (2 on a phone). */
+.uploadGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+  margin: var(--space-7) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 640px) {
+  .uploadGrid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.uploadTile {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  background: var(--primary-200);
+  box-shadow: var(--shadow-inset);
+}
+
+.uploadTilePending {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.uploadTileImg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.uploadRemove {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  width: 28px;
+  height: 28px;
+  min-width: 0;
+  padding: 0;
+  line-height: 1;
+  border-radius: var(--radius-full);
+  background: var(--card);
+  color: var(--neutral-700);
+  box-shadow: var(--shadow-card-sm);
+}
+
+.uploadRemove:hover {
+  color: var(--danger-700);
+}
+
+.uploadSpinner {
+  width: 22px;
+  height: 22px;
+  border-radius: var(--radius-full);
+  border: 2px solid var(--primary-300);
+  border-top-color: var(--primary-700);
+  animation: photoSpin 900ms linear infinite;
+}
+
+@keyframes photoSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Photo-specific "not persisted yet" note — matches the header's unsaved
+   indicator, placed where the change actually happened. */
+.photosNote {
+  margin: var(--space-5) 0 0;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--gold-600);
+}
+
+/* ── Photo gallery ─────────────────────────────────────────────────────────
+   Contract with components/story-page/PhotoGallery.tsx:
+   .photos (grid)  .photo (cell)  .photoImg (image)
+   The SAME component renders the studio preview and the public page, so the
+   grid is defined once per surface width, not once per consumer. */
+.photos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+  margin: 0 0 var(--space-8);
+  padding: 0;
+  list-style: none;
+}
+
+.photo {
+  aspect-ratio: 1;
+  border-radius: var(--radius-2xl);
+  overflow: hidden;
+  background: var(--primary-200);
+  box-shadow: var(--shadow-inset);
+}
+
+.photoImg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}

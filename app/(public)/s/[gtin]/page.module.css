@@ -78,3 +78,36 @@
   color: var(--blue-600);
   text-decoration: underline;
 }
+
+/* Photo gallery — rendered by components/story-page/PhotoGallery.tsx, the SAME
+   component the studio preview uses, so a shopper's view cannot drift from the
+   maker's. Contract: .photos (grid) / .photo (cell) / .photoImg (image). */
+.photos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-5);
+  margin: 0 0 var(--space-9);
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 640px) {
+  .photos {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.photo {
+  aspect-ratio: 1;
+  border-radius: var(--radius-2xl);
+  overflow: hidden;
+  background: var(--primary-200);
+  box-shadow: var(--shadow-inset);
+}
+
+.photoImg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}

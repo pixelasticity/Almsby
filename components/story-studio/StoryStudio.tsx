@@ -9,6 +9,7 @@ import TipTapEditor from "./TipTapEditor";
 import ErrorBoundary from "@/components/ui/ErrorBoundary";
 import MobilePreview from "./MobilePreview";
 import PassportSummary from "./PassportSummary";
+import PhotoUploader from "./PhotoUploader";
 import { toGtin14 } from "@/lib/gs1/gtin";
 import { storyPagePath } from "@/lib/story/url";
 import { saveStoryAction, publishStoryAction } from "@/app/(dashboard)/products/[id]/studio/actions";
@@ -28,6 +29,8 @@ type StudioProduct = {
     published: boolean;
     bodyContent: unknown;
     headline: string | null;
+    /** R2 URLs; [] when the story has none yet (and on pre-photo rows). */
+    photos: string[];
   } | null;
 };
 
@@ -44,6 +47,9 @@ export default function StoryStudio({ product }: { product: StudioProduct }) {
   // the bounded rich-text schema (paragraph/heading/bold/italic/strike/link
   // only) stays intact per the Phase 2 brief.
   const [headline, setHeadline] = useState(product.storyPage?.headline ?? "");
+  // Photo URLs. Uploading writes to R2 immediately; this array is what gets
+  // persisted with the next Save/Publish (see PhotoUploader's header comment).
+  const [photos, setPhotos] = useState<string[]>(product.storyPage?.photos ?? []);
   const [isPublished, setIsPublished] = useState(product.storyPage?.published ?? false);
   const [activeTab, setActiveTab] = useState<"edit" | "preview">("edit");
   const [error, setError] = useState<string | null>(null);
@@ -56,13 +62,19 @@ export default function StoryStudio({ product }: { product: StudioProduct }) {
   // Snapshot of the last successfully-persisted content, used for dirty tracking.
   const [savedContent, setSavedContent] = useState<Record<string, unknown> | null>(content);
   const [savedHeadline, setSavedHeadline] = useState(product.storyPage?.headline ?? "");
+  const [savedPhotos, setSavedPhotos] = useState<string[]>(
+    product.storyPage?.photos ?? []
+  );
   // "idle" (nothing to report) | "saved" (brief confirmation) — errors go to the banner.
   const [saveStatus, setSaveStatus] = useState<"idle" | "saved">("idle");
 
-  // Dirty = current editor content OR headline differs from what's been persisted.
+  // Dirty = current editor content, headline, OR photo list differs from what's
+  // been persisted. Photos count: an upload only becomes visible to a shopper
+  // after Save, so their presence must keep this true.
   const hasUnsavedChanges =
     JSON.stringify(content) !== JSON.stringify(savedContent) ||
-    headline !== savedHeadline;
+    headline !== savedHeadline ||
+    JSON.stringify(photos) !== JSON.stringify(savedPhotos);
 
   // The public story page is served at `/s/{gtin14}` (see app/(public)/s/[gtin])
   // — the same path the resolver redirects a scanned barcode to. storyPagePath
@@ -106,7 +118,8 @@ export default function StoryStudio({ product }: { product: StudioProduct }) {
       const result = await saveStoryAction(
         product.id,
         toPlainJson(content),
-        optionalInput(headline)
+        optionalInput(headline),
+        photos
       );
       if (result?.error) {
         setError(result.error);
@@ -115,6 +128,7 @@ export default function StoryStudio({ product }: { product: StudioProduct }) {
       // Only mark saved on success so a failed save stays "dirty".
       setSavedContent(content);
       setSavedHeadline(headline);
+      setSavedPhotos(photos);
       setSaveStatus("saved");
     });
   };
@@ -138,7 +152,8 @@ export default function StoryStudio({ product }: { product: StudioProduct }) {
         product.id,
         toPlainJson(content),
         optionalInput(headline),
-        published
+        published,
+        photos
       );
       if (result?.error) {
         setError(result.error);
@@ -147,6 +162,7 @@ export default function StoryStudio({ product }: { product: StudioProduct }) {
         // Publish also persists content, so clear the dirty state on success.
         setSavedContent(content);
         setSavedHeadline(headline);
+        setSavedPhotos(photos);
       }
     });
   };
@@ -258,7 +274,16 @@ export default function StoryStudio({ product }: { product: StudioProduct }) {
                 />
               </ErrorBoundary>
             </section>
-                      </div>
+
+            {/* Photos — heading + dropzone + previews. Sits after the prose so
+                the writing surface stays the first thing in the panel. */}
+            <PhotoUploader
+              productId={product.id}
+              photos={photos}
+              savedPhotos={savedPhotos}
+              onChange={setPhotos}
+            />
+          </div>
         </div>
 
                 {/* Passport data — shown alongside the editor on wide screens,
@@ -280,7 +305,12 @@ export default function StoryStudio({ product }: { product: StudioProduct }) {
                 {tStudio("viewLive")} ↗
               </Link>
             )}
-            <MobilePreview content={content} headline={headline} isPublished={isPublished} />
+            <MobilePreview
+              content={content}
+              headline={headline}
+              isPublished={isPublished}
+              photos={photos}
+            />
           </div>
         </div>
       </main>

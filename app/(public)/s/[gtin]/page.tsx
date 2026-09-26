@@ -35,6 +35,7 @@ import { storyPageCanonicalUrl } from "@/lib/story/url";
 import { buildProductJsonLd, serializeJsonLd } from "@/lib/story/jsonLd";
 import TipTapRenderer from "@/components/story-page/TipTapRenderer";
 import ComingSoon from "@/components/story-page/ComingSoon";
+import PhotoGallery from "@/components/story-page/PhotoGallery";
 import PassportSummary from "@/components/story-studio/PassportSummary";
 import { env } from "@/lib/env";
 import shellStyles from "@/styles/pageShell.module.css";
@@ -115,6 +116,14 @@ export default async function StoryPage({
         }}
       />
       <h1 className={styles.headline}>{story.headline || product.name}</h1>
+      {/* Photos sit directly under the headline — the emotional hook before the
+          prose. Rendered by the SAME component the studio preview uses, in the
+          same slot, so the maker's view and the shopper's cannot drift. */}
+      <PhotoGallery
+        photos={story.photos}
+        styles={styles}
+        altText={(index) => t("photoAlt", { number: index + 1 })}
+      />
       {body && (
         <div className={styles.body}>
           <TipTapRenderer content={body} />
